@@ -40,7 +40,12 @@ Map::Map(int input_width, int input_height) {
         data[i].resize(input_width);
 
         for (int j = 0; j < input_width; j++) {
-            data[i][j] = new BaseBlock(i, j);
+            // 边缘是墙
+            if (i == 0 || i == input_height -1 ||
+                j == 0 || j == input_height -1) {
+                    data[i][j] = new Wall(i, j);
+            }
+            else {data[i][j] = new BaseBlock(i, j);}
         }
     }
 
