@@ -60,6 +60,10 @@ bool Map::loadMap(std::string fileDir) {
     /* TODO */
 }
 
+bool Map::writeMap(std::string fileDir) {
+    /* TODO */
+}
+
 bool Map::onMap(BaseBlock* block) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
