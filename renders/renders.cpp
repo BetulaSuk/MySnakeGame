@@ -222,8 +222,17 @@ void GameBoard::renderAllBoards() const
 void GameBoard::startGame() {
     refresh();
     bool choice = this -> createWelcomeBoard();
+    //Map gameMap(15,15);
+    //Snake* snakePtr = gameMap.get_snake();
+    int temp = 0;
+    this -> renderAllBoards();
+    Map map(15, 15);
+    Snake* snakePtr = map.get_snake();
     while (choice) {
-        this -> renderAllBoards();
+        //snakePtr -> moveForward();
+        snakePtr -> moveForward();
+        wrefresh(this -> mWindows[1]);
+        temp++;
         this_thread::sleep_for(chrono::milliseconds(100));
     }
 }
