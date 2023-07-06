@@ -14,6 +14,7 @@
 #include <string>
 
 enum class ItemType {
+    EMPTY     = -1,
     BASEITEM  = 0,
     FOOD      = 1,
     HEART     = 2,

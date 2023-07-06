@@ -51,6 +51,10 @@ Map::Map(std::string fileDir) {
     loadMap(fileDir);
 }
 
+bool Map::loadMap(std::string fileDir) {
+    /* TODO */
+}
+
 bool Map::onMap(BaseBlock* block) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {

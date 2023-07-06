@@ -5,6 +5,8 @@ GameBoard::GameBoard()
     // Separate the screen to three windows
     this->mWindows.resize(3);
     initscr();
+    // 将所有键盘输入导入程序, 包括终止和Fn
+    raw();
     // If there wasn't any key pressed don't wait for keypress
     nodelay(stdscr, true);
     // Turn on keypad control
