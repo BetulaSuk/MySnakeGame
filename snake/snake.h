@@ -47,10 +47,15 @@ class Snake {
         Snake() = delete;
         Snake(Map& map, int start_x, int start_y, int init_len);
 
+        virtual ~Snake();
+
         /* 获取基本信息 */
 
+        int get_heart() const {return heart;}
         int get_len() const {return length;}
         SnakeBody* get_head() {return ptrHead;}
+
+        Map* get_map() {return ptrMap;}
 
         /* 行动 */
 
@@ -60,10 +65,21 @@ class Snake {
 
         /* 判定 */
 
+        ItemType actWithItem();
+        // 检测是否受伤并返回, 更新生命值. 撞墙/自撞直接去世!!
+        bool checkHurt();
+        // 为了健壮性, 生命值小于零时也算作死亡, 并不报错
+        bool isDead() const {return heart <= 0;}
+
+    protected:
+        bool eatFood();
+        bool eatHeart();
+
         bool hitSelf() const;
         bool hitWall() const;
 
     private:
+        int heart;
         int length;
         Direction dir;
 

@@ -1,8 +1,13 @@
 #ifndef _RENDERS_H_
 #define _RENDERS_H_
 
+#include "../items/items.h"
+#include "../blocks/blocks.h"
+#include "../map/map.h"
+#include "../snake/snake.h"
+
 #include <iostream>
-#include <ncurses.h>
+#include <curses.h>
 #include <string>
 #include <vector>
 #include <chrono>

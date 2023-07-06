@@ -35,10 +35,12 @@ class Map {
         /* 初始化 */
 
         Map() = delete;
+        // 初始化: 空白地图, 创建并储存方块, 创建并绑定蛇
         Map(int input_width, int input_height);
         Map(std::string fileDir);
 
         bool loadMap(std::string fileDir);
+        bool writeMap(std::string fileDir);
 
         /* 获取基本信息 */
 

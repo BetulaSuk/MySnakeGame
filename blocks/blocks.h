@@ -13,6 +13,7 @@
 #include <string>
 
 enum class BlockType {
+    EMPTY     = -1,
     BASEBLOCK = 0,
     WALL      = 1
 };
