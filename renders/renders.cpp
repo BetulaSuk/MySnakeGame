@@ -1,5 +1,6 @@
 #include "renders.h"
 
+
 GameBoard::GameBoard()
 {
     // Separate the screen to three windows
@@ -106,7 +107,7 @@ bool GameBoard::createWelcomeBoard() {
     if (index == 0) return true;
     if (index == 2) {
         this -> createHelp();
-        this -> createWelcomeBoard();
+        return this -> createWelcomeBoard();
     }
     if (index == 1) return false;
 }
@@ -213,14 +214,16 @@ void GameBoard::renderAllBoards() const
         box(this->mWindows[i], 0, 0);
         wrefresh(this->mWindows[i]);
     }
+
+
 }
 
 
 void GameBoard::startGame() {
     refresh();
     bool choice = this -> createWelcomeBoard();
-    while (choice)
-    {
+    while (choice) {
         this -> renderAllBoards();
+        this_thread::sleep_for(chrono::milliseconds(100));
     }
 }

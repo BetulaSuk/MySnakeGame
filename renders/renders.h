@@ -8,6 +8,8 @@
 #include <chrono>
 #include <thread>
 
+
+
 using namespace std;
 
 class GameBoard
@@ -27,8 +29,6 @@ class GameBoard
 
         void createInstructionBoard();
         void renderInstructionBoard() const;
-
-        void renderHelp();
 
         void renderAllBoards() const;
 
