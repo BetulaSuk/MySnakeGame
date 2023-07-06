@@ -226,13 +226,11 @@ void GameBoard::startGame() {
     bool choice = this -> createWelcomeBoard();
     //Map gameMap(15,15);
     //Snake* snakePtr = gameMap.get_snake();
-    int temp = 0;
     this -> renderAllBoards();
-    Map map(15, 15);
-    Snake* snakePtr = map.get_snake();
+    int temp = 1;
     while (choice) {
         //snakePtr -> moveForward();
-        snakePtr -> moveForward();
+        mvwprintw(this -> mWindows[1], 10, temp, "a");
         wrefresh(this -> mWindows[1]);
         temp++;
         this_thread::sleep_for(chrono::milliseconds(100));
