@@ -67,7 +67,7 @@ class BaseBlock {
     private:
         const static BlockType TYPE = BlockType::BASEBLOCK;
 
-        std::string displayString;
+        std::string displayString = " ";
 };
 
 

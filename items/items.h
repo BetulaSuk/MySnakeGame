@@ -52,7 +52,7 @@ class BaseItem {
     private:
         const static ItemType TYPE = ItemType::BASEITEM;
 
-        std::string displayString = "";
+        std::string displayString = " ";
 };
 
 

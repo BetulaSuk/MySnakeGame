@@ -20,12 +20,18 @@ Snake::Snake(Map& map, int start_x, int start_y, int init_len) {
 
     int x = start_x,
         y = start_y;
+    if (not map.inRange(start_x, start_y)) {exit(1);}
+
     SnakeBody* ptr = ptrHead;
     for (int i = 1; i < init_len; i++) {
         nextPos(x, y, x, y, DOWN);
+
+        if (not map.inRange(x, y)) {exit(1);}
+
         ptr->ptrNext = new SnakeBody(*map.at(x, y));
         ptr = ptr->ptrNext;
         ptr->ptrSnake = this;
+        ptr->setString("@");
     }
 
     ptrMap = &map;
@@ -74,10 +80,9 @@ ItemType Snake::actWithItem() {
     else {itType = ptrIt->type();}
 
     switch (itType) {
-        case ItemType::FOOD:
-
+        case ItemType::FOOD:  eatFood(); break;
+        case ItemType::HEART: eatHeart(); break;
     }
-    
 
     return itType;
 }
@@ -92,6 +97,20 @@ bool Snake::checkHurt() {
 }
 
 /* 工具函数 */
+
+bool Snake::eatFood() {
+    BaseItem* food = ptrHead->get_block()->get_item();
+
+    if (food == nullptr || food->type() != ItemType::FOOD)
+        {return false;}
+    
+    SnakeBody* oldTail = ptrHead;
+    for (int i = 1; i < length; i++) {
+        oldTail = oldTail->ptrNext;
+    }
+
+    oldTail->ptrNext = 
+}
 
 bool Snake::hitSelf() const {
     SnakeBody* ptrSbody = ptrHead;
