@@ -10,6 +10,8 @@
 #include "../snake/snake.h"
 #include "../items/items.h"
 
+#include <string>
+
 enum class BlockType {
     BASEBLOCK = 0,
     WALL      = 1
@@ -31,6 +33,10 @@ class BaseBlock {
         virtual BlockType type() const {return TYPE;}
         int get_x() const {return x;}
         int get_y() const {return y;}
+        // 获取渲染用的字符串
+        std::string toString() const {return displayString;}
+        // 修改渲染用的字符串
+        void setString(std::string s) {displayString = s;}
 
         /* item 相关操作 */
 
@@ -59,6 +65,8 @@ class BaseBlock {
     
     private:
         const static BlockType TYPE = BlockType::BASEBLOCK;
+
+        std::string displayString;
 };
 
 

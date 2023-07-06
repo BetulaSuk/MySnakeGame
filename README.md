@@ -29,6 +29,54 @@
   - 蛇的信息显示
   - 蛇罗斯方块: 吃食物时蛇"蜕皮"产生一个与蛇身相同形状的俄罗斯方块并坠落到地图最下方
 
-## 活动记录:
+## 基础类的实现说明
 
-- [7.4]: 创建项目框架, 设置github仓库
+### blocks
+
+继承关系: 
+
+- ``BaseBlock``
+  - ``Wall``
+
+**BlockType:** 强枚举类, 用于标记block的类型, 每个类都不同
+
+#### BaseBlock:
+
+> 以下类似格式的说明中, private/public 等关键字仅说明紧随着的成员变量为该类型, 而出现的成员函数默认为 public
+
+- private: 
+  - ``BlockType TYPE`` 标记block的类型, 在每个子类中都有
+    - ``type()`` 方法将被每个子类重载, 返回TYPE
+  - ``string displayString`` 储存渲染用的字符串
+    - ``toString()``
+    - ``setString(string)``
+- protected: 
+  - ``int x, y`` 储存方块位置坐标
+    - ``get_x()`` | ``get_y()``
+  - ``BaseItem* ptrItem`` 指向非SnakeBody的item实例
+  - ``SnakeBody* ptrSnakeBody`` 指向SnakeBody实例
+
+> **正常情况下, block和在其上的item(包括SnakeBody)应该指向彼此! 双箭头!**
+
+### items
+
+继承关系:
+
+- ``BaseItem``
+  - ``Food``
+  - ``Heart``
+  - ``SnakeBody``
+
+**ItemType:** 强枚举类, 用于标记item的类型, 每个类都不同
+
+#### BaseItem:
+
+- private:
+  - ``ItemType TYPE`` 同block中的TYPE
+  - ``string displayString`` 同block
+- protected:
+  - ``BaseBlock* ptrBlock`` 指向block实例
+    - ``get_x()`` ``get_y()``
+    - ``get_block()`` 返回指针
+    - ``set_block(BaseBlock*)`` **不应该由用户使用!** 应使用    ``BaseBlock::set_item(...)`` 或 ``BaseBlock::attachSnakeBody(...)``
+

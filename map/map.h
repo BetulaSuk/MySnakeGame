@@ -20,6 +20,15 @@ enum Direction {
     LEFT  = 3
 };
 
+/** !!!!
+ * x 对应第一个维度/高度; y 对应第二个维度/宽度. 
+ * 这与 y 表示高度的习惯不同 !!
+ * 原点位于左上角, 0 为起始坐标
+ */
+
+void nextPos(int x, int y, int& next_x, int& next_y, Direction dir);
+BaseBlock* nextBlock(Map& map, BaseBlock* block, Direction dir);
+
 
 class Map {
     public:
@@ -33,13 +42,18 @@ class Map {
 
         /* 获取基本信息 */
 
-        int getWidth() const {return width;}
-        int getHeight() const {return height;}
+        int get_width() const {return width;}
+        int get_height() const {return height;}
 
         BaseBlock* at(int x, int y) {return data[x][y];}
-        const std::vector<std::vector<BaseBlock*>> * const getDataPtr() const {return &data;}
+        const std::vector<std::vector<BaseBlock*>> * const get_data() const {return &data;}
 
-        Snake* getSnake() {return ptrSnake;}
+        Snake* get_snake() {return ptrSnake;}
+
+        /* 工具函数 */
+
+        bool inRange(int x, int y) {return x >= 0 && y >= 0 && x < height && y < width;}
+        bool onMap(BaseBlock* block);
 
     private:
         int width;
