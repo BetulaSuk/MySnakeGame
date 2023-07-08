@@ -8,7 +8,8 @@
 
 // 初始化: 蛇身创建, 蛇身绑定方块, 蛇身绑定蛇, 蛇绑定地图
 Snake::Snake(Map& map, int start_x, int start_y, int init_len, int init_heart) {
-    ptrHead = new SnakeBody(*map.at(start_x, start_y));
+    ptrHead = new SnakeBody();
+    ptrHead->set_block(map.at(start_x, start_y));
     ptrHead->ptrSnake = this;
 
     int x = start_x,
@@ -21,8 +22,9 @@ Snake::Snake(Map& map, int start_x, int start_y, int init_len, int init_heart) {
 
         if (not map.inRange(x, y)) {exit(1);}
 
-        ptr->ptrNext = new SnakeBody(*map.at(x, y));
+        ptr->ptrNext = new SnakeBody();
         ptr = ptr->ptrNext;
+        ptr->set_block(map.at(x, y));
         ptr->ptrSnake = this;
         ptr->setString("@");
     }
@@ -52,7 +54,7 @@ bool Snake::moveForward() {
     BlockType typeBlock = blockAhead->type();
 
     // 检查是否超出地图边界
-    if (blockAhead == nullptr) {return false;}
+    if ( ! blockAhead) {return false;}
 
     // 检查前方方块是否可踏足
     switch (typeBlock) {
@@ -80,7 +82,7 @@ bool Snake::moveForward() {
     BaseBlock* ptrB_1 = ptrHead->get_block();
     BaseBlock* ptrB_2 = nextBlock(*ptrMap, ptrB_1, dir);
     for (int i = 0; i < length; i++) {
-        ptrB_2->set_item(*ptrSbody);
+        ptrB_2->attachSnakeBody(ptrSbody);
         ptrSbody = ptrSbody->ptrNext;
         ptrB_2 = ptrB_1;
         ptrB_1 = ptrSbody->get_block(); 
@@ -97,7 +99,6 @@ bool Snake::revive() {
     else {
         heart--;
         isAlive = true;
-        return true;
     }
 }
 
@@ -121,7 +122,8 @@ bool Snake::eatFood(int newTail_x, int newTail_y) {
     BaseItem* item_atHead = ptrHead->get_block()->get_item();
     if (item_atHead->type() != ItemType::FOOD) {return false;}
 
-    SnakeBody* newTail = new SnakeBody(*(ptrMap->at(newTail_x, newTail_y)));
+    SnakeBody* newTail = new SnakeBody();
+    newTail->set_block(ptrMap->at(newTail_x, newTail_y));
     newTail->setString("@");
     getTailPtr()->ptrNext = newTail;
     point++;

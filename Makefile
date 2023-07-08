@@ -1,7 +1,4 @@
 
-OBJECTS = items.o blocks.o snake.o map.o renders.o main.o
-HEADERS = ./renders/renders.h ./snake/snake.h ./map/map.h ./blocks/blocks.h ./items/items.h
-
 MySnakeGame: $(OBJECTS)
 	g++ $(OBJECTS) -o SnakeGame -lcurses
 
@@ -24,10 +21,20 @@ items.o: ./items/items.cpp ./items/items.h ./ blocks/blocks.h
 	g++ -c ./items/items.cpp -o items.o
 
 
+Debug: debug.o renders.o map.o snake.o blocks.o items.o
+	g++ debug.o renders.o map.o snake.o blocks.o items.o -o debugExe -lcurses
+
+debug.o: ./debug/debug.cpp $(HEADERS)
+	g++ -c ./debug/debug.cpp -o debug.o
+
+
+OBJECTS = items.o blocks.o snake.o map.o renders.o main.o
+HEADERS = ./renders/renders.h ./snake/snake.h ./map/map.h ./blocks/blocks.h ./items/items.h
+
+
 .PHONY: clean
 
 clean:
-	-rm $(OBJECTS) SnakeGame
-
+	-rm *.o SnakeGame
 
 

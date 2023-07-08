@@ -28,7 +28,7 @@ class Snake;
 class BaseItem {
     public:
         BaseItem(): ptrBlock(nullptr) {}
-        BaseItem(BaseBlock& block);
+        BaseItem(BaseBlock* block);
 
         virtual ~BaseItem() = default;
         
@@ -47,11 +47,11 @@ class BaseItem {
         BaseBlock* get_block() {return ptrBlock;}
         /* 若需将 item 绑定到指定 block, 应使用 BaseBlock::set_item(...)
          * SnakeBody 则需使用 BaseBlock::attachSnakeBody(...) */
-        void set_block(BaseBlock& block);
+        void set_block(BaseBlock* block);
 
     protected:
         
-        BaseBlock * ptrBlock;
+        BaseBlock * ptrBlock = nullptr;
 
     private:
         const static ItemType TYPE = ItemType::BASEITEM;
@@ -63,7 +63,7 @@ class BaseItem {
 class Food: public BaseItem {
     public:
         Food(): BaseItem() {}
-        Food(BaseBlock& block): BaseItem(block) {}
+        Food(BaseBlock* block): BaseItem(block) {}
 
         virtual ~Food() = default;
 
@@ -77,7 +77,7 @@ class Food: public BaseItem {
 class Heart: public BaseItem {
     public:
         Heart(): BaseItem() {}
-        Heart(BaseBlock& block): BaseItem(block) {}
+        Heart(BaseBlock* block): BaseItem(block) {}
 
         virtual ~Heart() = default;
 
@@ -93,13 +93,13 @@ class SnakeBody: public BaseItem {
 
     public:
         SnakeBody(): BaseItem() {}
-        SnakeBody(BaseBlock& block);
+        SnakeBody(BaseBlock* block);
 
         virtual ~SnakeBody() = default;
 
         virtual ItemType type() {return TYPE;}
 
-        virtual void item_func(Snake& s) {}
+        virtual void set_block(BaseBlock* block);
 
         void escapeBlock();
 

@@ -5,34 +5,23 @@
 #include "blocks.h"
 #include "../snake/snake.h"
 
-BaseBlock::BaseBlock(int input_x, int input_y, BaseItem& item):
-    x(input_x), y(input_y) {
-        if (item.type() == ItemType::SNAKEBODY) {
-            ptrItem = nullptr;
-        }
-        else {
-            ptrItem = &item;
-            item.set_block(*this);
-        }
-}
 
 BaseBlock::~BaseBlock() {
-    if (ptrItem != nullptr) {
+    if (ptrItem) {
         delete ptrItem;
     }
 }
 
-bool BaseBlock::set_item(BaseItem& item) {
-    if (ptrItem == nullptr && item.type() != ItemType::SNAKEBODY) {
-        ptrItem = &item;
-        item.set_block(*this);
+bool BaseBlock::set_item(BaseItem* item) {
+    if ( ! ptrItem && item->type() != ItemType::SNAKEBODY) {
+        ptrItem = item;
         return true;
     }
     else return false;
 }
 
 void BaseBlock::clear_item() {
-    if (ptrItem != nullptr) {
+    if (ptrItem) {
         delete ptrItem;
     }
 }
@@ -41,17 +30,16 @@ BaseItem* BaseBlock::get_item() {
     return ptrItem;
 }
 
-bool BaseBlock::attachSnakeBody(SnakeBody& sbody) {
-    if (ptrSnakeBody == nullptr) {
-        ptrSnakeBody = &sbody;
-        sbody.set_block(*this);
+bool BaseBlock::attachSnakeBody(SnakeBody* ptrSbody) {
+    if ( ! ptrSnakeBody) {
+        ptrSnakeBody = ptrSbody;
         return true;
     }
     else return false;
 }
 
 void BaseBlock::releaseSnakeBody() {
-    if (ptrSnakeBody != nullptr) {
+    if (ptrSnakeBody) {
         ptrSnakeBody->escapeBlock();
         ptrSnakeBody = nullptr;
     }

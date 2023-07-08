@@ -34,7 +34,7 @@ BaseBlock* nextBlock(Map& map, BaseBlock* block, Direction dir) {
 }
 
 // 初始化: 创建并储存方块, 创建并绑定蛇
-Map::Map(int input_width, int input_height) {
+Map::Map(int input_height, int input_width) {
     data.resize(input_height);
 
     for (int i = 0; i < input_height; i++) {
@@ -51,7 +51,7 @@ Map::Map(int input_width, int input_height) {
         }
     }
 
-    ptrSnake = new Snake(*this, input_height/2, input_width/2, 2, 3);
+    ptrSnake = new Snake(*this, input_width/2, input_height/2, 2, 3);
 }
 
 Map::Map(std::string fileDir) {

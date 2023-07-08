@@ -71,8 +71,8 @@ class Snake {
 
         int point;
 
-        SnakeBody* ptrHead;
-        Map* ptrMap;
+        SnakeBody* ptrHead = nullptr;
+        Map* ptrMap = nullptr;
 };
 
 

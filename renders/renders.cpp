@@ -229,7 +229,6 @@ void GameBoard::startGame() {
     int temp = 1;
     while (choice) {
         //snakePtr -> moveForward();
-        mvwprintw(this -> mWindows[1], 10, temp, "a");
         wrefresh(this -> mWindows[1]);
         temp++;
         this_thread::sleep_for(chrono::milliseconds(100));

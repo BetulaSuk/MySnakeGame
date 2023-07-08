@@ -45,7 +45,7 @@ class Map {
 
         Map() = delete;
         // 初始化: 空白地图, 创建并储存方块, 创建并绑定蛇
-        Map(int input_width, int input_height);
+        Map(int input_height, int input_width);
         Map(std::string fileDir);
 
         bool loadMap(std::string fileDir);
@@ -73,7 +73,7 @@ class Map {
         int height;
         std::vector<std::vector<BaseBlock*>> data;
 
-        Snake* ptrSnake;
+        Snake* ptrSnake = nullptr;
 };
 
 
