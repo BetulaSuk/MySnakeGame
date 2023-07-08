@@ -44,12 +44,13 @@ Map::Map(int input_width, int input_height) {
             if (i == 0 || i == input_height -1 ||
                 j == 0 || j == input_height -1) {
                     data[i][j] = new Wall(i, j);
+                    data[i][j]->setString("+");
             }
             else {data[i][j] = new BaseBlock(i, j);}
         }
     }
 
-    ptrSnake = new Snake(*this, input_height/2, input_width/2, 2);
+    ptrSnake = new Snake(*this, input_height/2, input_width/2, 2, 3);
 }
 
 Map::Map(std::string fileDir) {

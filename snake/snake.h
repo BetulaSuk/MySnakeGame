@@ -25,6 +25,8 @@ class SnakeBody: public BaseItem {
 
         virtual ItemType type() {return TYPE;}
 
+        virtual void item_func(Snake& s) {}
+
         void escapeBlock();
 
         /* Snake 相关操作 */
@@ -42,10 +44,12 @@ class SnakeBody: public BaseItem {
 
 class Snake {
     friend class SnakeBody;
+    friend void Food::item_func(Snake& s);
+    friend void Heart::item_func(Snake& s);
 
     public:
         Snake() = delete;
-        Snake(Map& map, int start_x, int start_y, int init_len);
+        Snake(Map& map, int start_x, int start_y, int init_len, int init_heart);
 
         virtual ~Snake();
 
@@ -53,35 +57,41 @@ class Snake {
 
         int get_heart() const {return heart;}
         int get_len() const {return length;}
-        SnakeBody* get_head() {return ptrHead;}
+        Direction get_dir() const {return dir;}
+        int get_point() const {return point;}
 
+        SnakeBody* get_head() {return ptrHead;}
         Map* get_map() {return ptrMap;}
 
         /* 行动 */
 
         void changeDir(Direction new_dir) {dir = new_dir;}
-        // 如果会超出地图边界, 返回 false, 否则返回 true
+        // 如果成功前进, 返回 true, 否则返回 false
         bool moveForward();
+
+        bool revive();
 
         /* 判定 */
 
-        ItemType actWithItem();
-        // 检测是否受伤并返回, 更新生命值. 撞墙/自撞直接去世!!
-        bool checkHurt();
-        // 为了健壮性, 生命值小于零时也算作死亡, 并不报错
-        bool isDead() const {return heart <= 0;}
+        bool checkAlive() const {return isAlive;}
 
     protected:
-        bool eatFood();
-        bool eatHeart();
+        /* 工具函数 */
 
-        bool hitSelf() const;
-        bool hitWall() const;
+        SnakeBody* getTailPtr();
+
+        // 销毁头部的食物, 根据坐标长出新尾巴, 加分.
+        bool eatFood(int newTail_x, int newTail_y);
+        // 重载: 可指定新尾巴的渲染字符串;
+        bool eatFood(int newTail_x, int newTail_y, std::string newTail_s);
 
     private:
+        bool isAlive = true;
         int heart;
         int length;
         Direction dir;
+
+        int point;
 
         SnakeBody* ptrHead;
         Map* ptrMap;

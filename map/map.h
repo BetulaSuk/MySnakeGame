@@ -27,6 +27,7 @@ enum Direction {
  */
 
 void nextPos(int x, int y, int& next_x, int& next_y, Direction dir);
+
 BaseBlock* nextBlock(Map& map, BaseBlock* block, Direction dir);
 
 
@@ -56,6 +57,8 @@ class Map {
 
         bool inRange(int x, int y) {return x >= 0 && y >= 0 && x < height && y < width;}
         bool onMap(BaseBlock* block);
+
+        void setRandomItem(ItemType itType);
 
     private:
         int width;

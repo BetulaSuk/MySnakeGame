@@ -9,7 +9,6 @@
 #define _ITEMS_H_
 
 #include "../blocks/blocks.h"
-#include "../snake/snake.h"
 
 #include <string>
 
@@ -20,6 +19,9 @@ enum class ItemType {
     HEART     = 2,
     SNAKEBODY = 3  // in ../snake/snake.h
 };
+
+class SnakeBody;
+class Snake;
 
 class BaseItem {
     public:
@@ -45,6 +47,9 @@ class BaseItem {
          * SnakeBody 则需使用 BaseBlock::attachSnakeBody(...) */
         void set_block(BaseBlock& block);
 
+        /* 物品效果的函数, 在即将被蛇碰到时调用 */
+        virtual void item_func(Snake& s) = 0;
+
     protected:
         
         BaseBlock * ptrBlock;
@@ -65,6 +70,9 @@ class Food: public BaseItem {
 
         virtual ItemType type() const {return TYPE;}
 
+        // Snake 的友元, 在 snake.cpp 中定义
+        virtual void item_func(Snake& s);
+
     private:
         const static ItemType TYPE = ItemType::FOOD;
 };
@@ -78,6 +86,9 @@ class Heart: public BaseItem {
         virtual ~Heart() = default;
 
         virtual ItemType type() const {return TYPE;}
+
+        // Snake 的友元, 在 snake.cpp 中定义
+        virtual void item_func(Snake& s);
 
     private:
         const static ItemType TYPE = ItemType::HEART;

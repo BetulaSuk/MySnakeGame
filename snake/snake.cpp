@@ -14,7 +14,7 @@ void SnakeBody::escapeBlock() {
 }
 
 // 初始化: 蛇身创建, 蛇身绑定方块, 蛇身绑定蛇, 蛇绑定地图
-Snake::Snake(Map& map, int start_x, int start_y, int init_len) {
+Snake::Snake(Map& map, int start_x, int start_y, int init_len, int init_heart) {
     ptrHead = new SnakeBody(*map.at(start_x, start_y));
     ptrHead->ptrSnake = this;
 
@@ -35,6 +35,7 @@ Snake::Snake(Map& map, int start_x, int start_y, int init_len) {
     }
 
     ptrMap = &map;
+    heart = init_heart;
 }
 
 Snake::~Snake() {
@@ -50,85 +51,102 @@ Snake::~Snake() {
 
 /* 行动 */
 
-// 类似蚯蚓蠕动: 从头部开始向前伸, 身体一节节跟上
 bool Snake::moveForward() {
-    SnakeBody* ptrSbody = ptrHead;
-    BaseBlock* tempB_1 = ptrHead->get_block();
-    BaseBlock* tempB_2 = nextBlock(*ptrMap, ptrHead->get_block(), dir);
+    // 检查蛇是否死亡
+    if (isAlive == false) {return false;}
 
-    if (tempB_2 = nullptr) {return false;}
+    BaseBlock* blockAhead = nextBlock(*ptrMap, ptrHead->get_block(), dir);
+    BlockType typeBlock = blockAhead->type();
 
-    for (int i = 0; i < length; i++) {
-        tempB_2->attachSnakeBody(*ptrSbody);
-        ptrSbody = ptrSbody->ptrNext;
-        tempB_2 = tempB_1;
+    // 检查是否超出地图边界
+    if (blockAhead == nullptr) {return false;}
 
-        if (ptrSbody == nullptr) {break;}
-        else {tempB_1 = ptrSbody->get_block();}
+    // 检查前方方块是否可踏足
+    switch (typeBlock) {
+        case BlockType::WALL:
+            isAlive = false;
+            return false;
+        // TODO 添加更多方块类型时此处可能要增加判定
+        default:
+            break;
     }
+
+    BaseItem* itemAhead = blockAhead->get_item();
+    ItemType typeItem = itemAhead->type();
+
+    // 如果将会吃到食物, 提前获取此时的尾部坐标
+    int oldTail_x, oldTail_y;
+    if (typeItem == ItemType::FOOD) {
+        SnakeBody* ptrTail = getTailPtr();
+        oldTail_x = ptrTail->get_x();
+        oldTail_y = ptrTail->get_y();
+    }
+
+    // 向前挪动: 从头开始一点点向前伸
+    SnakeBody* ptrSbody = ptrHead;
+    BaseBlock* ptrB_1 = ptrHead->get_block();
+    BaseBlock* ptrB_2 = nextBlock(*ptrMap, ptrB_1, dir);
+    for (int i = 0; i < length; i++) {
+        ptrB_2->set_item(*ptrSbody);
+        ptrSbody = ptrSbody->ptrNext;
+        ptrB_2 = ptrB_1;
+        ptrB_1 = ptrSbody->get_block(); 
+    }
+
+    // 因为 eatFood 中有判定, 所以不担心误判为吃食物
+    eatFood(oldTail_x, oldTail_y);
 
     return true;
 }
 
+bool Snake::revive() {
+    if (heart <= 0 || isAlive == true) {return false;}
+    else {
+        heart--;
+        isAlive = true;
+    }
+}
+
 /* 判定 */
 
-ItemType Snake::actWithItem() {
-    BaseItem* ptrIt = ptrHead->get_block()->get_item();
-    ItemType itType = ItemType::EMPTY;
 
-    if (ptrIt == nullptr) {return itType;}
-    else {itType = ptrIt->type();}
-
-    switch (itType) {
-        case ItemType::FOOD:  eatFood(); break;
-        case ItemType::HEART: eatHeart(); break;
-    }
-
-    return itType;
-}
-
-bool Snake::checkHurt() {
-    if (hitWall() || hitSelf()) {
-        heart = 0;
-        return true;
-    }
-
-    /* TODO */
-}
 
 /* 工具函数 */
 
-bool Snake::eatFood() {
-    BaseItem* food = ptrHead->get_block()->get_item();
+SnakeBody* Snake::getTailPtr() {
+    SnakeBody* tailPtr = ptrHead;
 
-    if (food == nullptr || food->type() != ItemType::FOOD)
-        {return false;}
-    
-    SnakeBody* oldTail = ptrHead;
     for (int i = 1; i < length; i++) {
-        oldTail = oldTail->ptrNext;
+        tailPtr = tailPtr->ptrNext;
     }
-
-    oldTail->ptrNext = 
+    return tailPtr;
 }
 
-bool Snake::hitSelf() const {
-    SnakeBody* ptrSbody = ptrHead;
+bool Snake::eatFood(int newTail_x, int newTail_y) {
+    // 为了可靠性, 再检测一次头部的是否是食物
+    BaseItem* item_atHead = ptrHead->get_block()->get_item();
+    if (item_atHead->type() != ItemType::FOOD) {return false;}
 
-    while (ptrSbody != nullptr) {
-        ptrSbody = ptrSbody->ptrNext;
-        if (ptrSbody = ptrHead) {return true;}
-    }
-    return false;
+    SnakeBody* newTail = new SnakeBody(*(ptrMap->at(newTail_x, newTail_y)));
+    newTail->setString("@");
+    getTailPtr()->ptrNext = newTail;
+    point++;
+
+    return true;
 }
 
-bool Snake::hitWall() const {
-    SnakeBody* ptrSbody = ptrHead;
+bool Snake::eatFood(int newTail_x, int newTail_y, std::string newTail_s) {
+    bool ret = eatFood(newTail_x, newTail_y);
+    if (ret) {getTailPtr()->setString(newTail_s);}
+    return ret;
+}
 
-    while (ptrSbody != nullptr) {
-        ptrSbody = ptrSbody->ptrNext;
-        if (ptrSbody->get_block()->type() == BlockType::WALL) 
-            {return true;}
-    }
-    return false;
+/* 友元函数的定义 */
+
+void Food::item_func(Snake& s) {
+    s.point++;
+}
+
+void Heart::item_func(Snake& s) {
+    s.heart++;
 }
