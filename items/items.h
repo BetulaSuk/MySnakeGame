@@ -17,9 +17,11 @@ enum class ItemType {
     BASEITEM  = 0,
     FOOD      = 1,
     HEART     = 2,
-    SNAKEBODY = 3  // in ../snake/snake.h
+    SNAKEBODY = 3
 };
 
+class BaseBlock;
+enum class BlockType;
 class SnakeBody;
 class Snake;
 
@@ -33,8 +35,8 @@ class BaseItem {
         /* 获取基本信息 */
 
         virtual ItemType type() const {return TYPE;}
-        int get_x() const {return ptrBlock->get_x();}
-        int get_y() const {return ptrBlock->get_y();}
+        int get_x() const;
+        int get_y() const;
         // 获取渲染用的字符串
         std::string toString() const {return displayString;}
         // 修改渲染用的字符串
@@ -46,9 +48,6 @@ class BaseItem {
         /* 若需将 item 绑定到指定 block, 应使用 BaseBlock::set_item(...)
          * SnakeBody 则需使用 BaseBlock::attachSnakeBody(...) */
         void set_block(BaseBlock& block);
-
-        /* 物品效果的函数, 在即将被蛇碰到时调用 */
-        virtual void item_func(Snake& s) = 0;
 
     protected:
         
@@ -70,9 +69,6 @@ class Food: public BaseItem {
 
         virtual ItemType type() const {return TYPE;}
 
-        // Snake 的友元, 在 snake.cpp 中定义
-        virtual void item_func(Snake& s);
-
     private:
         const static ItemType TYPE = ItemType::FOOD;
 };
@@ -87,14 +83,37 @@ class Heart: public BaseItem {
 
         virtual ItemType type() const {return TYPE;}
 
-        // Snake 的友元, 在 snake.cpp 中定义
-        virtual void item_func(Snake& s);
-
     private:
         const static ItemType TYPE = ItemType::HEART;
 };
 
 
+class SnakeBody: public BaseItem {
+    friend class Snake;
+
+    public:
+        SnakeBody(): BaseItem() {}
+        SnakeBody(BaseBlock& block);
+
+        virtual ~SnakeBody() = default;
+
+        virtual ItemType type() {return TYPE;}
+
+        virtual void item_func(Snake& s) {}
+
+        void escapeBlock();
+
+        /* Snake 相关操作 */
+
+        SnakeBody* next() {return ptrNext;}
+        Snake* getSnake() {return ptrSnake;}
+
+    private:
+        const static ItemType TYPE = ItemType::SNAKEBODY;
+
+        SnakeBody* ptrNext;
+        Snake* ptrSnake;
+};
 
 
 #endif

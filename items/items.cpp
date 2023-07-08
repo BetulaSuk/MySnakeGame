@@ -3,20 +3,25 @@
 */
 
 #include "items.h"
+#include "../snake/snake.h"
+
 
 BaseItem::BaseItem(BaseBlock& block) {
     block.set_item(*this);
 }
+
+int BaseItem::get_x() const {return ptrBlock->get_x();}
+int BaseItem::get_y() const {return ptrBlock->get_y();}
 
 void BaseItem::set_block(BaseBlock& block) {
     ptrBlock = &block;
 }
 
 
-void Food::item_func(Snake& s) {
-    s.point++;
+SnakeBody::SnakeBody(BaseBlock& block) {
+    block.attachSnakeBody(*this);
 }
 
-void Heart::item_func(Snake& s) {
-
+void SnakeBody::escapeBlock() {
+    ptrBlock = nullptr;
 }

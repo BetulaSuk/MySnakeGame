@@ -3,9 +3,7 @@
 */
 
 #include "blocks.h"
-
-#include <exception>
-
+#include "../snake/snake.h"
 
 BaseBlock::BaseBlock(int input_x, int input_y, BaseItem& item):
     x(input_x), y(input_y) {

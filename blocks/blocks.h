@@ -7,10 +7,14 @@
 #ifndef _BLOCK_H_
 #define _BLOCK_H_
 
-#include "../snake/snake.h"
 #include "../items/items.h"
 
 #include <string>
+
+class BaseItem;
+enum class ItemType;
+class SnakeBody;
+class Snake;
 
 enum class BlockType {
     EMPTY     = -1,

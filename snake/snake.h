@@ -11,41 +11,19 @@
 
 #include "../items/items.h"
 #include "../blocks/blocks.h"
-#include "../map/map.h"
 
-
-class SnakeBody: public BaseItem {
-    friend class Snake;
-
-    public:
-        SnakeBody(): BaseItem() {}
-        SnakeBody(BaseBlock& block);
-
-        virtual ~SnakeBody() = default;
-
-        virtual ItemType type() {return TYPE;}
-
-        virtual void item_func(Snake& s) {}
-
-        void escapeBlock();
-
-        /* Snake 相关操作 */
-
-        SnakeBody* next() {return ptrNext;}
-        Snake* getSnake() {return ptrSnake;}
-
-    private:
-        const static ItemType TYPE = ItemType::SNAKEBODY;
-
-        SnakeBody* ptrNext;
-        Snake* ptrSnake;
-};
-
+class BaseItem;
+class Food;
+class Heart;
+// SnakeBody 定义在 items 中!!!
+class SnakeBody;
+class BaseBlock;
+enum class ItemType;
+enum class BlockType;
+class Map;
+enum class Direction;
 
 class Snake {
-    friend class SnakeBody;
-    friend void Food::item_func(Snake& s);
-    friend void Heart::item_func(Snake& s);
 
     public:
         Snake() = delete;

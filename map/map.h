@@ -8,12 +8,18 @@
 
 #include "../blocks/blocks.h"
 #include "../items/items.h"
-#include "../snake/snake.h"
 
 #include <vector>
 #include <string>
 
-enum Direction {
+class BaseBlock;
+class BaseItem;
+enum class ItemType;
+enum class BlockType;
+class SnakeBody;
+class Snake;
+
+enum class Direction {
     UP    = 0,
     RIGHT = 1,
     DOWN  = 2,
@@ -25,6 +31,8 @@ enum Direction {
  * 这与 y 表示高度的习惯不同 !!
  * 原点位于左上角, 0 为起始坐标
  */
+
+class Map;
 
 void nextPos(int x, int y, int& next_x, int& next_y, Direction dir);
 

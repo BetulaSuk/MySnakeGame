@@ -3,15 +3,8 @@
 */
 
 #include "snake.h"
-
-
-SnakeBody::SnakeBody(BaseBlock& block) {
-    block.attachSnakeBody(*this);
-}
-
-void SnakeBody::escapeBlock() {
-    ptrBlock = nullptr;
-}
+#include "../map/map.h"
+#include "../snake/snake.h"
 
 // 初始化: 蛇身创建, 蛇身绑定方块, 蛇身绑定蛇, 蛇绑定地图
 Snake::Snake(Map& map, int start_x, int start_y, int init_len, int init_heart) {
@@ -24,7 +17,7 @@ Snake::Snake(Map& map, int start_x, int start_y, int init_len, int init_heart) {
 
     SnakeBody* ptr = ptrHead;
     for (int i = 1; i < init_len; i++) {
-        nextPos(x, y, x, y, DOWN);
+        nextPos(x, y, x, y, Direction::DOWN);
 
         if (not map.inRange(x, y)) {exit(1);}
 
@@ -104,6 +97,7 @@ bool Snake::revive() {
     else {
         heart--;
         isAlive = true;
+        return true;
     }
 }
 
@@ -141,12 +135,3 @@ bool Snake::eatFood(int newTail_x, int newTail_y, std::string newTail_s) {
     return ret;
 }
 
-/* 友元函数的定义 */
-
-void Food::item_func(Snake& s) {
-    s.point++;
-}
-
-void Heart::item_func(Snake& s) {
-    s.heart++;
-}

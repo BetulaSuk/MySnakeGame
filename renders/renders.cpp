@@ -1,6 +1,5 @@
 #include "renders.h"
 
-
 GameBoard::GameBoard()
 {
     // Separate the screen to three windows
@@ -224,7 +223,7 @@ void GameBoard::renderAllBoards() const
 void GameBoard::startGame() {
     refresh();
     bool choice = this -> createWelcomeBoard();
-    //Map gameMap(15,15);
+    //Map gameMap(mGameBoardHeight, mGameBoardWidth);
     //Snake* snakePtr = gameMap.get_snake();
     this -> renderAllBoards();
     int temp = 1;

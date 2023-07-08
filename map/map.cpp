@@ -3,15 +3,16 @@
 */
 
 #include "map.h"
+#include "../snake/snake.h"
 
 #include <iostream>
 
 void nextPos(int x, int y, int& next_x, int& next_y, Direction dir) {
     switch (dir) {
-        case UP:    next_x = x - 1; break;
-        case RIGHT: next_y = y + 1; break;
-        case DOWN:  next_x = x + 1; break;
-        case LEFT:  next_y = y - 1; break;
+        case Direction::UP:    next_x = x - 1; break;
+        case Direction::RIGHT: next_y = y + 1; break;
+        case Direction::DOWN:  next_x = x + 1; break;
+        case Direction::LEFT:  next_y = y - 1; break;
     }
 }
 
