@@ -35,6 +35,9 @@ int main() {
     Map map(test_y, test_x);
     map.init_snake();
     Snake* snake = map.get_snake();
+
+    Random::resetRandomEngine();
+    map.setRandomItem(ItemType::FOOD, "#");
     
     WINDOW* mainWin = newwin(test_y, test_x, start_y, start_x);
     box(mainWin, 0, 0);
@@ -63,7 +66,7 @@ int main() {
 
         if ( ! snake->checkAlive()) {break;}
 
-        this_thread::sleep_for(chrono::milliseconds(50));
+        this_thread::sleep_for(chrono::milliseconds(100));
     }
 
     delwin(mainWin);

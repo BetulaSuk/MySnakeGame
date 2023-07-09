@@ -14,6 +14,7 @@ BaseItem::BaseItem(BaseBlock* block) {
 int BaseItem::get_x() const {return ptrBlock->get_x();}
 int BaseItem::get_y() const {return ptrBlock->get_y();}
 
+// 双向绑定!
 void BaseItem::set_block(BaseBlock* block) {
     ptrBlock = block;
     block->set_item(this);

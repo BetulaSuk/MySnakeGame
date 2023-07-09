@@ -53,6 +53,21 @@ Snake::~Snake() {
 
 /* 行动 */
 
+void Snake::changeDir(Direction new_dir) {
+    switch (dir) {
+        case Direction::UP:
+        case Direction::DOWN:
+            if (new_dir == Direction::UP || new_dir == Direction::DOWN) {
+                return;
+            } else {dir = new_dir; break;}
+        case Direction::LEFT:
+        case Direction::RIGHT:
+            if (new_dir == Direction::LEFT || new_dir == Direction::RIGHT) {
+                return;
+            } else {dir = new_dir; break;}
+    }
+}
+
 bool Snake::moveForward() {
     // 检查蛇是否死亡
     if (isAlive == false) {return false;}
@@ -91,13 +106,11 @@ bool Snake::moveForward() {
     ItemType typeItem = ItemType::EMPTY;
     if (itemAhead) {typeItem = itemAhead->type();}
 
-    // 如果将会吃到食物, 提前获取此时的尾部坐标
+    // 提前获取此时的尾部坐标, 为可能吃食物的情况做准备
     int oldTail_x, oldTail_y;
-    if (typeItem == ItemType::FOOD) {
-        SnakeBody* ptrTail = getTailPtr();
-        oldTail_x = ptrTail->get_x();
-        oldTail_y = ptrTail->get_y();
-    }
+    SnakeBody* ptrTail = getTailPtr();
+    oldTail_x = ptrTail->get_x();
+    oldTail_y = ptrTail->get_y();
 
     // 向前挪动: 从头开始一点点向前伸
     SnakeBody* ptrSbody = ptrHead;
@@ -120,7 +133,8 @@ bool Snake::moveForward() {
     }
 
     // 因为 eatFood 中有判定, 所以不担心误判为吃食物
-    eatFood(oldTail_x, oldTail_y);
+    tryEatFood(oldTail_x, oldTail_y);
+    tryEatHeart();
 
     return true;
 }
@@ -148,23 +162,42 @@ SnakeBody* Snake::getTailPtr() {
     return tailPtr;
 }
 
-bool Snake::eatFood(int newTail_x, int newTail_y) {
+bool Snake::tryEatFood(int newTail_x, int newTail_y) {
     // 为了可靠性, 再检测一次头部的是否是食物
     BaseItem* item_atHead = ptrHead->get_block()->get_item();
     if ( ! item_atHead || item_atHead->type() != ItemType::FOOD) {return false;}
 
     SnakeBody* newTail = new SnakeBody();
+    newTail->ptrSnake = this;
     newTail->set_block(ptrMap->at(newTail_x, newTail_y));
     newTail->setString("@");
+    
     getTailPtr()->ptrNext = newTail;
+    length++;
+
+    ptrHead->get_block()->clear_item();
+
     point++;
+
+    ptrMap->setRandomItem(ItemType::FOOD, "#");
 
     return true;
 }
 
-bool Snake::eatFood(int newTail_x, int newTail_y, std::string newTail_s) {
-    bool ret = eatFood(newTail_x, newTail_y);
+bool Snake::tryEatFood(int newTail_x, int newTail_y, std::string newTail_s) {
+    bool ret = tryEatFood(newTail_x, newTail_y);
     if (ret) {getTailPtr()->setString(newTail_s);}
     return ret;
 }
 
+bool Snake::tryEatHeart() {
+    // 先检测是否有心可吃
+    BaseItem* item_atHead = ptrHead->get_block()->get_item();
+    if ( ! item_atHead || item_atHead->type() != ItemType::HEART) {return false;}
+
+    ptrHead->get_block()->clear_item();
+
+    heart++;
+
+    return true;
+}

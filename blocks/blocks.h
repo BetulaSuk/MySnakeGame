@@ -44,7 +44,6 @@ class BaseBlock {
 
         /* item 相关操作 */
 
-        bool have_item() const {return ptrItem != nullptr;}
         // 此格已有物品, 或尝试放入 SnakeBody: 不改变, 返回 false; 否则赋值并返回 true
         bool set_item(BaseItem* item);
         // 若有物品, 删除该物品, 不仅仅是指针设空 ! 
@@ -53,7 +52,6 @@ class BaseBlock {
 
         /* SnakeBody 相关操作 */
 
-        bool isSnakeAbove() const {return ptrSnakeBody != nullptr;}
         SnakeBody* getSnakeBody() {return ptrSnakeBody;}
         
         bool attachSnakeBody(SnakeBody* ptrSbody);

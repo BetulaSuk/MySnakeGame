@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <string>
+#include <random>
 
 class BaseBlock;
 class BaseItem;
@@ -26,11 +27,12 @@ enum class Direction {
     LEFT  = 3
 };
 
+
 /** !!!!
  * x 对应第一个维度/高度; y 对应第二个维度/宽度. 
  * 这与 y 表示高度的习惯不同 !!
  * 原点位于左上角, 0 为起始坐标
- */
+*/
 
 class Map;
 
@@ -68,15 +70,25 @@ class Map {
         bool inRange(int x, int y) {return x >= 0 && y >= 0 && x < height && y < width;}
         bool onMap(BaseBlock* block);
 
-        void setRandomItem(ItemType itType);
+        void setRandomItem(ItemType itType, std::string displayString);
 
     private:
-        int width;
-        int height;
+        int width = 0;
+        int height = 0;
         std::vector<std::vector<BaseBlock*>> data;
 
         Snake* ptrSnake = nullptr;
 };
 
+
+/* 随机数生成相关工具 */
+
+namespace Random {
+    extern std::default_random_engine* R_engine;
+
+    void resetRandomEngine();
+
+    int randInt(int start, int end);
+}
 
 #endif

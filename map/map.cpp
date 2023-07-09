@@ -6,6 +6,7 @@
 #include "../snake/snake.h"
 
 #include <iostream>
+#include <fstream>
 
 void nextPos(int x, int y, int& next_x, int& next_y, Direction dir) {
     next_x = x;
@@ -84,3 +85,43 @@ bool Map::onMap(BaseBlock* block) {
     return false;
 }
 
+void Map::setRandomItem(ItemType itType, std::string displayString) {
+    int rand_x = 0,
+        rand_y = 0;
+    BaseBlock* tarBlock;
+
+    do {
+        rand_x = Random::randInt(0, height - 1);
+        rand_y = Random::randInt(0,  width - 1);
+        tarBlock = data[rand_x][rand_y];
+    } while (tarBlock->get_item() || tarBlock->getSnakeBody());
+
+    BaseItem* newItem;
+    switch (itType) {
+        case ItemType::FOOD:
+            newItem = new Food();
+            break;
+        case ItemType::HEART:
+            newItem = new Heart();
+            break;
+    }
+    if (newItem) {
+        newItem->setString(displayString);
+        newItem->set_block(tarBlock);
+    }
+}
+
+
+/* definitions of namespace Random */
+
+std::default_random_engine* Random::R_engine;
+
+void Random::resetRandomEngine() {
+    std::random_device seed;
+    R_engine = new std::default_random_engine(seed());
+}
+
+int Random::randInt(int start, int end) {
+    std::uniform_int_distribution<int> dis(start, end);
+    return dis(*R_engine);
+}

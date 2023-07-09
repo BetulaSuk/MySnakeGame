@@ -24,6 +24,7 @@ void BaseBlock::clear_item() {
     if (ptrItem) {
         delete ptrItem;
     }
+    ptrItem = nullptr;
 }
 
 BaseItem* BaseBlock::get_item() {

@@ -43,7 +43,7 @@ class Snake {
 
         /* 行动 */
 
-        void changeDir(Direction new_dir) {dir = new_dir;}
+        void changeDir(Direction new_dir);
         // 如果成功前进, 返回 true, 否则返回 false
         bool moveForward();
 
@@ -58,18 +58,20 @@ class Snake {
 
         SnakeBody* getTailPtr();
 
-        // 销毁头部的食物, 根据坐标长出新尾巴, 加分.
-        bool eatFood(int newTail_x, int newTail_y);
+        // 销毁头部的食物, 根据坐标长出新尾巴, 加分, 自动生成新食物
+        bool tryEatFood(int newTail_x, int newTail_y);
         // 重载: 可指定新尾巴的渲染字符串;
-        bool eatFood(int newTail_x, int newTail_y, std::string newTail_s);
+        bool tryEatFood(int newTail_x, int newTail_y, std::string newTail_s);
+        // 不会自动生成新的 Heart
+        bool tryEatHeart();
 
     private:
         bool isAlive = true;
-        int heart;
-        int length;
+        int heart = 0;
+        int length = 0;
         Direction dir;
 
-        int point;
+        int point = 0;
 
         SnakeBody* ptrHead = nullptr;
         Map* ptrMap = nullptr;
