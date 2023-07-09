@@ -27,7 +27,7 @@ class Snake {
 
     public:
         Snake() = delete;
-        Snake(Map& map, int start_x, int start_y, int init_len, int init_heart);
+        Snake(Map* map, int start_x, int start_y, int init_len, int init_heart);
 
         virtual ~Snake();
 

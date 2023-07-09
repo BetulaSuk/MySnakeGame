@@ -93,7 +93,6 @@ class SnakeBody: public BaseItem {
 
     public:
         SnakeBody(): BaseItem() {}
-        SnakeBody(BaseBlock* block);
 
         virtual ~SnakeBody() = default;
 

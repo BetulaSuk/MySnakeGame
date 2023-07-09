@@ -6,30 +6,36 @@
 #include "../map/map.h"
 #include "../snake/snake.h"
 
+#include <iostream> // debug
+
 // 初始化: 蛇身创建, 蛇身绑定方块, 蛇身绑定蛇, 蛇绑定地图
-Snake::Snake(Map& map, int start_x, int start_y, int init_len, int init_heart) {
+Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
     ptrHead = new SnakeBody();
-    ptrHead->set_block(map.at(start_x, start_y));
+    ptrHead->set_block(map->at(start_x, start_y));
     ptrHead->ptrSnake = this;
+    ptrHead->setString("@");
+
+    if (not map->inRange(start_x, start_y)) {exit(1);}
 
     int x = start_x,
         y = start_y;
-    if (not map.inRange(start_x, start_y)) {exit(1);}
 
     SnakeBody* ptr = ptrHead;
     for (int i = 1; i < init_len; i++) {
         nextPos(x, y, x, y, Direction::DOWN);
 
-        if (not map.inRange(x, y)) {exit(1);}
+        if (not map->inRange(x, y)) {exit(1);}
 
         ptr->ptrNext = new SnakeBody();
         ptr = ptr->ptrNext;
-        ptr->set_block(map.at(x, y));
+
+        ptr->set_block(map->at(x, y));
         ptr->ptrSnake = this;
         ptr->setString("@");
     }
 
-    ptrMap = &map;
+    length = init_len;
+    ptrMap = map;
     heart = init_heart;
 }
 
@@ -82,7 +88,9 @@ bool Snake::moveForward() {
     BaseBlock* ptrB_1 = ptrHead->get_block();
     BaseBlock* ptrB_2 = nextBlock(*ptrMap, ptrB_1, dir);
     for (int i = 0; i < length; i++) {
-        ptrB_2->attachSnakeBody(ptrSbody);
+        if ( ! ptrB_2->attachSnakeBody(ptrSbody)) {return false;}
+        ptrSbody->set_block(ptrB_2);
+
         ptrSbody = ptrSbody->ptrNext;
         ptrB_2 = ptrB_1;
         ptrB_1 = ptrSbody->get_block(); 

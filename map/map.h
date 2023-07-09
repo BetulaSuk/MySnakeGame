@@ -48,6 +48,8 @@ class Map {
         Map(int input_height, int input_width);
         Map(std::string fileDir);
 
+        void init_snake();
+
         bool loadMap(std::string fileDir);
         bool writeMap(std::string fileDir);
 

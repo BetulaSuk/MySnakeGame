@@ -29,16 +29,17 @@ int main() {
         test_x = max_x;
         test_y = max_y;
     }
+    int start_x = (max_x == test_x) ? 0 : (max_x - test_x) / 2,
+        start_y = (max_y == test_y) ? 0 : (max_y - test_y) / 2;
 
     Map map(test_y, test_x);
+    map.init_snake();
     Snake* snake = map.get_snake();
-
-    int start_x = (max_x == test_x) ? max_x : (max_x - test_x) / 2,
-        start_y = (max_y == test_y) ? max_y : (max_y - test_y) / 2;
+    
     WINDOW* mainWin = newwin(test_y, test_x, start_y, start_x);
     box(mainWin, 0, 0);
 
-    refresh();
+    wrefresh(mainWin);
 
     int control;
     while (true) {
@@ -60,9 +61,9 @@ int main() {
 
         snake->moveForward();
 
-        if (snake->checkAlive() == false) {break;}
+        if ( ! snake->checkAlive()) {break;}
 
-        this_thread::sleep_for(chrono::milliseconds(100));
+        this_thread::sleep_for(chrono::milliseconds(50));
     }
 
     delwin(mainWin);
@@ -75,7 +76,7 @@ void renderMap(WINDOW* win, Map& map) {
     werase(win);
 
     BaseBlock* ptr_B;
-    BaseItem* ptr_I;
+    BaseItem*  ptr_I;
     SnakeBody* ptr_S;
 
     for (int i = 0; i < test_y; i++) {

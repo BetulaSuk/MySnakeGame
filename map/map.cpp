@@ -35,27 +35,32 @@ BaseBlock* nextBlock(Map& map, BaseBlock* block, Direction dir) {
 
 // 初始化: 创建并储存方块, 创建并绑定蛇
 Map::Map(int input_height, int input_width) {
-    data.resize(input_height);
+    height = input_height;
+    width  = input_width;
 
-    for (int i = 0; i < input_height; i++) {
-        data[i].resize(input_width);
+    data.resize(height);
 
-        for (int j = 0; j < input_width; j++) {
+    for (int i = 0; i < height; i++) {
+        data[i].resize(width);
+
+        for (int j = 0; j < width; j++) {
             // 边缘是墙
-            if (i == 0 || i == input_height -1 ||
-                j == 0 || j == input_height -1) {
+            if (i == 0 || i == height -1 ||
+                j == 0 || j == width -1) {
                     data[i][j] = new Wall(i, j);
                     data[i][j]->setString("+");
             }
             else {data[i][j] = new BaseBlock(i, j);}
         }
     }
-
-    ptrSnake = new Snake(*this, input_width/2, input_height/2, 2, 3);
 }
 
 Map::Map(std::string fileDir) {
     loadMap(fileDir);
+}
+
+void Map::init_snake() {
+    ptrSnake = new Snake(this, height/2, width/2, 2, 3);
 }
 
 bool Map::loadMap(std::string fileDir) {

@@ -31,11 +31,11 @@ BaseItem* BaseBlock::get_item() {
 }
 
 bool BaseBlock::attachSnakeBody(SnakeBody* ptrSbody) {
-    if ( ! ptrSnakeBody) {
+    if (ptrSnakeBody) {return false;}
+    else {
         ptrSnakeBody = ptrSbody;
         return true;
     }
-    else return false;
 }
 
 void BaseBlock::releaseSnakeBody() {
