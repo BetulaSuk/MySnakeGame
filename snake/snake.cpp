@@ -6,7 +6,32 @@
 #include "../map/map.h"
 #include "../snake/snake.h"
 
-#include <iostream> // debug
+#include <iostream>
+#include <sstream>
+
+Snake* loadString(Map* ptrMap, std::string str1, std::string str2) {
+    Snake* ptrSnake = nullptr;
+    try {
+
+    std::stringstream cache;
+    cache << str1;
+
+    char ch = ' ';
+    int start_x  = 0,
+        start_y  = 0,
+        init_len = 0,
+        init_dir = 0;
+    
+    cache >> ch;
+    if (ch != 's') {return nullptr;}
+
+    cache >> start_x >> start_y >> init_len >> init_dir;
+
+    
+
+    } catch (...) {return nullptr;}
+    return ptrSnake;
+}
 
 // 初始化: 蛇身创建, 蛇身绑定方块, 蛇身绑定蛇, 蛇绑定地图
 Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
@@ -171,7 +196,7 @@ bool Snake::tryEatFood(int newTail_x, int newTail_y) {
     newTail->ptrSnake = this;
     newTail->set_block(ptrMap->at(newTail_x, newTail_y));
     newTail->setString("@");
-    
+
     getTailPtr()->ptrNext = newTail;
     length++;
 

@@ -23,7 +23,11 @@ enum class BlockType;
 class Map;
 enum class Direction;
 
+Snake* loadString(Map* ptrMap, std::string str1, std::string str2);
+
+
 class Snake {
+    friend Snake* loadString(std::string str1, std::string str2);
 
     public:
         Snake() = delete;

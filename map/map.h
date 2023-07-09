@@ -40,19 +40,25 @@ void nextPos(int x, int y, int& next_x, int& next_y, Direction dir);
 
 BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir);
 
+bool canSetItem(BaseBlock* const block);
+
+// 如果文件与预期不符, 返回空指针
+Map* loadMap(std::string fileDir);
+
 
 class Map {
+    friend Map* loadMap(std::string fileDir);
+
     public:
         /* 初始化 */
 
-        Map() = delete;
-        // 初始化: 空白地图, 创建并储存方块, 创建并绑定蛇
+        Map() = default;
+        // 初始化: 空白地图, 创建并储存方块
         Map(int input_height, int input_width);
-        Map(std::string fileDir);
-
+        // 初始化: 创建并绑定蛇
         void init_snake();
 
-        bool loadMap(std::string fileDir);
+        void loadMap(std::string fileDir);
         bool writeMap(std::string fileDir);
 
         /* 获取基本信息 */

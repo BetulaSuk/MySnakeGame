@@ -36,6 +36,73 @@ BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir) {
     return nextBlock;
 }
 
+bool canSetItem(BaseBlock* const block) {
+    BlockType B_type = block->type();
+    switch (B_type) {
+        case BlockType::BASEBLOCK:
+            return true;
+        default:
+            return false;
+    }
+}
+
+Map* loadMap(std::string fileDir) {
+    Map* ptrMap = nullptr;
+    try {
+
+    std::ifstream mapFile;
+    mapFile.open(fileDir);
+
+    char ch1, ch2;
+    mapFile >> ch1;
+    if (ch1 != 'm') {return nullptr;}
+
+    // 创建新的空地图, 设置地图大小
+    int height, width;
+    mapFile >> height >> width;
+    ptrMap = new Map();
+    ptrMap->width  = width;
+    ptrMap->height = height;
+    ptrMap->data.resize(height);
+    for (int i = 0; i < height; i++) {
+        ptrMap->data[i].resize(width);
+    }
+
+    std::string aline = "",
+                displayStr = " ";
+    BaseBlock* ptr_B = nullptr;
+    for (int i = 0; i < height; i++) {
+        std::getline(mapFile, aline);
+
+        for (int j = 0; j < width; j++) {
+            ptr_B = ptrMap->data[i][j];
+
+            ch1 = aline[2 * j];
+            ch2 = aline[2 * j + 1];
+            displayStr[0] = ch2;
+
+            switch (ch1) {
+                case '0': ptr_B = new BaseBlock(i, j); break;
+                case '1': ptr_B = new Wall(i, j); break;
+                /* TODO 添加新的方块类型 */
+            }
+            if ( ! ptr_B) {return nullptr;}
+            else {ptr_B->setString(displayStr);}
+        }
+    }
+
+    std::getline(mapFile, aline);
+    std::getline(mapFile, displayStr);
+    ptrMap->ptrSnake = loadString(ptrMap, aline, displayStr);
+
+    mapFile.close();
+    
+    } catch (...) {return nullptr;}
+    return ptrMap;
+}
+
+
+
 // 初始化: 创建并储存方块, 创建并绑定蛇
 Map::Map(int input_height, int input_width) {
     height = input_height;
@@ -58,16 +125,8 @@ Map::Map(int input_height, int input_width) {
     }
 }
 
-Map::Map(std::string fileDir) {
-    loadMap(fileDir);
-}
-
 void Map::init_snake() {
     ptrSnake = new Snake(this, height/2, width/2, 2, 3);
-}
-
-bool Map::loadMap(std::string fileDir) {
-    /* TODO */
 }
 
 bool Map::writeMap(std::string fileDir) {
@@ -94,7 +153,9 @@ void Map::setRandomItem(ItemType itType, std::string displayString) {
         rand_x = Random::randInt(0, height - 1);
         rand_y = Random::randInt(0,  width - 1);
         tarBlock = data[rand_x][rand_y];
-    } while (tarBlock->get_item() || tarBlock->getSnakeBody());
+    } while ( ! canSetItem(tarBlock)
+        || tarBlock->get_item() 
+        || tarBlock->getSnakeBody());
 
     BaseItem* newItem;
     switch (itType) {
