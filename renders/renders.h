@@ -23,6 +23,7 @@ class GameBoard
         bool createWelcomeBoard();
 
         bool createHelp();
+        bool createSetting();
 
         void createInformationBoard();
         void renderInformationBoard() const;
@@ -30,10 +31,15 @@ class GameBoard
         void createGameBoard();
         void renderGameBoard() const;
 
+
+        void renderMap(WINDOW* win, Map& map);
+
         void createInstructionBoard();
         void renderInstructionBoard() const;
 
-        void renderAllBoards() const;
+        bool renderRestartMenu(Snake* snake) const;
+
+        void renderAllBoards(Map& map);
 
         void startGame();
 
