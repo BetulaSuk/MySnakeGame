@@ -384,14 +384,15 @@ void GameBoard::startGame() {
     bool choice;
     int control;
 
-    //while (true) {
-        //choice = this -> createWelcomeBoard();
-        //if (!choice) break;
+    while (true) {
+        choice = this -> createWelcomeBoard();
+        //refresh();
+        if (!choice) break;
 
-        //this -> renderAllBoards(map);
+        this -> renderAllBoards(map);
 
         while (true) {
-            this -> renderAllBoards(map);
+            this -> renderMap(mWindows[1], map);
 
             control = getch();
 
@@ -405,9 +406,12 @@ void GameBoard::startGame() {
                 case 'D': case 'd': case KEY_RIGHT:
                     snake->changeDir(Direction::RIGHT); break;
             }
+
+
             snake->moveForward();
 
-            if (!snake->checkAlive()) {break;}
+
+            //if (!snake->checkAlive()) {break;}
 
             this_thread::sleep_for(chrono::milliseconds(100));
         }
@@ -416,5 +420,5 @@ void GameBoard::startGame() {
         //refresh();
         //choice = this->renderRestartMenu(snake);
         //if (choice == false) break;
-    //}
+    }
 }
