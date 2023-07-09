@@ -37,6 +37,7 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
     length = init_len;
     ptrMap = map;
     heart = init_heart;
+    dir = Direction::UP;
 }
 
 Snake::~Snake() {
@@ -56,15 +57,20 @@ bool Snake::moveForward() {
     // 检查蛇是否死亡
     if (isAlive == false) {return false;}
 
-    BaseBlock* blockAhead = nextBlock(*ptrMap, ptrHead->get_block(), dir);
-    BlockType typeBlock = blockAhead->type();
+    // std::cout << ">>> head pos: " << ptrHead->get_x() << ' ' << ptrHead->get_y() << std::endl; //debug
+
+    BaseBlock* blockAhead = nextBlock(ptrMap, ptrHead->get_block(), dir);
+    BlockType  typeBlock  = blockAhead->type();
 
     // 检查是否超出地图边界
     if ( ! blockAhead) {return false;}
 
+    // std::cout << ">>> next block pos: " << blockAhead->get_x() << ' ' << blockAhead->get_y() << std::endl; //debug
+
     // 检查前方方块是否可踏足
     switch (typeBlock) {
         case BlockType::WALL:
+            // std::cout << ">>> hit wall!" << std::endl; //debug
             isAlive = false;
             return false;
         // TODO 添加更多方块类型时此处可能要增加判定
@@ -72,8 +78,18 @@ bool Snake::moveForward() {
             break;
     }
 
+    // 检查前方方块是否有蛇身
+    SnakeBody* ptrSAhead = blockAhead->getSnakeBody();
+
+    if (ptrSAhead) {
+        // std::cout << ">>> hit self!" << std::endl; //debug
+        isAlive = false;
+        return false;
+    }
+
     BaseItem* itemAhead = blockAhead->get_item();
-    ItemType typeItem = itemAhead->type();
+    ItemType typeItem = ItemType::EMPTY;
+    if (itemAhead) {typeItem = itemAhead->type();}
 
     // 如果将会吃到食物, 提前获取此时的尾部坐标
     int oldTail_x, oldTail_y;
@@ -86,14 +102,21 @@ bool Snake::moveForward() {
     // 向前挪动: 从头开始一点点向前伸
     SnakeBody* ptrSbody = ptrHead;
     BaseBlock* ptrB_1 = ptrHead->get_block();
-    BaseBlock* ptrB_2 = nextBlock(*ptrMap, ptrB_1, dir);
+    BaseBlock* ptrB_2 = nextBlock(ptrMap, ptrB_1, dir);
+
+    // std::cout << ">>> mark!!" << std::endl; // debug
+
     for (int i = 0; i < length; i++) {
-        if ( ! ptrB_2->attachSnakeBody(ptrSbody)) {return false;}
+        if ( ! ptrB_2->attachSnakeBody(ptrSbody)) {exit(1);}
         ptrSbody->set_block(ptrB_2);
+        ptrB_1->releaseSnakeBody();
+
+        // std::cout << ">>> mark: " << i << std::endl; // debug
 
         ptrSbody = ptrSbody->ptrNext;
+        if ( ! ptrSbody) {break;}
         ptrB_2 = ptrB_1;
-        ptrB_1 = ptrSbody->get_block(); 
+        ptrB_1 = ptrSbody->get_block();
     }
 
     // 因为 eatFood 中有判定, 所以不担心误判为吃食物
@@ -128,7 +151,7 @@ SnakeBody* Snake::getTailPtr() {
 bool Snake::eatFood(int newTail_x, int newTail_y) {
     // 为了可靠性, 再检测一次头部的是否是食物
     BaseItem* item_atHead = ptrHead->get_block()->get_item();
-    if (item_atHead->type() != ItemType::FOOD) {return false;}
+    if ( ! item_atHead || item_atHead->type() != ItemType::FOOD) {return false;}
 
     SnakeBody* newTail = new SnakeBody();
     newTail->set_block(ptrMap->at(newTail_x, newTail_y));

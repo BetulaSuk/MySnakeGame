@@ -36,7 +36,7 @@ class Map;
 
 void nextPos(int x, int y, int& next_x, int& next_y, Direction dir);
 
-BaseBlock* nextBlock(Map& map, BaseBlock* block, Direction dir);
+BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir);
 
 
 class Map {

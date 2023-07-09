@@ -19,6 +19,7 @@ void renderMap(Map& map) {
     BaseBlock* ptr_B;
     BaseItem*  ptr_I;
     SnakeBody* ptr_S;
+
     for (int i = 0; i < test_x; i++) {
         for (int j = 0; j < test_y; j++) {
             ptr_B = map.at(i, j);

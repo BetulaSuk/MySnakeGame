@@ -8,6 +8,8 @@
 #include <iostream>
 
 void nextPos(int x, int y, int& next_x, int& next_y, Direction dir) {
+    next_x = x;
+    next_y = y;
     switch (dir) {
         case Direction::UP:    next_x = x - 1; break;
         case Direction::RIGHT: next_y = y + 1; break;
@@ -16,20 +18,20 @@ void nextPos(int x, int y, int& next_x, int& next_y, Direction dir) {
     }
 }
 
-BaseBlock* nextBlock(Map& map, BaseBlock* block, Direction dir) {
-    int init_x = block->get_x(),
-        init_y = block->get_y();
+BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir) {
     BaseBlock* nextBlock = nullptr;
 
-    if (not map.onMap(block)) {return nextBlock;}
+    if (not map->onMap(block)) {return nextBlock;}
 
+    int init_x = block->get_x(),
+        init_y = block->get_y();
     int next_x = 0,
         next_y = 0;
     nextPos(init_x, init_y, next_x, next_y, dir);
 
-    if (not map.inRange(next_x, next_y)) {return nextBlock;}
+    if (not map->inRange(next_x, next_y)) {return nextBlock;}
 
-    nextBlock = map.at(next_x, next_y);
+    nextBlock = map->at(next_x, next_y);
     return nextBlock;
 }
 

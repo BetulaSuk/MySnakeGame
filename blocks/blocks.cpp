@@ -40,7 +40,6 @@ bool BaseBlock::attachSnakeBody(SnakeBody* ptrSbody) {
 
 void BaseBlock::releaseSnakeBody() {
     if (ptrSnakeBody) {
-        ptrSnakeBody->escapeBlock();
         ptrSnakeBody = nullptr;
     }
 }
