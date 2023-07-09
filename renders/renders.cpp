@@ -41,6 +41,7 @@ GameBoard::~GameBoard()
 bool GameBoard::createWelcomeBoard() {
 
     //正中间生成Welcome界面
+    noecho();
     int width = this->mGameBoardWidth * 0.5;
     int height = this->mGameBoardHeight * 0.5;
     int startX = this->mGameBoardWidth * 0.25;
@@ -110,6 +111,10 @@ bool GameBoard::createWelcomeBoard() {
         this -> createHelp();
         return this -> createWelcomeBoard();
     }
+    if (index == 3) {
+        this -> createSetting();
+        return this -> createWelcomeBoard();
+    }
     if (index == 1) return false;
 }
 
@@ -149,6 +154,41 @@ bool GameBoard::createHelp() {
 }
 
 
+//Create Setting board
+//(Unfinished)
+bool GameBoard:: createSetting() {
+    int width = this->mGameBoardWidth * 0.5;
+    int height = this->mGameBoardHeight * 0.5;
+    int startX = this->mGameBoardWidth * 0.25;
+    int startY = this->mGameBoardHeight * 0.25;
+
+    WINDOW* menu;
+    menu = newwin(height, width, startY, startX);
+    box(menu, 0, 0);
+
+    mvwprintw(menu, 1, 1, "Modify Game Settings");
+
+    std::vector<std::string> menuItems = {"Save"};
+    
+    //下面实现选项切换
+    wattron(menu, A_STANDOUT);
+    mvwprintw(menu, 9, 1, menuItems[0].c_str());
+    //wattroff(menu, A_STANDOUT);
+
+    wrefresh(menu);
+
+    int key;
+    while (true)
+    {
+        key = getch();
+        if (key == ' ' || key == 10) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    delwin(menu);
+    return true;
+}
+
+
 
 void GameBoard::createInformationBoard()
 {
@@ -160,10 +200,10 @@ void GameBoard::createInformationBoard()
 void GameBoard::renderInformationBoard() const
 {
     mvwprintw(this->mWindows[0], 1, 1, "Welcome to The Snake Game!");
-    mvwprintw(this->mWindows[0], 2, 1, "Author: WHY");
+    mvwprintw(this->mWindows[0], 2, 1, "Author: TZY, WHY");
     mvwprintw(this->mWindows[0], 3, 1, "Website: https://github.com/leimao/");
     mvwprintw(this->mWindows[0], 4, 1, "Implemented using C++ and libncurses library.");
-    wrefresh(this->mWindows[0]);
+    //wrefresh(this->mWindows[0]);
 }
 
 void GameBoard::createGameBoard()
@@ -197,40 +237,184 @@ void GameBoard::renderInstructionBoard() const
     mvwprintw(this->mWindows[2], 8, 1, "Difficulty");
     mvwprintw(this->mWindows[2], 11, 1, "Points");
 
-    wrefresh(this->mWindows[2]);
+    //wrefresh(this->mWindows[2]);
 }
 
 
-void GameBoard::renderAllBoards() const
+bool GameBoard::renderRestartMenu(Snake* snake) const
 {
-    for (int i = 0; i < this->mWindows.size(); i ++)
+    WINDOW * menu;
+    int width = this->mGameBoardWidth * 0.5;
+    int height = this->mGameBoardHeight * 0.5;
+    int startX = this->mGameBoardWidth * 0.25;
+    int startY = this->mGameBoardHeight * 0.25 + this->mInformationHeight;
+
+    menu = newwin(height, width, startY, startX);
+    //box(): decorate the screen with frame(vertical and horizontal)
+    box(menu, 0, 0);
+    std::vector<std::string> menuItems = {"Restart", "Quit"};
+
+    int index = 0;
+    int offset = 4;
+    mvwprintw(menu, 1, 1, "Your Final Score:");
+    std::string pointString = std::to_string(snake -> get_point());
+    mvwprintw(menu, 2, 1, pointString.c_str());
+    //wattron(): here turns on the highlighting mode of the screen
+    wattron(menu, A_STANDOUT);
+    mvwprintw(menu, 0 + offset, 1, menuItems[0].c_str());
+    //wattroff(): here turns off the highlighting mode of the screen
+    wattroff(menu, A_STANDOUT);
+    mvwprintw(menu, 1 + offset, 1, menuItems[1].c_str());
+
+    wrefresh(menu);
+
+    int key;
+    while (true)
+    {
+        key = getch();
+        switch(key)
+        {
+            case 'W':
+            case 'w':
+            case KEY_UP:
+            {
+                mvwprintw(menu, index + offset, 1, menuItems[index].c_str());
+                index --;
+                index = (index < 0) ? menuItems.size() - 1 : index;
+                wattron(menu, A_STANDOUT);
+                mvwprintw(menu, index + offset, 1, menuItems[index].c_str());
+                wattroff(menu, A_STANDOUT);
+                break;
+            }
+            case 'S':
+            case 's':
+            case KEY_DOWN:
+            {
+                mvwprintw(menu, index + offset, 1, menuItems[index].c_str());
+                index ++;
+                index = (index > menuItems.size() - 1) ? 0 : index;
+                wattron(menu, A_STANDOUT);
+                mvwprintw(menu, index + offset, 1, menuItems[index].c_str());
+                wattroff(menu, A_STANDOUT);
+                break;
+            }
+        }
+        wrefresh(menu);
+        if (key == ' ' || key == 10)
+        {
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    delwin(menu);
+
+    if (index == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+
+void GameBoard::renderAllBoards(Map& map)
+{
+    for (int i = 0; i < this->mWindows.size(); i++)
     {
         werase(this->mWindows[i]);
     }
     this->renderInformationBoard();
-    this->renderGameBoard();
+
+    renderMap(mWindows[1], map);
+    //this->renderGameBoard();
+
     this->renderInstructionBoard();
-    for (int i = 0; i < this->mWindows.size(); i ++)
+
+    for (int i = 0; i < this->mWindows.size(); i++)
     {
         box(this->mWindows[i], 0, 0);
         wrefresh(this->mWindows[i]);
     }
-
-
 }
+
+
+
+void GameBoard::renderMap(WINDOW* win, Map& map) {
+    werase(win);
+
+    BaseBlock* ptr_B;
+    BaseItem*  ptr_I;
+    SnakeBody* ptr_S;
+
+    int width = map.get_width(), height = map.get_height();
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            ptr_B = map.at(i, j);
+            ptr_I = ptr_B->get_item();
+            ptr_S = ptr_B->getSnakeBody();
+
+            if (ptr_S != nullptr) {
+                mvwprintw(win, i, j, ptr_S->toString().c_str());
+            }
+            else if (ptr_I != nullptr) {
+                mvwprintw(win, i, j, ptr_I->toString().c_str());
+            }
+            else {
+                mvwprintw(win, i, j, ptr_B->toString().c_str());
+            }
+        }
+    }
+    wrefresh(win);
+}
+
 
 
 void GameBoard::startGame() {
     refresh();
-    bool choice = this -> createWelcomeBoard();
-    //Map gameMap(mGameBoardHeight, mGameBoardWidth);
-    //Snake* snakePtr = gameMap.get_snake();
-    this -> renderAllBoards();
-    int temp = 1;
-    while (choice) {
-        //snakePtr -> moveForward();
-        wrefresh(this -> mWindows[1]);
-        temp++;
-        this_thread::sleep_for(chrono::milliseconds(100));
-    }
+
+    Map map(mGameBoardHeight, mGameBoardWidth);
+
+    map.init_snake();
+    Snake* snake = map.get_snake();
+
+    bool choice;
+    int control;
+
+    //while (true) {
+        //choice = this -> createWelcomeBoard();
+        //if (!choice) break;
+
+        //this -> renderAllBoards(map);
+
+        while (true) {
+            this -> renderAllBoards(map);
+
+            control = getch();
+
+            switch (control) {
+                case 'W': case 'w': case KEY_UP:
+                    snake->changeDir(Direction::UP); break;
+                case 'S': case 's': case KEY_DOWN:
+                    snake->changeDir(Direction::DOWN); break;
+                case 'A': case 'a': case KEY_LEFT:
+                    snake->changeDir(Direction::LEFT); break;
+                case 'D': case 'd': case KEY_RIGHT:
+                    snake->changeDir(Direction::RIGHT); break;
+            }
+            snake->moveForward();
+
+            if (!snake->checkAlive()) {break;}
+
+            this_thread::sleep_for(chrono::milliseconds(100));
+        }
+        //if (control == ' ' || control == 10) {break;}
+
+        //refresh();
+        //choice = this->renderRestartMenu(snake);
+        //if (choice == false) break;
+    //}
 }
