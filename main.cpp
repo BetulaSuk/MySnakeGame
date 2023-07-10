@@ -24,6 +24,8 @@ int main() {
         if (choice == false) return false;
 
         //复活蛇，重新开始
+        //TODO：
+        //继承heart
         snake -> revive();
         clear();
         refresh();

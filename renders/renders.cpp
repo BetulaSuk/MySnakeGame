@@ -400,6 +400,12 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             }
             else {
                 mvwprintw(win, i, j, ptr_B->toString().c_str());
+                if (ptr_B -> type() == BlockType::PORTAL) {
+                    Portal* entrance = reinterpret_cast<Portal*>(ptr_B);
+                    int exit_x = entrance->get_ex();
+                    int exit_y = entrance->get_ey();
+                    //map.at(exit_x, exit_y) -> setString("O");
+                }
             }
         }
     }

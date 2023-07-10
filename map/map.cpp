@@ -30,7 +30,16 @@ BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir) {
         init_y = block->get_y();
     int next_x = 0,
         next_y = 0;
-    nextPos(init_x, init_y, next_x, next_y, dir);
+
+    //传送门下的蛇的下一步位置
+    //TODO
+    if (block -> type() == BlockType::PORTAL) {
+        Portal* entrance = reinterpret_cast<Portal*>(block);
+        int exit_x = entrance -> get_ex(), exit_y = entrance -> get_ey();
+        next_x = exit_x;
+        next_y = exit_y;
+    }
+    else nextPos(init_x, init_y, next_x, next_y, dir);
 
     if (not map->inRange(next_x, next_y)) {return nextBlock;}
 
@@ -142,17 +151,30 @@ Map::Map(int input_height, int input_width) {
             // 边缘是墙
             if (i == 0 || i == height -1 ||
                 j == 0 || j == width -1) {
-                    data[i][j] = new Wall(i, j);
-                    data[i][j]->setString("+");
+                    /*data[i][j] = new Wall(i, j);
+                    data[i][j]->setString("+");*/
+
+                    //尝试将周围的变成传送门
+                    if (i == 0) data[i][j] = new Portal(i, j, height-2, j);
+                    else if (j == 0) data[i][j] = new Portal(i, j, i, width-2);
+                    else if (i == height-1) data[i][j] = new Portal(i, j, 1, j);
+                    else if (j == width-1) data[i][j] = new Portal(i, j, i, 1);
+                    else data[i][j] = new Wall(i, j);
             }
             else {data[i][j] = new BaseBlock(i, j);}
         }
     }
+    //临时生成一组传送门
+    /*data[5][5] = new Portal(5, 5, 15, 30);
+    data[5][5] -> setString("P");
+    data[15][15] = new Portal(15, 15, 5, 30);
+    data[15][15] -> setString("P");*/
 }
 
 void Map::init_snake() {
     ptrSnake = new Snake(this, height/2, width/2, 2, 3);
 }
+
 
 Map::~Map() {
     delete ptrSnake;

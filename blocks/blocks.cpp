@@ -40,3 +40,4 @@ void BaseBlock::releaseSnakeBody() {
         ptrSnakeBody = nullptr;
     }
 }
+
