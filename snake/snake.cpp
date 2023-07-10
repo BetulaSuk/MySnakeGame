@@ -98,7 +98,7 @@ bool Snake::moveForward() {
     if (isAlive == false) {return false;}
 
     // std::cout << ">>> head pos: " << ptrHead->get_x() << ' ' << ptrHead->get_y() << std::endl; //debug
-
+    
     BaseBlock* blockAhead = nextBlock(ptrMap, ptrHead->get_block(), dir);
     BlockType  typeBlock  = blockAhead->type();
 
@@ -199,7 +199,6 @@ bool Snake::tryEatFood(int newTail_x, int newTail_y) {
 
     getTailPtr()->ptrNext = newTail;
     length++;
-
     ptrHead->get_block()->clear_item();
 
     point++;
@@ -218,10 +217,10 @@ bool Snake::tryEatFood(int newTail_x, int newTail_y, std::string newTail_s) {
 bool Snake::tryEatHeart() {
     // 先检测是否有心可吃
     BaseItem* item_atHead = ptrHead->get_block()->get_item();
+
     if ( ! item_atHead || item_atHead->type() != ItemType::HEART) {return false;}
 
     ptrHead->get_block()->clear_item();
-
     heart++;
 
     return true;

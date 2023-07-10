@@ -53,7 +53,7 @@ bool GameBoard::createWelcomeBoard() {
     WINDOW* title;
 
     menu = newwin(height, width, startY, startX);
-    box(menu, 0, 0);
+    //box(menu, 0, 0);
 
     title = newwin(7, width, mScreenHeight*0.125, startX);
     
@@ -392,6 +392,7 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             ptr_S = ptr_B->getSnakeBody();
 
             if (ptr_S != nullptr) {
+                //渲染蛇的身体
                 mvwprintw(win, i, j, ptr_S->toString().c_str());
             }
             else if (ptr_I != nullptr) {
@@ -409,26 +410,7 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
 
 void GameBoard::startGame(Map& map, Snake* snake) {
     refresh();
-
-    /*Map map(mGameBoardHeight, mGameBoardWidth);
-
-    map.init_snake();
-    Snake* snake = map.get_snake();
-    
-
-    Random::resetRandomEngine();
-    map.setRandomItem(ItemType::FOOD, "#");*/
-
-    //bool choice;
     int control;
-
-    //while (true) {
-
-
-
-        //choice = this -> createWelcomeBoard();
-        //if (!choice) break;
-
 
         while (true) {
             this -> renderAllBoards(map, snake);
@@ -451,8 +433,4 @@ void GameBoard::startGame(Map& map, Snake* snake) {
 
             this_thread::sleep_for(chrono::milliseconds(100));
         }
-        //if (control == ' ' || control == 10) {break;}
-
-        
-    //}
 }
