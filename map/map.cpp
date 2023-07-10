@@ -48,6 +48,19 @@ bool canSetItem(BaseBlock* const block) {
     }
 }
 
+void bond(BaseBlock* ptr_B, SnakeBody* ptr_S) {
+    if (ptr_B && ptr_S) {
+        ptr_B->attachSnakeBody(ptr_S);
+        ptr_S->set_block(ptr_B);
+    } else {exit(2);}
+}
+void bond(BaseBlock* ptr_B, BaseItem*  ptr_I) {
+    if (ptr_B && ptr_I && ptr_I->type() != ItemType::SNAKEBODY) {
+        ptr_B->set_item(ptr_I);
+        ptr_I->set_block(ptr_B);
+    } else {exit(2);}
+}
+
 Map* loadMap(std::string fileDir) {
     Map* ptrMap = nullptr;
     try {
@@ -192,7 +205,7 @@ void Map::setRandomItem(ItemType itType, std::string displayString) {
     }
     if (newItem) {
         newItem->setString(displayString);
-        newItem->set_block(tarBlock);
+        bond(tarBlock, newItem);
     }
 }
 

@@ -23,6 +23,7 @@ enum class BlockType;
 class Map;
 enum class Direction;
 
+
 Snake* loadSnake(Map* ptrMap, std::ifstream& ifs);
 
 

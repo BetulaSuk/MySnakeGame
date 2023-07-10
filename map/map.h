@@ -42,6 +42,9 @@ BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir);
 
 bool canSetItem(BaseBlock* const block);
 
+void bond(BaseBlock* ptr_B, SnakeBody* ptr_S);
+void bond(BaseBlock* ptr_B, BaseItem*  ptr_I);
+
 // 如果文件与预期不符, 返回空指针
 Map* loadMap(std::string fileDir);
 
