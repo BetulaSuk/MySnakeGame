@@ -225,7 +225,7 @@ void GameBoard::createInstructionBoard()
     this->mWindows[2] = newwin(this->mScreenHeight - this->mInformationHeight, this->mInstructionWidth, startY, startX);
 }
 
-void GameBoard::renderInstructionBoard() const
+void GameBoard::renderInstructionBoard(Snake* snake) const
 {
     mvwprintw(this->mWindows[2], 1, 1, "Manual");
 
@@ -235,7 +235,15 @@ void GameBoard::renderInstructionBoard() const
     mvwprintw(this->mWindows[2], 6, 1, "Right: D");
 
     mvwprintw(this->mWindows[2], 8, 1, "Difficulty");
+    mvwprintw(this->mWindows[2], 9, 1, "NOT YET!");
+
     mvwprintw(this->mWindows[2], 11, 1, "Points");
+    string pointString = to_string(snake -> get_point());
+    mvwprintw(this->mWindows[2], 12, 1, pointString.c_str());
+
+    mvwprintw(this -> mWindows[2], 14, 1, "Heart");
+    string heartStr = to_string(snake -> get_heart());
+    mvwprintw(this -> mWindows[2], 15, 1, heartStr.c_str());
 
     //wrefresh(this->mWindows[2]);
 }
@@ -331,7 +339,7 @@ void GameBoard::renderAllBoards(Map& map)
     renderMap(mWindows[1], map);
     //this->renderGameBoard();
 
-    this->renderInstructionBoard();
+    this->renderInstructionBoard(map.get_snake());
 
     for (int i = 0; i < this->mWindows.size(); i++)
     {
@@ -385,14 +393,14 @@ void GameBoard::startGame() {
     int control;
 
     while (true) {
+
         choice = this -> createWelcomeBoard();
         //refresh();
         if (!choice) break;
 
-        this -> renderAllBoards(map);
 
         while (true) {
-            this -> renderMap(mWindows[1], map);
+            this -> renderAllBoards(map);
 
             control = getch();
 
@@ -407,18 +415,17 @@ void GameBoard::startGame() {
                     snake->changeDir(Direction::RIGHT); break;
             }
 
-
             snake->moveForward();
-
-
-            //if (!snake->checkAlive()) {break;}
+            if (!snake->checkAlive()) {break;}
 
             this_thread::sleep_for(chrono::milliseconds(100));
         }
         //if (control == ' ' || control == 10) {break;}
 
-        //refresh();
-        //choice = this->renderRestartMenu(snake);
-        //if (choice == false) break;
+        choice = this->renderRestartMenu(snake);
+        if (choice == false) break;
+        snake -> revive();
+        clear();
+        refresh();
     }
 }

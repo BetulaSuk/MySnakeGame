@@ -35,7 +35,7 @@ class GameBoard
         void renderMap(WINDOW* win, Map& map);
 
         void createInstructionBoard();
-        void renderInstructionBoard() const;
+        void renderInstructionBoard(Snake* snake) const;
 
         bool renderRestartMenu(Snake* snake) const;
 
