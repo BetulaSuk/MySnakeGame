@@ -40,20 +40,45 @@ GameBoard::~GameBoard()
 
 bool GameBoard::createWelcomeBoard() {
 
+    refresh();
     //正中间生成Welcome界面
     noecho();
-    int width = this->mGameBoardWidth * 0.5;
-    int height = this->mGameBoardHeight * 0.5;
-    int startX = this->mGameBoardWidth * 0.25;
-    int startY = this->mGameBoardHeight * 0.25;
+    int width = this->mScreenWidth * 0.75;
+    int height = this->mScreenHeight * 0.5;
+    int startX = this->mScreenWidth * 0.125;
+    int startY = this->mScreenHeight * 0.375;
 
     WINDOW* menu;
+    WINDOW* title;
+
     menu = newwin(height, width, startY, startX);
     box(menu, 0, 0);
 
-    mvwprintw(menu, 1, 1, "Welcome to The Snake Game!");
-    mvwprintw(menu, 2, 1, "Author: TZY, WHY");
-    mvwprintw(menu, 3, 1, "Implemented using C++ and libncurses library.");
+    title = newwin(7, width, mScreenHeight*0.125, startX);
+    
+
+    mvwprintw(menu, 1, width*0.5 - 13, "Welcome to The Snake Game!");
+    mvwprintw(menu, 2, width*0.5 - 8, "Author: TZY, WHY");
+    mvwprintw(menu, 3, width*0.5 - 22, "Implemented using C++ and libncurses library");
+
+    start_color();
+    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    wattron(title, COLOR_PAIR(1));
+
+    string s1 = "  ____              _         ____                      ";
+    string s2 = " / ___| _ __   __ _| | _____ / ___| __ _ _ __ ___   ___ ";
+    string s3 = " \\___ \\| '_ \\ / _` | |/ / _ \\ |  _ / _` | '_ ` _ \\ / _ \\";
+    string s4 = "  ___) | | | | (_| |   <  __/ |_| | (_| | | | | | |  __/";
+    string s5 = " |____/|_| |_|\\__,_|_|\\_\\___|\\____|\\__,_|_| |_| |_|\\___|";
+
+    mvwprintw(title, 1, width*0.5 - 28, "%s", s1.c_str());
+    mvwprintw(title, 2, width*0.5 - 28, "%s", s2.c_str());
+    mvwprintw(title, 3, width*0.5 - 28, "%s", s3.c_str());
+    mvwprintw(title, 4, width*0.5 - 28, "%s", s4.c_str());
+    mvwprintw(title, 5, width*0.5 - 28, "%s", s5.c_str());
+    wattroff(title, COLOR_PAIR(1));
+    wrefresh(title);
+
 
     //这里可以加入更多选项
     vector<string> menuItems = {"Start", "Quit", "Help", "Settings"};
@@ -65,12 +90,11 @@ bool GameBoard::createWelcomeBoard() {
     mvwprintw(menu, 0 + offset, 1, menuItems[0].c_str());
     wattroff(menu, A_STANDOUT);
     mvwprintw(menu, 1 + offset, 1, menuItems[1].c_str());
-    wattroff(menu, A_STANDOUT);
     mvwprintw(menu, 2 + offset, 1, menuItems[2].c_str());
-    wattroff(menu, A_STANDOUT);
     mvwprintw(menu, 3 + offset, 1, menuItems[3].c_str());
 
     wrefresh(menu);
+    wrefresh(title);
 
     int key;
     while (true)
@@ -104,6 +128,7 @@ bool GameBoard::createWelcomeBoard() {
         this_thread::sleep_for(chrono::milliseconds(100));
     }
     delwin(menu);
+    delwin(title);
 
     //根据选项不同返回不同值
     if (index == 0) return true;
