@@ -58,6 +58,8 @@ class Map {
         // 初始化: 创建并绑定蛇
         void init_snake();
 
+        ~Map();
+
         void loadMap(std::string fileDir);
         bool writeMap(std::string fileDir);
 
@@ -95,6 +97,15 @@ namespace Random {
     void resetRandomEngine();
 
     int randInt(int start, int end);
+}
+
+
+namespace Path {
+    extern std::string rootPath;
+
+    void setRootPath();
+
+    std::string fullPath(std::string partPath);
 }
 
 #endif

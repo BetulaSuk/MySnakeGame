@@ -100,6 +100,8 @@ class SnakeBody: public BaseItem {
 
         virtual void set_block(BaseBlock* block);
 
+        virtual void set_snake(Snake* ptr_S);
+
         void escapeBlock();
 
         /* Snake 相关操作 */

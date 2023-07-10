@@ -29,3 +29,7 @@ void SnakeBody::set_block(BaseBlock* block) {
     ptrBlock = block;
     block->attachSnakeBody(this);
 }
+
+void SnakeBody::set_snake(Snake* ptr_S) {
+    ptrSnake = ptr_S;
+}

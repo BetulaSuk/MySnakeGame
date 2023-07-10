@@ -7,29 +7,57 @@
 #include "../snake/snake.h"
 
 #include <iostream>
+#include <fstream>
 #include <sstream>
 
-Snake* loadString(Map* ptrMap, std::string str1, std::string str2) {
+Snake* loadSnake(Map* ptrMap, std::ifstream& ifs) {
     Snake* ptrSnake = nullptr;
     try {
 
-    std::stringstream cache;
-    cache << str1;
-
-    char ch = ' ';
-    int start_x  = 0,
-        start_y  = 0,
-        init_len = 0,
-        init_dir = 0;
-    
-    cache >> ch;
+    char ch;
+    ifs >> ch;
     if (ch != 's') {return nullptr;}
 
-    cache >> start_x >> start_y >> init_len >> init_dir;
+    // 读取初始信息
+    int start_x, start_y, init_len, init_dir, init_heart;
+    ifs >> start_x >> start_y >> init_len >> init_dir >>init_heart;
+    Direction dir = static_cast<Direction>(init_dir);
 
-    
+    // 读取蛇身渲染信息
+    std::string displayStr, 
+                tempS = " ";
+    // 第一次相当于光标换行
+    std::getline(ifs, displayStr);
+    std::getline(ifs, displayStr);
 
-    } catch (...) {return nullptr;}
+    std::cout << ">>> the display str: " << displayStr << std::endl; // debug
+
+    ptrSnake = new Snake();
+
+    // 初始化蛇头
+    SnakeBody* ptr_S = ptrSnake->ptrHead;
+    ptr_S = new SnakeBody();
+    ptr_S->set_block(ptrMap->at(start_x, start_y));
+    ptr_S->set_snake(ptrSnake);
+    tempS[0] = displayStr[0];
+    ptr_S->setString(tempS);
+
+    std::cout << ">>> snake head loaded! " << std::endl; // debug
+
+    // 依次初始化蛇的剩余部分
+    int x = start_x,
+        y = start_y;
+    for (int i = 1; i < init_len; i++) {
+        ptr_S = ptr_S->next();
+        ptr_S = new SnakeBody();
+        nextPos(x, y, x, y, dir);
+        ptr_S->set_block(ptrMap->at(x, y));
+        ptr_S->set_snake(ptrSnake);
+        tempS[i] = displayStr[i];
+        ptr_S->setString(tempS);
+    }
+
+    } catch (...) {delete ptrSnake; return nullptr;}
     return ptrSnake;
 }
 
@@ -112,6 +140,7 @@ bool Snake::moveForward() {
         case BlockType::WALL:
             // std::cout << ">>> hit wall!" << std::endl; //debug
             isAlive = false;
+            heart = 0;
             return false;
         // TODO 添加更多方块类型时此处可能要增加判定
         default:
@@ -124,6 +153,7 @@ bool Snake::moveForward() {
     if (ptrSAhead) {
         // std::cout << ">>> hit self!" << std::endl; //debug
         isAlive = false;
+        heart = 0;
         return false;
     }
 
