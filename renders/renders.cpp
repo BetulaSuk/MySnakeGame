@@ -40,6 +40,7 @@ GameBoard::~GameBoard()
 
 bool GameBoard::createWelcomeBoard() {
 
+    erase();
     refresh();
     //正中间生成Welcome界面
     noecho();
@@ -57,9 +58,9 @@ bool GameBoard::createWelcomeBoard() {
     title = newwin(7, width, mScreenHeight*0.125, startX);
     
 
-    mvwprintw(menu, 1, width*0.5 - 13, "Welcome to The Snake Game!");
-    mvwprintw(menu, 2, width*0.5 - 8, "Author: TZY, WHY");
-    mvwprintw(menu, 3, width*0.5 - 22, "Implemented using C++ and libncurses library");
+    mvwprintw(menu, 2, width*0.5 - 13, "Welcome to The Snake Game!");
+    mvwprintw(menu, 3, width*0.5 - 8, "Author: TZY, WHY");
+    mvwprintw(menu, 4, width*0.5 - 22, "Implemented using C++ and libncurses library");
 
     start_color();
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
@@ -77,21 +78,21 @@ bool GameBoard::createWelcomeBoard() {
     mvwprintw(title, 4, width*0.5 - 28, "%s", s4.c_str());
     mvwprintw(title, 5, width*0.5 - 28, "%s", s5.c_str());
     wattroff(title, COLOR_PAIR(1));
-    wrefresh(title);
+    //wrefresh(title);
 
 
     //这里可以加入更多选项
     vector<string> menuItems = {"Start", "Quit", "Help", "Settings"};
     int index = 0;
-    int offset = 5;
+    int offset = width * 0.25;
     
     //下面实现选项切换
     wattron(menu, A_STANDOUT);
-    mvwprintw(menu, 0 + offset, 1, menuItems[0].c_str());
+    mvwprintw(menu, 8, offset*0.5 - 2, menuItems[0].c_str());
     wattroff(menu, A_STANDOUT);
-    mvwprintw(menu, 1 + offset, 1, menuItems[1].c_str());
-    mvwprintw(menu, 2 + offset, 1, menuItems[2].c_str());
-    mvwprintw(menu, 3 + offset, 1, menuItems[3].c_str());
+    mvwprintw(menu, 8, offset*1.5 - 2, menuItems[1].c_str());
+    mvwprintw(menu, 8, offset*2.5 - 2, menuItems[2].c_str());
+    mvwprintw(menu, 8, offset*3.5 - 2, menuItems[3].c_str());
 
     wrefresh(menu);
     wrefresh(title);
@@ -102,24 +103,24 @@ bool GameBoard::createWelcomeBoard() {
         key = getch();
         switch (key)
         {
-            case 'W':
-            case 'w':
-            case KEY_UP:
-                mvwprintw(menu, index + offset, 1, menuItems[index].c_str());
+            case 'A':
+            case 'a':
+            case KEY_LEFT:
+                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
                 index --;
                 index = (index < 0) ? menuItems.size() - 1 : index;
                 wattron(menu, A_STANDOUT);
-                mvwprintw(menu, index + offset, 1, menuItems[index].c_str());
+                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
                 wattroff(menu, A_STANDOUT);
                 break;
-            case 'S':
-            case 's':
-            case KEY_DOWN:
-                mvwprintw(menu, index + offset, 1, menuItems[index].c_str());
+            case 'D':
+            case 'd':
+            case KEY_RIGHT:
+                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
                 index ++;
                 index = (index > menuItems.size() - 1) ? 0 : index;
                 wattron(menu, A_STANDOUT);
-                mvwprintw(menu, index + offset, 1, menuItems[index].c_str());
+                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
                 wattroff(menu, A_STANDOUT);
                 break;
         }
@@ -145,10 +146,10 @@ bool GameBoard::createWelcomeBoard() {
 
 bool GameBoard::createHelp() {
 
-    int width = this->mGameBoardWidth * 0.5;
-    int height = this->mGameBoardHeight * 0.5;
-    int startX = this->mGameBoardWidth * 0.25;
-    int startY = this->mGameBoardHeight * 0.25;
+    int width = this->mScreenWidth * 0.5;
+    int height = this->mScreenHeight * 0.5;
+    int startX = this->mScreenWidth * 0.25;
+    int startY = this->mScreenHeight * 0.25;
 
     WINDOW* menu;
     menu = newwin(height, width, startY, startX);
@@ -182,10 +183,10 @@ bool GameBoard::createHelp() {
 //Create Setting board
 //(Unfinished)
 bool GameBoard:: createSetting() {
-    int width = this->mGameBoardWidth * 0.5;
-    int height = this->mGameBoardHeight * 0.5;
-    int startX = this->mGameBoardWidth * 0.25;
-    int startY = this->mGameBoardHeight * 0.25;
+    int width = this->mScreenWidth * 0.5;
+    int height = this->mScreenHeight * 0.5;
+    int startX = this->mScreenWidth * 0.25;
+    int startY = this->mScreenHeight * 0.25;
 
     WINDOW* menu;
     menu = newwin(height, width, startY, startX);
@@ -353,7 +354,7 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
 }
 
 
-void GameBoard::renderAllBoards(Map& map)
+void GameBoard::renderAllBoards(Map& map, Snake* snake)
 {
     for (int i = 0; i < this->mWindows.size(); i++)
     {
@@ -364,7 +365,7 @@ void GameBoard::renderAllBoards(Map& map)
     renderMap(mWindows[1], map);
     //this->renderGameBoard();
 
-    this->renderInstructionBoard(map.get_snake());
+    this->renderInstructionBoard(snake);
 
     for (int i = 0; i < this->mWindows.size(); i++)
     {
@@ -406,26 +407,31 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
 
 
 
-void GameBoard::startGame() {
+void GameBoard::startGame(Map& map, Snake* snake) {
     refresh();
 
-    Map map(mGameBoardHeight, mGameBoardWidth);
+    /*Map map(mGameBoardHeight, mGameBoardWidth);
 
     map.init_snake();
     Snake* snake = map.get_snake();
+    
 
-    bool choice;
+    Random::resetRandomEngine();
+    map.setRandomItem(ItemType::FOOD, "#");*/
+
+    //bool choice;
     int control;
 
-    while (true) {
+    //while (true) {
 
-        choice = this -> createWelcomeBoard();
-        //refresh();
-        if (!choice) break;
+
+
+        //choice = this -> createWelcomeBoard();
+        //if (!choice) break;
 
 
         while (true) {
-            this -> renderAllBoards(map);
+            this -> renderAllBoards(map, snake);
 
             control = getch();
 
@@ -447,10 +453,6 @@ void GameBoard::startGame() {
         }
         //if (control == ' ' || control == 10) {break;}
 
-        choice = this->renderRestartMenu(snake);
-        if (choice == false) break;
-        snake -> revive();
-        clear();
-        refresh();
-    }
+        
+    //}
 }

@@ -39,9 +39,14 @@ class GameBoard
 
         bool renderRestartMenu(Snake* snake) const;
 
-        void renderAllBoards(Map& map);
+        void renderAllBoards(Map& map, Snake* snake);
 
-        void startGame();
+        void startGame(Map& map, Snake* snake);
+
+        //Snake* get_snake();
+
+        int getGameBoardWidth() {return mGameBoardWidth;}
+        int getGameBoardHeight() {return mGameBoardHeight;}
 
     private:
         int mScreenWidth;
