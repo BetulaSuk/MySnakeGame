@@ -9,8 +9,10 @@
 #include "../items/items.h"
 #include "../renders/renders.h"
 
-int test_x = 50;
-int test_y = 30;
+int test_x = 10;
+int test_y = 10;
+
+std::string map_partPath = "/data/maps/normal_1.map";
 
 void renderMap(WINDOW* win, Map& map);
 
@@ -18,7 +20,7 @@ int main() {
     initscr();
     raw();
     keypad(stdscr, true);
-    nodelay(stdscr, true);
+    // nodelay(stdscr, true);
     noecho();
     curs_set(0);
 
@@ -32,12 +34,12 @@ int main() {
     int start_x = (max_x == test_x) ? 0 : (max_x - test_x) / 2,
         start_y = (max_y == test_y) ? 0 : (max_y - test_y) / 2;
 
-    Map map(test_y, test_x);
-    map.init_snake();
-    Snake* snake = map.get_snake();
+    Path::setRootPath();
+    Map* map = loadMap(Path::fullPath(map_partPath));
+    Snake* snake = map->get_snake();
 
     Random::resetRandomEngine();
-    map.setRandomItem(ItemType::FOOD, "#");
+    map->setRandomItem(ItemType::FOOD, "#");
     
     WINDOW* mainWin = newwin(test_y, test_x, start_y, start_x);
     box(mainWin, 0, 0);
@@ -46,7 +48,7 @@ int main() {
 
     int control;
     while (true) {
-        renderMap(mainWin, map);
+        renderMap(mainWin, *map);
 
         control = getch();
 

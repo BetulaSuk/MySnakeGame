@@ -86,8 +86,7 @@ Map* loadMap(std::string fileDir) {
 
     std::string aline = "",
                 displayStr = " ";
-    BaseBlock* ptr_B = nullptr;
-    
+
     // 相当于光标换行
     std::getline(mapFile, aline); 
 
@@ -95,24 +94,20 @@ Map* loadMap(std::string fileDir) {
         std::getline(mapFile, aline);
 
         for (int j = 0; j < width; j++) {
-            ptr_B = ptrMap->data[i][j];
-
             ch1 = aline[2 * j];
             ch2 = aline[2 * j + 1];
             displayStr[0] = ch2;
 
             switch (ch1) {
-                case '0': ptr_B = new BaseBlock(i, j); break;
-                case '1': ptr_B = new Wall(i, j); break;
+                case '0': ptrMap->data[i][j] = new BaseBlock(i, j); break;
+                case '1': ptrMap->data[i][j] = new Wall(i, j); break;
                 /* TODO 添加新的方块类型 */
                 default: mapFile.close(); delete ptrMap; return nullptr;
             }
 
-            ptr_B->setString(displayStr);
+            ptrMap->data[i][j]->setString(displayStr);
         }
     }
-
-    std::cout << ">>> blocks loaded! " << std::endl; // debug
 
     ptrMap->ptrSnake = loadSnake(ptrMap, mapFile);
 
@@ -173,7 +168,7 @@ bool Map::writeMap(std::string fileDir) {
 bool Map::onMap(BaseBlock* block) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (block == data[i][j]) {
+            if (block && block == data[i][j]) {
                 return true;
             }
         }
