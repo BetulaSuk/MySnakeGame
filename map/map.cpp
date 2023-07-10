@@ -67,11 +67,11 @@ Map* loadMap(std::string fileDir) {
 
     std::ifstream mapFile;
     mapFile.open(fileDir, std::ios::in);
-    if ( ! mapFile.is_open()) {mapFile.close(); return nullptr;}
+    if ( ! mapFile.is_open()) {mapFile.close(); throw 1;}
 
     char ch1, ch2;
     mapFile >> ch1;
-    if (ch1 != 'm') {mapFile.close(); return nullptr;}
+    if (ch1 != 'm') {mapFile.close(); throw 1;}
 
     // 创建新的空地图, 设置地图大小
     int height, width;
@@ -102,12 +102,25 @@ Map* loadMap(std::string fileDir) {
                 case '0': ptrMap->data[i][j] = new BaseBlock(i, j); break;
                 case '1': ptrMap->data[i][j] = new Wall(i, j); break;
                 /* TODO 添加新的方块类型 */
-                default: mapFile.close(); delete ptrMap; return nullptr;
+                default: mapFile.close(); throw 1;
             }
 
             ptrMap->data[i][j]->setString(displayStr);
         }
     }
+
+    int tempi = 0;
+    mapFile >> ch1;
+    if (ch1 == 's') {
+        mapFile.seekg(-1);
+    } else if (ch1 == 'f') {
+        mapFile >> tempi;
+        std::getline(mapFile, aline); // 光标换行
+        for (int i = 0; i < tempi; i++) {
+            std::getline(mapFile, aline);
+            if ( ! carryCommand(ptrMap, aline)) {mapFile.close(); throw 1;}
+        }
+    } else {mapFile.close(); throw 1;}
 
     ptrMap->ptrSnake = loadSnake(ptrMap, mapFile);
 
@@ -119,6 +132,15 @@ Map* loadMap(std::string fileDir) {
     }
 
     return ptrMap;
+}
+
+bool carryCommand(Map* map, std::string com) {
+    std::stringstream sstr;
+    sstr << com;
+
+    char comType, 
+
+    return true;
 }
 
 
