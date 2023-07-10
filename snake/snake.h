@@ -23,14 +23,15 @@ enum class BlockType;
 class Map;
 enum class Direction;
 
-Snake* loadString(Map* ptrMap, std::string str1, std::string str2);
+
+Snake* loadSnake(Map* ptrMap, std::ifstream& ifs);
 
 
 class Snake {
-    friend Snake* loadString(std::string str1, std::string str2);
+    friend Snake* loadSnake(Map* ptrMap, std::ifstream& ifs);
 
     public:
-        Snake() = delete;
+        Snake() = default;
         Snake(Map* map, int start_x, int start_y, int init_len, int init_heart);
 
         virtual ~Snake();

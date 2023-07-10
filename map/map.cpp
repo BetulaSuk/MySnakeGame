@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <filesystem>
 
 void nextPos(int x, int y, int& next_x, int& next_y, Direction dir) {
     next_x = x;
@@ -46,16 +48,30 @@ bool canSetItem(BaseBlock* const block) {
     }
 }
 
+void bond(BaseBlock* ptr_B, SnakeBody* ptr_S) {
+    if (ptr_B && ptr_S) {
+        ptr_B->attachSnakeBody(ptr_S);
+        ptr_S->set_block(ptr_B);
+    } else {exit(2);}
+}
+void bond(BaseBlock* ptr_B, BaseItem*  ptr_I) {
+    if (ptr_B && ptr_I && ptr_I->type() != ItemType::SNAKEBODY) {
+        ptr_B->set_item(ptr_I);
+        ptr_I->set_block(ptr_B);
+    } else {exit(2);}
+}
+
 Map* loadMap(std::string fileDir) {
     Map* ptrMap = nullptr;
     try {
 
     std::ifstream mapFile;
-    mapFile.open(fileDir);
+    mapFile.open(fileDir, std::ios::in);
+    if ( ! mapFile.is_open()) {mapFile.close(); return nullptr;}
 
     char ch1, ch2;
     mapFile >> ch1;
-    if (ch1 != 'm') {return nullptr;}
+    if (ch1 != 'm') {mapFile.close(); return nullptr;}
 
     // 创建新的空地图, 设置地图大小
     int height, width;
@@ -71,6 +87,10 @@ Map* loadMap(std::string fileDir) {
     std::string aline = "",
                 displayStr = " ";
     BaseBlock* ptr_B = nullptr;
+    
+    // 相当于光标换行
+    std::getline(mapFile, aline); 
+
     for (int i = 0; i < height; i++) {
         std::getline(mapFile, aline);
 
@@ -85,19 +105,24 @@ Map* loadMap(std::string fileDir) {
                 case '0': ptr_B = new BaseBlock(i, j); break;
                 case '1': ptr_B = new Wall(i, j); break;
                 /* TODO 添加新的方块类型 */
+                default: mapFile.close(); delete ptrMap; return nullptr;
             }
-            if ( ! ptr_B) {return nullptr;}
-            else {ptr_B->setString(displayStr);}
+
+            ptr_B->setString(displayStr);
         }
     }
 
-    std::getline(mapFile, aline);
-    std::getline(mapFile, displayStr);
-    ptrMap->ptrSnake = loadString(ptrMap, aline, displayStr);
+    std::cout << ">>> blocks loaded! " << std::endl; // debug
+
+    ptrMap->ptrSnake = loadSnake(ptrMap, mapFile);
 
     mapFile.close();
     
-    } catch (...) {return nullptr;}
+    } catch (...) {
+        if (ptrMap->ptrSnake) {delete ptrMap->ptrSnake;}
+        delete ptrMap; return nullptr;
+    }
+
     return ptrMap;
 }
 
@@ -127,6 +152,18 @@ Map::Map(int input_height, int input_width) {
 
 void Map::init_snake() {
     ptrSnake = new Snake(this, height/2, width/2, 2, 3);
+}
+
+Map::~Map() {
+    delete ptrSnake;
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            if ( ! data[i][j]) {continue;}
+            data[i][j]->clear_item();
+            delete data[i][j];
+        }
+    }
 }
 
 bool Map::writeMap(std::string fileDir) {
@@ -168,7 +205,7 @@ void Map::setRandomItem(ItemType itType, std::string displayString) {
     }
     if (newItem) {
         newItem->setString(displayString);
-        newItem->set_block(tarBlock);
+        bond(tarBlock, newItem);
     }
 }
 
@@ -185,4 +222,23 @@ void Random::resetRandomEngine() {
 int Random::randInt(int start, int end) {
     std::uniform_int_distribution<int> dis(start, end);
     return dis(*R_engine);
+}
+
+
+/* definitions of namespace Path */
+
+std::string Path::rootPath;
+
+void Path::setRootPath() {
+    std::stringstream sstr;
+    sstr << std::filesystem::current_path();
+    sstr >> rootPath;
+
+    // 有双引号, 掐头去尾
+    rootPath.pop_back();
+    rootPath.erase(0, 1);
+}
+
+std::string Path::fullPath(std::string partPath) {
+    return rootPath + partPath;
 }

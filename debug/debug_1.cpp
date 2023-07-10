@@ -3,6 +3,8 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <sstream>
+#include <filesystem>
 
 #include "../snake/snake.h"
 #include "../map/map.h"
@@ -14,6 +16,8 @@ using namespace std;
 
 int test_x = 20;
 int test_y = 40;
+
+string test_map = "/data/maps/normal_1.map";
 
 void renderMap(Map& map) {
     BaseBlock* ptr_B;
@@ -41,11 +45,23 @@ void renderMap(Map& map) {
 }
 
 int main() {
+    string rootPath;
+    stringstream sstr;
+    sstr << filesystem::current_path();
+    sstr >> rootPath;
+    rootPath.pop_back();
+    rootPath.erase(0, 1);
+    string mapPath = rootPath + test_map;
+
     cout << ">>> to initialize map: " << endl;
-    Map map(test_x, test_y);
+    Map* map = loadMap(mapPath);
+    if ( ! map) {
+        cout << ">>> failed to load map!!" << endl;
+        return 0;
+    }
     cout << ">>> map initailized!" << endl;
-    map.init_snake();
-    Snake* s = map.get_snake();
+
+    Snake* s = map->get_snake();
     cout << ">>> snake initailized!" << endl;
 
     char control;
@@ -60,7 +76,7 @@ int main() {
                 cout << ">>> move finished!" << endl;
                 break;
             case 'r':
-                renderMap(map);
+                renderMap(*map);
                 break;
             case 'W': case 'w':
                 s->changeDir(Direction::UP); break;

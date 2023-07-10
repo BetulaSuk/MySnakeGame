@@ -54,7 +54,7 @@ class BaseBlock {
 
         SnakeBody* getSnakeBody() {return ptrSnakeBody;}
         
-        bool attachSnakeBody(SnakeBody* ptrSbody);
+        void attachSnakeBody(SnakeBody* ptrSbody);
         // 取消 block 对 SnakeBody 的<单向>连接 ! 
         void releaseSnakeBody();
 

@@ -7,36 +7,70 @@
 #include "../snake/snake.h"
 
 #include <iostream>
+#include <fstream>
 #include <sstream>
 
-Snake* loadString(Map* ptrMap, std::string str1, std::string str2) {
+Snake* loadSnake(Map* ptrMap, std::ifstream& ifs) {
     Snake* ptrSnake = nullptr;
     try {
 
-    std::stringstream cache;
-    cache << str1;
-
-    char ch = ' ';
-    int start_x  = 0,
-        start_y  = 0,
-        init_len = 0,
-        init_dir = 0;
-    
-    cache >> ch;
+    char ch;
+    ifs >> ch;
     if (ch != 's') {return nullptr;}
 
-    cache >> start_x >> start_y >> init_len >> init_dir;
+    // 读取初始信息
+    int start_x, start_y, init_len, init_dir, init_heart;
+    ifs >> start_x >> start_y >> init_len >> init_dir >>init_heart;
+    // 生成蛇的方向, 与蛇的初始方向相反
+    Direction dir = static_cast<Direction>((init_dir + 2) % 4);
 
-    
+    // 读取蛇身渲染信息
+    std::string displayStr, 
+                tempS = " ";
+    // 第一次相当于光标换行
+    std::getline(ifs, displayStr);
+    std::getline(ifs, displayStr);
 
-    } catch (...) {return nullptr;}
+    std::cout << ">>> the display str: " << displayStr << std::endl; // debug
+
+    ptrSnake = new Snake();
+    ptrSnake->dir = static_cast<Direction>(init_dir);
+
+    // 初始化蛇头
+    SnakeBody* ptr_S = ptrSnake->ptrHead;
+    BaseBlock* ptr_B = ptrMap->at(start_x, start_y);
+    ptr_S = new SnakeBody();
+    bond(ptr_B, ptr_S);
+    ptr_S->set_snake(ptrSnake);
+    tempS[0] = displayStr[0];
+    ptr_S->setString(tempS);
+
+    std::cout << ">>> snake head loaded! " << std::endl; // debug
+
+    // 依次初始化蛇的剩余部分
+    int x = start_x,
+        y = start_y;
+    for (int i = 1; i < init_len; i++) {
+        ptr_S = ptr_S->next();
+        ptr_S = new SnakeBody();
+
+        nextPos(x, y, x, y, dir);
+        ptr_B = ptrMap->at(x, y);
+        bond(ptr_B, ptr_S);
+
+        ptr_S->set_snake(ptrSnake);
+        tempS[i] = displayStr[i];
+        ptr_S->setString(tempS);
+    }
+
+    } catch (...) {delete ptrSnake; return nullptr;}
     return ptrSnake;
 }
 
 // 初始化: 蛇身创建, 蛇身绑定方块, 蛇身绑定蛇, 蛇绑定地图
 Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
     ptrHead = new SnakeBody();
-    ptrHead->set_block(map->at(start_x, start_y));
+    bond(map->at(start_x, start_y), ptrHead);
     ptrHead->ptrSnake = this;
     ptrHead->setString("@");
 
@@ -54,7 +88,8 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
         ptr->ptrNext = new SnakeBody();
         ptr = ptr->ptrNext;
 
-        ptr->set_block(map->at(x, y));
+        bond(map->at(x, y), ptr);
+
         ptr->ptrSnake = this;
         ptr->setString("@");
     }
@@ -112,6 +147,7 @@ bool Snake::moveForward() {
         case BlockType::WALL:
             // std::cout << ">>> hit wall!" << std::endl; //debug
             isAlive = false;
+            heart = 0;
             return false;
         // TODO 添加更多方块类型时此处可能要增加判定
         default:
@@ -124,6 +160,7 @@ bool Snake::moveForward() {
     if (ptrSAhead) {
         // std::cout << ">>> hit self!" << std::endl; //debug
         isAlive = false;
+        heart = 0;
         return false;
     }
 
@@ -145,8 +182,7 @@ bool Snake::moveForward() {
     // std::cout << ">>> mark!!" << std::endl; // debug
 
     for (int i = 0; i < length; i++) {
-        if ( ! ptrB_2->attachSnakeBody(ptrSbody)) {exit(1);}
-        ptrSbody->set_block(ptrB_2);
+        bond(ptrB_2, ptrSbody);
         ptrB_1->releaseSnakeBody();
 
         // std::cout << ">>> mark: " << i << std::endl; // debug
@@ -194,7 +230,7 @@ bool Snake::tryEatFood(int newTail_x, int newTail_y) {
 
     SnakeBody* newTail = new SnakeBody();
     newTail->ptrSnake = this;
-    newTail->set_block(ptrMap->at(newTail_x, newTail_y));
+    bond(ptrMap->at(newTail_x, newTail_y), newTail);
     newTail->setString("@");
 
     getTailPtr()->ptrNext = newTail;

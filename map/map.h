@@ -42,6 +42,9 @@ BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir);
 
 bool canSetItem(BaseBlock* const block);
 
+void bond(BaseBlock* ptr_B, SnakeBody* ptr_S);
+void bond(BaseBlock* ptr_B, BaseItem*  ptr_I);
+
 // 如果文件与预期不符, 返回空指针
 Map* loadMap(std::string fileDir);
 
@@ -57,6 +60,8 @@ class Map {
         Map(int input_height, int input_width);
         // 初始化: 创建并绑定蛇
         void init_snake();
+
+        ~Map();
 
         void loadMap(std::string fileDir);
         bool writeMap(std::string fileDir);
@@ -95,6 +100,15 @@ namespace Random {
     void resetRandomEngine();
 
     int randInt(int start, int end);
+}
+
+
+namespace Path {
+    extern std::string rootPath;
+
+    void setRootPath();
+
+    std::string fullPath(std::string partPath);
 }
 
 #endif
