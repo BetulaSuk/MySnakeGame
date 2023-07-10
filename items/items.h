@@ -107,6 +107,7 @@ class SnakeBody: public BaseItem {
         /* Snake 相关操作 */
 
         SnakeBody* next() {return ptrNext;}
+        void setNext(SnakeBody* next) {ptrNext = next;}
         Snake* getSnake() {return ptrSnake;}
 
     private:
