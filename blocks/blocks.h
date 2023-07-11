@@ -45,9 +45,12 @@ class BaseBlock {
         // 修改渲染用的字符串
         void setString(std::string s) {displayString = s;}
 
+        Color getColor() const {return colr;}
+        void setColor(Color c) {colr = c;}
+
         /* item 相关操作 */
 
-        // 此格已有物品, 或尝试放入 SnakeBody: 不改变, 返回 false; 否则赋值并返回 true
+        // 此格已有物品, 不改变, 返回 false; 否则赋值并返回 true
         bool set_item(BaseItem* item);
         // 若有物品, 删除该物品, 不仅仅是指针设空 ! 
         void clear_item();
@@ -72,6 +75,8 @@ class BaseBlock {
         const static BlockType TYPE = BlockType::BASEBLOCK;
 
         std::string displayString = " ";
+
+        Color colr;
 };
 
 

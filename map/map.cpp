@@ -143,8 +143,7 @@ Map* loadMap(std::string fileDir) {
     return ptrMap;
 }
 
-//临时注释！
-/*bool carryCommand(Map* map, std::string com) {
+bool carryCommand(Map* map, std::string com) {
     std::stringstream sstr;
     sstr << com;
 
@@ -241,7 +240,7 @@ Map* loadMap(std::string fileDir) {
     }
 
     return true;
-}*/
+}
 
 
 
@@ -270,6 +269,8 @@ Map::Map(int input_height, int input_width) {
                     else data[i][j] = new Wall(i, j);
             }
             else {data[i][j] = new BaseBlock(i, j);}
+
+            data[i][j]->setColor(initColor(1000, 1000, 1000));
         }
     }
     //临时生成一组传送门

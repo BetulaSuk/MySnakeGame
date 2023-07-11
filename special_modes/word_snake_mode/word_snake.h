@@ -9,9 +9,11 @@
 #include "../../items/items.h"
 #include "../../snake/snake.h"
 #include "../../map/map.h"
+#include "../entity/entity.h"
 
 #include <string>
 
+// 返回值: -1 错误; 0 无单词; >0 单词的长度
 int checkWord(std::string snakeStr);
 
 
@@ -23,9 +25,13 @@ class WordSnake: public Snake {
         
         ~WordSnake() = default;
 
+        // 如果遇到食物, 将其字符拼在尾部
         virtual bool moveForward();
 
         std::string getString() const;
+
+        // 如果组成了单词, 剪掉, 并返回其
+        SnakeBody* cutWord();
 };
 
 

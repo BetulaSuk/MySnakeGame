@@ -13,7 +13,7 @@ BaseBlock::~BaseBlock() {
 }
 
 bool BaseBlock::set_item(BaseItem* item) {
-    if ( ! ptrItem && item->type() != ItemType::SNAKEBODY) {
+    if ( ! ptrItem) {
         ptrItem = item;
         return true;
     }

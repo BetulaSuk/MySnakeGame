@@ -5,6 +5,14 @@
 #include "items.h"
 #include "../snake/snake.h"
 
+Color initColor(int red, int green, int blue) {
+    Color c;
+    c.red = red;
+    c.green = green;
+    c.blue = blue;
+    return c;
+}
+
 
 BaseItem::BaseItem(BaseBlock* block) {
     ptrBlock = block;
