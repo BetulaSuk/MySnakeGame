@@ -66,7 +66,7 @@ class Snake {
         // 不会自动生成新的 Heart
         bool tryEatHeart();
 
-    private:
+
         bool isAlive = true;
         int heart = 0;
         int length = 0;

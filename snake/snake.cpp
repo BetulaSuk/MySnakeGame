@@ -91,15 +91,11 @@ bool Snake::moveForward() {
     // 检查蛇是否死亡
     if (isAlive == false) {return false;}
 
-    // std::cout << ">>> head pos: " << ptrHead->get_x() << ' ' << ptrHead->get_y() << std::endl; //debug
-    
     BaseBlock* blockAhead = nextBlock(ptrMap, ptrHead->get_block(), dir);
     BlockType  typeBlock  = blockAhead->type();
 
     // 检查是否超出地图边界
     if ( ! blockAhead) {return false;}
-
-    // std::cout << ">>> next block pos: " << blockAhead->get_x() << ' ' << blockAhead->get_y() << std::endl; //debug
 
     // 检查前方方块是否可踏足
     switch (typeBlock) {
@@ -116,7 +112,6 @@ bool Snake::moveForward() {
     SnakeBody* ptrSAhead = blockAhead->getSnakeBody();
 
     if (ptrSAhead) {
-        // std::cout << ">>> hit self!" << std::endl; //debug
         isAlive = false;
         heart = 0;
         return false;
