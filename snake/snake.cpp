@@ -241,8 +241,9 @@ bool Snake::tryEatFood(int newTail_x, int newTail_y) {
 
     point++;
 
-    ptrMap->setRandomItem(ItemType::FOOD, "#");
 
+    ptrMap->setRandomItem(ItemType::FOOD, "#");
+    if (ptrMap->getFoodNum() == 5) {ptrMap-> setRandomItem(ItemType::HEART, "+");}
     return true;
 }
 

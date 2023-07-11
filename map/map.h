@@ -86,12 +86,18 @@ class Map {
 
         void setRandomItem(ItemType itType, std::string displayString);
 
+        int getFoodNum() {return foodNum;}
+
+
     private:
         int width = 0;
         int height = 0;
         std::vector<std::vector<BaseBlock*>> data;
 
         Snake* ptrSnake = nullptr;
+
+        //为生成爱心准备：
+        int foodNum = 0;
 };
 
 

@@ -37,6 +37,8 @@ int main() {
         Snake* snake = map.get_snake();
         Random::resetRandomEngine();
         map.setRandomItem(ItemType::FOOD, "#");
+        
+
 
         //游戏主循环入口
         game.startGame(map, snake);

@@ -503,10 +503,10 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             //改变预设颜色！！
             //灰色
             init_color(COLOR_RED, 800, 800, 800);
-            //init_color(COLOR_YELLOW, 800, 700, 0);
             init_pair(1, COLOR_BLACK, COLOR_RED);
             init_pair(2, COLOR_GREEN, COLOR_RED);
             init_pair(3, COLOR_WHITE, COLOR_RED);
+            init_pair(4, COLOR_MAGENTA, COLOR_RED);
             
 
             if (ptr_S != nullptr) {
@@ -517,9 +517,16 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             }
             //BaseItem(FOOD, HEART, SNAKEBODY)
             else if (ptr_I != nullptr) {
-                wattron(win, COLOR_PAIR(2));
-                mvwprintw(win, i, j, ptr_I->toString().c_str());
-                wattroff(win, COLOR_PAIR(2));
+                if (ptr_I -> type() == ItemType::FOOD) {
+                    wattron(win, COLOR_PAIR(2));
+                    mvwprintw(win, i, j, ptr_I->toString().c_str());
+                    wattroff(win, COLOR_PAIR(2));
+                }
+                else if (ptr_I -> type() == ItemType::HEART) {
+                    wattron(win, COLOR_PAIR(4));
+                    mvwprintw(win, i, j, ptr_I->toString().c_str());
+                    wattroff(win, COLOR_PAIR(4));
+                }
             }
             else {
                 //渲染地图方块

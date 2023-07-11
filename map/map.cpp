@@ -240,9 +240,11 @@ void Map::setRandomItem(ItemType itType, std::string displayString) {
     switch (itType) {
         case ItemType::FOOD:
             newItem = new Food();
+            this -> foodNum++;
             break;
         case ItemType::HEART:
             newItem = new Heart();
+            this -> foodNum = 0;
             break;
     }
     if (newItem) {
