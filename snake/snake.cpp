@@ -243,6 +243,7 @@ bool Snake::tryEatFood(int newTail_x, int newTail_y) {
 
 
     ptrMap->setRandomItem(ItemType::FOOD, "#");
+    //每生成五次食物就生成一个爱心
     if (ptrMap->getFoodNum() == 5) {ptrMap-> setRandomItem(ItemType::HEART, "+");}
     return true;
 }
