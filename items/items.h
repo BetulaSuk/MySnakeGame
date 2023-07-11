@@ -19,7 +19,7 @@ struct Color {
     int blue;
 };
 
-Color setColor(int red, int green, int blue);
+Color initColor(int red, int green, int blue);
 
 
 enum class ItemType {

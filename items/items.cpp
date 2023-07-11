@@ -5,7 +5,7 @@
 #include "items.h"
 #include "../snake/snake.h"
 
-Color setColor(int red, int green, int blue) {
+Color initColor(int red, int green, int blue) {
     Color c;
     c.red = red;
     c.green = green;
