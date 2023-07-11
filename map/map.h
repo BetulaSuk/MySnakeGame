@@ -48,9 +48,12 @@ void bond(BaseBlock* ptr_B, BaseItem*  ptr_I);
 // 如果文件与预期不符, 返回空指针
 Map* loadMap(std::string fileDir);
 
+bool carryCommand(Map* map, std::string com);
+
 
 class Map {
     friend Map* loadMap(std::string fileDir);
+    friend bool carryCommand(Map* map, std::string com);
 
     public:
         /* 初始化 */

@@ -14,8 +14,8 @@
 
 using namespace std;
 
-int test_x = 20;
-int test_y = 40;
+int test_x = 10;
+int test_y = 10;
 
 string test_map = "/data/maps/normal_1.map";
 
@@ -72,8 +72,9 @@ int main() {
             case '\n':
                 break;
             case 'm':
-                s->moveForward();
-                cout << ">>> move finished!" << endl;
+                if (s->moveForward()) {
+                    cout << ">>> move finished!" << endl;
+                } else {cout << ">>> move failed!" << endl;}
                 break;
             case 'r':
                 renderMap(*map);

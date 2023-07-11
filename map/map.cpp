@@ -76,11 +76,11 @@ Map* loadMap(std::string fileDir) {
 
     std::ifstream mapFile;
     mapFile.open(fileDir, std::ios::in);
-    if ( ! mapFile.is_open()) {mapFile.close(); return nullptr;}
+    if ( ! mapFile.is_open()) {mapFile.close(); throw 1;}
 
     char ch1, ch2;
     mapFile >> ch1;
-    if (ch1 != 'm') {mapFile.close(); return nullptr;}
+    if (ch1 != 'm') {mapFile.close(); throw 1;}
 
     // 创建新的空地图, 设置地图大小
     int height, width;
@@ -95,8 +95,7 @@ Map* loadMap(std::string fileDir) {
 
     std::string aline = "",
                 displayStr = " ";
-    BaseBlock* ptr_B = nullptr;
-    
+
     // 相当于光标换行
     std::getline(mapFile, aline); 
 
@@ -104,24 +103,33 @@ Map* loadMap(std::string fileDir) {
         std::getline(mapFile, aline);
 
         for (int j = 0; j < width; j++) {
-            ptr_B = ptrMap->data[i][j];
-
             ch1 = aline[2 * j];
             ch2 = aline[2 * j + 1];
             displayStr[0] = ch2;
 
             switch (ch1) {
-                case '0': ptr_B = new BaseBlock(i, j); break;
-                case '1': ptr_B = new Wall(i, j); break;
+                case '0': ptrMap->data[i][j] = new BaseBlock(i, j); break;
+                case '1': ptrMap->data[i][j] = new Wall(i, j); break;
                 /* TODO 添加新的方块类型 */
-                default: mapFile.close(); delete ptrMap; return nullptr;
+                default: mapFile.close(); throw 1;
             }
 
-            ptr_B->setString(displayStr);
+            ptrMap->data[i][j]->setString(displayStr);
         }
     }
 
-    std::cout << ">>> blocks loaded! " << std::endl; // debug
+    int tempi = 0;
+    mapFile >> ch1;
+    if (ch1 == 's') {
+        mapFile.seekg(-1);
+    } else if (ch1 == 'f') {
+        mapFile >> tempi;
+        std::getline(mapFile, aline); // 光标换行
+        for (int i = 0; i < tempi; i++) {
+            std::getline(mapFile, aline);
+            if ( ! carryCommand(ptrMap, aline)) {mapFile.close(); throw 1;}
+        }
+    } else {mapFile.close(); throw 1;}
 
     ptrMap->ptrSnake = loadSnake(ptrMap, mapFile);
 
@@ -133,6 +141,15 @@ Map* loadMap(std::string fileDir) {
     }
 
     return ptrMap;
+}
+
+bool carryCommand(Map* map, std::string com) {
+    std::stringstream sstr;
+    sstr << com;
+
+    char comType, 
+
+    return true;
 }
 
 
@@ -195,7 +212,7 @@ bool Map::writeMap(std::string fileDir) {
 bool Map::onMap(BaseBlock* block) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (block == data[i][j]) {
+            if (block && block == data[i][j]) {
                 return true;
             }
         }
