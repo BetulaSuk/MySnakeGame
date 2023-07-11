@@ -156,7 +156,7 @@ Map* loadMap(std::string fileDir) {
      * - s: 创建蛇身, 位置, 渲染字符, 下一节的位置
      * - c: 声明蛇, 蛇头的位置, 初始生命, 初始方向
     */
-
+/*
     char comType;
     sstr >> comType;
     int x, y; std::string displayStr;
@@ -209,7 +209,7 @@ Map* loadMap(std::string fileDir) {
                     ptr_I->setString(displayStr);
                     bond(map->data[x][y], ptr_I);
                     break;
-                /* TODO */
+                // TODO 
             }
             break;
 

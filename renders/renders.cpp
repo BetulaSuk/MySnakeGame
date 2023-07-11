@@ -3,7 +3,7 @@
 GameBoard::GameBoard()
 {
     // Separate the screen to three windows
-    this->mWindows.resize(3);
+    this->mWindows.resize(4);
     initscr();
     // 将所有键盘输入导入程序, 包括终止和Fn
     raw();
@@ -21,6 +21,7 @@ GameBoard::GameBoard()
     this->mGameBoardHeight = this->mScreenHeight - this->mInformationHeight;
 
     this->createInformationBoard();
+    this -> createLogo();
     this->createGameBoard();
     this->createInstructionBoard();
 
@@ -36,6 +37,7 @@ GameBoard::~GameBoard()
     }
     endwin();
 }
+
 
 
 bool GameBoard::createWelcomeBoard() {
@@ -319,16 +321,54 @@ void GameBoard::createInformationBoard()
 {
     int startY = 0;
     int startX = 0;
-    this->mWindows[0] = newwin(this->mInformationHeight, this->mScreenWidth, startY, startX);
+    this->mWindows[0] = newwin(this->mInformationHeight, this->mScreenWidth - 65, startY, startX);
 }
 
-void GameBoard::renderInformationBoard() const
+
+void GameBoard::renderInformationBoard()
 {
+    werase(mWindows[0]);
     mvwprintw(this->mWindows[0], 1, 1, "Welcome to The Snake Game!");
     mvwprintw(this->mWindows[0], 2, 1, "Author: TZY, WHY");
     mvwprintw(this->mWindows[0], 3, 1, "Website: https://github.com/leimao/");
     mvwprintw(this->mWindows[0], 4, 1, "Implemented using C++ and libncurses library.");
-    //wrefresh(this->mWindows[0]);
+
+    box(mWindows[0], 0, 0);
+    wrefresh(mWindows[0]);
+}
+
+
+
+void GameBoard::createLogo() {
+    int startY = 0;
+    int startX = this -> mScreenWidth - 65;
+    this->mWindows[3] = newwin(this->mInformationHeight, 65, startY, startX);
+}
+
+
+void GameBoard::renderLogo() {
+    box(mWindows[3], 0, 0);
+
+    string s1 = "  ____              _         ____";
+    string s2 = " / ___| _ __   __ _| | _____ / ___| __ _ _ __ ___   ___";
+    string s3 = " \\___ \\| '_ \\ / _` | |/ / _ \\ |  _ / _` | '_ ` _ \\ / _ \\";
+    string s4 = "  ___) | | | | (_| |   <  __/ |_| | (_| | | | | | |  __/";
+    string s5 = " |____/|_| |_|\\__,_|_|\\_\\___|\\____|\\__,_|_| |_| |_|\\___|";
+    
+    int width = this->mScreenWidth;
+    start_color();
+    init_pair(9, COLOR_CYAN, COLOR_BLACK);
+    wattron(this->mWindows[3], COLOR_PAIR(9));
+    
+    mvwprintw(this->mWindows[3], 1, 3, "%s", s1.c_str());
+    mvwprintw(this->mWindows[3], 2, 3, "%s", s2.c_str());
+    mvwprintw(this->mWindows[3], 3, 3, "%s", s3.c_str());
+    mvwprintw(this->mWindows[3], 4, 3, "%s", s4.c_str());
+    mvwprintw(this->mWindows[3], 5, 3, "%s", s5.c_str());
+
+    wattroff(this->mWindows[3], COLOR_PAIR(1));
+
+    wrefresh(mWindows[3]);
 }
 
 void GameBoard::createGameBoard()
@@ -352,6 +392,7 @@ void GameBoard::createInstructionBoard()
 
 void GameBoard::renderInstructionBoard(Snake* snake) const
 {
+    werase(mWindows[2]);
     mvwprintw(this->mWindows[2], 1, 1, "Manual");
 
     mvwprintw(this->mWindows[2], 3, 1, "Up: W");
@@ -370,7 +411,8 @@ void GameBoard::renderInstructionBoard(Snake* snake) const
     string heartStr = to_string(snake -> get_heart());
     mvwprintw(this -> mWindows[2], 15, 1, heartStr.c_str());
 
-    //wrefresh(this->mWindows[2]);
+    box(mWindows[2], 0, 0);
+    wrefresh(mWindows[2]);
 }
 
 
@@ -453,33 +495,10 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
 }
 
 
-void GameBoard::renderAllBoards(Map& map)
+void GameBoard::renderAllBoards(Map& map, Snake* snake)
 {
-    for (int i = 0; i < this->mWindows.size(); i++)
-    {
-        werase(this->mWindows[i]);
-    }
-    this->renderInformationBoard();
-
     renderMap(mWindows[1], map);
-    //this->renderGameBoard();
-
-    //PVP
-    Snake* snake = map.get_snake();
-    /*Snake* snake2 = map.get_snake2();
-    if (snake2 != nullptr) {
-        //TODO
-    }*/
-    this->renderInstructionBoard(snake);
-
-
-    //box(this -> mWindows[0], 0, 0);
-    //box(this -> mWindows[2], 0, 0);
-    for (int i = 0; i < this->mWindows.size(); i++)
-    {
-        box(this->mWindows[i], 0, 0);
-        wrefresh(this->mWindows[i]);
-    }
+    renderInstructionBoard(snake);
 }
 
 
@@ -502,7 +521,7 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             start_color();
             //改变预设颜色！！
             //灰色
-            init_color(COLOR_RED, 800, 800, 800);
+            init_color(COLOR_RED, 900, 850, 750);
             init_pair(1, COLOR_BLACK, COLOR_RED);
             init_pair(2, COLOR_GREEN, COLOR_RED);
             init_pair(3, COLOR_WHITE, COLOR_RED);
@@ -542,17 +561,22 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             }
         }
     }
+    box(win, 0, 0);
     wrefresh(win);
 }
 
 
 
 void GameBoard::startGame(Map& map, Snake* snake) {
-    refresh();
+    //refresh();
+    
+    curs_set(0);
     int control;
 
         while (true) {
-            this -> renderAllBoards(map);
+            //renderAllBoards(map, snake);
+            renderMap(mWindows[1], map);
+            renderInstructionBoard(snake);
 
             control = getch();
 
@@ -570,48 +594,8 @@ void GameBoard::startGame(Map& map, Snake* snake) {
             snake->moveForward();
             if (!snake->checkAlive()) {break;}
 
+            if (control == ' ' || control == 10) break;
+
             this_thread::sleep_for(chrono::milliseconds(100));
         }
 }
-
-
-/*void GameBoard::startPvp(Pvp_Map& map) {
-    refresh();
-    int control1;
-    int control2;
-
-        while (true) {
-            this -> renderAllBoards(map);
-
-            control1 = getch();
-            control2 = getch();
-
-            switch (control1) {
-                case 'W': case 'w':
-                    snake1->changeDir(Direction::UP); break;
-                case 'S': case 's':
-                    snake1->changeDir(Direction::DOWN); break;
-                case 'A': case 'a':
-                    snake1->changeDir(Direction::LEFT); break;
-                case 'D': case 'd':
-                    snake1->changeDir(Direction::RIGHT); break;
-            }
-            switch (control2) {
-                case KEY_UP:
-                    snake2->changeDir(Direction::UP); break;
-                case KEY_DOWN:
-                    snake2->changeDir(Direction::DOWN); break;
-                case KEY_LEFT:
-                    snake2->changeDir(Direction::LEFT); break;
-                case KEY_RIGHT:
-                    snake2->changeDir(Direction::RIGHT); break;
-            }
-
-            snake1->moveForward();
-            snake2->moveForward();
-            if (!snake1->checkAlive()) {break;}
-            if (!snake2->checkAlive()) {break;}
-
-            this_thread::sleep_for(chrono::milliseconds(100));
-        }
-}*/

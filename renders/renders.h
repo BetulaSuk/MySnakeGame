@@ -28,10 +28,14 @@ class GameBoard
         int chooseMode();
 
         void createInformationBoard();
-        void renderInformationBoard() const;
+        void renderInformationBoard();
 
         void createGameBoard();
         void renderGameBoard() const;
+
+        //创建Logo
+        void createLogo();
+        void renderLogo();
 
 
         void renderMap(WINDOW* win, Map& map);
@@ -41,11 +45,10 @@ class GameBoard
 
         bool renderRestartMenu(Snake* snake) const;
 
-        void renderAllBoards(Map& map);
+        void renderAllBoards(Map& map, Snake* snake);
 
         void startGame(Map& map, Snake* snake);
 
-        //Snake* get_snake();
 
         int getGameBoardWidth() {return mGameBoardWidth;}
         int getGameBoardHeight() {return mGameBoardHeight;}
@@ -55,7 +58,7 @@ class GameBoard
         int mScreenHeight;
         int mGameBoardWidth;
         int mGameBoardHeight;
-        const int mInformationHeight = 6;
+        const int mInformationHeight = 7;
         const int mInstructionWidth = 18;
         vector<WINDOW*> mWindows;
 
