@@ -127,7 +127,9 @@ Map* loadMap(std::string fileDir) {
         std::getline(mapFile, aline); // 光标换行
         for (int i = 0; i < tempi; i++) {
             std::getline(mapFile, aline);
-            if ( ! carryCommand(ptrMap, aline)) {mapFile.close(); throw 1;}
+
+            //临时注释！
+            //if ( ! carryCommand(ptrMap, aline)) {mapFile.close(); throw 1;}
         }
     } else {mapFile.close(); throw 1;}
 
@@ -143,14 +145,15 @@ Map* loadMap(std::string fileDir) {
     return ptrMap;
 }
 
-bool carryCommand(Map* map, std::string com) {
+//临时注释！
+/*bool carryCommand(Map* map, std::string com) {
     std::stringstream sstr;
     sstr << com;
 
     char comType, 
 
     return true;
-}
+}*/
 
 
 

@@ -215,6 +215,109 @@ bool GameBoard:: createSetting() {
 }
 
 
+//选择游戏模式
+int GameBoard::chooseMode() {
+    erase();
+    refresh();
+    //正中间生成Welcome界面
+    noecho();
+    int width = this->mScreenWidth * 0.75;
+    int height = this->mScreenHeight * 0.5;
+    int startX = this->mScreenWidth * 0.125;
+    int startY = this->mScreenHeight * 0.375;
+
+    WINDOW* menu;
+    WINDOW* title;
+
+    title = newwin(7, width, mScreenHeight*0.125, startX);
+    start_color();
+    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    wattron(title, COLOR_PAIR(1));
+
+    string s1 = "  ____              _         ____                      ";
+    string s2 = " / ___| _ __   __ _| | _____ / ___| __ _ _ __ ___   ___ ";
+    string s3 = " \\___ \\| '_ \\ / _` | |/ / _ \\ |  _ / _` | '_ ` _ \\ / _ \\";
+    string s4 = "  ___) | | | | (_| |   <  __/ |_| | (_| | | | | | |  __/";
+    string s5 = " |____/|_| |_|\\__,_|_|\\_\\___|\\____|\\__,_|_| |_| |_|\\___|";
+
+    mvwprintw(title, 1, width*0.5 - 28, "%s", s1.c_str());
+    mvwprintw(title, 2, width*0.5 - 28, "%s", s2.c_str());
+    mvwprintw(title, 3, width*0.5 - 28, "%s", s3.c_str());
+    mvwprintw(title, 4, width*0.5 - 28, "%s", s4.c_str());
+    mvwprintw(title, 5, width*0.5 - 28, "%s", s5.c_str());
+    wattroff(title, COLOR_PAIR(1));
+
+    menu = newwin(height, width, startY, startX);
+    //box(menu, 0, 0);
+
+    
+
+    //mvwprintw(menu, 2, width*0.5 - 13, "Welcome to The Snake Game!");
+    mvwprintw(menu, 3, width*0.5 - 20, "Choose the Game Mode and Start Playing!");
+    //mvwprintw(menu, 4, width*0.5 - 22, "Implemented using C++ and libncurses library");
+
+
+    //这里可以加入更多选项
+    vector<string> menuItems = {"Mode1", "Mode2", "Mode3", "Mode4"};
+    int index = 0;
+    int offset = width * 0.25;
+    
+    //下面实现选项切换
+    wattron(menu, A_STANDOUT);
+    mvwprintw(menu, 8, offset*0.5 - 2, menuItems[0].c_str());
+    wattroff(menu, A_STANDOUT);
+    mvwprintw(menu, 8, offset*1.5 - 2, menuItems[1].c_str());
+    mvwprintw(menu, 8, offset*2.5 - 2, menuItems[2].c_str());
+    mvwprintw(menu, 8, offset*3.5 - 2, menuItems[3].c_str());
+
+    wrefresh(menu);
+    wrefresh(title);
+
+    int key;
+    while (true)
+    {
+        key = getch();
+        switch (key)
+        {
+            case 'A':
+            case 'a':
+            case KEY_LEFT:
+                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
+                index --;
+                index = (index < 0) ? menuItems.size() - 1 : index;
+                wattron(menu, A_STANDOUT);
+                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
+                wattroff(menu, A_STANDOUT);
+                break;
+            case 'D':
+            case 'd':
+            case KEY_RIGHT:
+                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
+                index ++;
+                index = (index > menuItems.size() - 1) ? 0 : index;
+                wattron(menu, A_STANDOUT);
+                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
+                wattroff(menu, A_STANDOUT);
+                break;
+        }
+        wrefresh(menu);
+        if (key == ' ' || key == 10) break;
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
+    delwin(menu);
+    delwin(title);
+
+    //根据选项不同返回不同值
+    return key;
+}
+
+
+
+
+
+
+
+
 
 void GameBoard::createInformationBoard()
 {
@@ -367,11 +470,16 @@ void GameBoard::renderAllBoards(Map& map, Snake* snake)
 
     this->renderInstructionBoard(snake);
 
+
+    //box(this -> mWindows[0], 0, 0);
+    //box(this -> mWindows[2], 0, 0);
     for (int i = 0; i < this->mWindows.size(); i++)
     {
         box(this->mWindows[i], 0, 0);
         wrefresh(this->mWindows[i]);
     }
+
+    
 }
 
 
@@ -391,14 +499,31 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             ptr_I = ptr_B->get_item();
             ptr_S = ptr_B->getSnakeBody();
 
+            start_color();
+            //改变预设颜色！！
+            //灰色
+            init_color(COLOR_RED, 800, 800, 800);
+            //init_color(COLOR_YELLOW, 800, 700, 0);
+            init_pair(1, COLOR_BLACK, COLOR_RED);
+            init_pair(2, COLOR_GREEN, COLOR_RED);
+            init_pair(3, COLOR_WHITE, COLOR_RED);
+            
+
             if (ptr_S != nullptr) {
                 //渲染蛇的身体
+                wattron(win, COLOR_PAIR(1));
                 mvwprintw(win, i, j, ptr_S->toString().c_str());
+                wattroff(win, COLOR_PAIR(1));
             }
+            //BaseItem(FOOD, HEART, SNAKEBODY)
             else if (ptr_I != nullptr) {
+                wattron(win, COLOR_PAIR(2));
                 mvwprintw(win, i, j, ptr_I->toString().c_str());
+                wattroff(win, COLOR_PAIR(2));
             }
             else {
+                //渲染地图方块
+                wattron(win, COLOR_PAIR(3));
                 mvwprintw(win, i, j, ptr_B->toString().c_str());
                 if (ptr_B -> type() == BlockType::PORTAL) {
                     Portal* entrance = reinterpret_cast<Portal*>(ptr_B);
@@ -406,6 +531,7 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
                     int exit_y = entrance->get_ey();
                     //map.at(exit_x, exit_y) -> setString("O");
                 }
+                wattroff(win, COLOR_PAIR(3));
             }
         }
     }

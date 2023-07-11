@@ -25,6 +25,8 @@ class GameBoard
         bool createHelp();
         bool createSetting();
 
+        int chooseMode();
+
         void createInformationBoard();
         void renderInformationBoard() const;
 
