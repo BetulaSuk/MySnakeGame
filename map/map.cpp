@@ -110,6 +110,8 @@ Map* loadMap(std::string fileDir) {
             switch (ch1) {
                 case '0': ptrMap->data[i][j] = new BaseBlock(i, j); break;
                 case '1': ptrMap->data[i][j] = new Wall(i, j); break;
+                // 由于传送门生成需要更多参数, 先使用基本方块占位, 在命令执行阶段再设置
+                case '2': ptrMap->data[i][j] = new BaseBlock(i, j); break;
                 /* TODO 添加新的方块类型 */
                 default: mapFile.close(); throw 1;
             }
@@ -120,18 +122,14 @@ Map* loadMap(std::string fileDir) {
 
     int tempi = 0;
     mapFile >> ch1;
-    if (ch1 == 's') {
-        mapFile.seekg(-1);
-    } else if (ch1 == 'f') {
+    if (ch1 == 'f') {
         mapFile >> tempi;
         std::getline(mapFile, aline); // 光标换行
         for (int i = 0; i < tempi; i++) {
             std::getline(mapFile, aline);
             if ( ! carryCommand(ptrMap, aline)) {mapFile.close(); throw 1;}
         }
-    } else {mapFile.close(); throw 1;}
-
-    ptrMap->ptrSnake = loadSnake(ptrMap, mapFile);
+    }
 
     mapFile.close();
     
@@ -147,7 +145,97 @@ bool carryCommand(Map* map, std::string com) {
     std::stringstream sstr;
     sstr << com;
 
-    char comType, 
+    /** 命令说明:
+     * 第一个字符决定命令性质
+     * - b: 创建方块, 下一个数字决定方块种类, 接着的两个数字为位置,
+     *      再然后是需要传入构造函数的参数
+     * - i: 创建物品, 种类, 位置, 渲染用字符! , 其他可能参数
+     * - s: 创建蛇身, 位置, 渲染字符, 下一节的位置
+     * - c: 声明蛇, 蛇头的位置, 初始生命, 初始方向
+    */
+
+    char comType;
+    sstr >> comType;
+    int x, y; std::string displayStr;
+    switch (comType) {
+        // 注释
+        case '#': return true; 
+        case 'b':
+            int bType;
+            sstr >> bType >> x >> y;
+            switch (bType) {
+                case 0:
+                    displayStr = map->data[x][y]->toString();
+                    delete map->data[x][y];
+                    map->data[x][y] = new BaseBlock(x, y);
+                    map->data[x][y]->setString(displayStr);
+                    break;
+                case 1:
+                    displayStr = map->data[x][y]->toString();
+                    delete map->data[x][y];
+                    map->data[x][y] = new Wall(x, y);
+                    map->data[x][y]->setString(displayStr);
+                    break;
+                case 2:
+                    int e_x, e_y;
+                    sstr >> e_x >> e_y;
+                    displayStr = map->data[x][y]->toString();
+                    delete map->data[x][y];
+                    map->data[x][y] = new Portal(x, y, e_x, e_y);
+                    map->data[x][y]->setString(displayStr);
+                    break;
+            }
+            break;
+
+        case 'i':
+            int iType; BaseItem* ptr_I;
+            sstr >> iType >> x >> y >> displayStr;
+            switch (iType) {
+                case 0:
+                    ptr_I = new BaseItem();
+                    ptr_I->setString(displayStr);
+                    bond(map->data[x][y], ptr_I);
+                    break;
+                case 1:
+                    ptr_I = new Food();
+                    ptr_I->setString(displayStr);
+                    bond(map->data[x][y], ptr_I);
+                    break;
+                case 2:
+                    ptr_I = new Heart();
+                    ptr_I->setString(displayStr);
+                    bond(map->data[x][y], ptr_I);
+                    break;
+                /* TODO */
+            }
+            break;
+
+        case 's':
+            int next_x, next_y; SnakeBody* ptr_S;
+            sstr >> x >> y >> displayStr >> next_x >> next_y;
+            ptr_S = new SnakeBody();
+            ptr_S->setString(displayStr);
+            bond(map->data[x][y], ptr_S);
+
+            if (next_x < 0 || next_y < 0) {break;} // 蛇尾
+            else if (map->inRange(next_x, next_y) &&
+                    map->data[next_x][next_y]->getSnakeBody())
+                 {ptr_S->setNext(map->data[next_x][next_y]->getSnakeBody());}
+            else {return false;}
+            break;
+        
+        case 'c':
+            int init_heart, dir_int;
+            sstr >> x >> y >> init_heart >> dir_int;
+            Direction init_dir = static_cast<Direction>(dir_int);
+            
+            if ( ! map->inRange(x, y)) {return false;}
+            SnakeBody* head = map->data[x][y]->getSnakeBody();
+            if ( ! head) {return false;}
+
+            map->ptrSnake = new Snake(map, head, init_heart, init_dir);
+            break;
+    }
 
     return true;
 }

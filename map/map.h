@@ -20,6 +20,14 @@ enum class BlockType;
 class SnakeBody;
 class Snake;
 
+enum class Mode {
+    CLASSIC    = 0,
+    STAGE      = 1,
+    WORD_SNAKE = 2,
+    TETRISNAKE = 3
+};
+
+
 enum class Direction {
     UP    = 0,
     RIGHT = 1,
@@ -40,8 +48,10 @@ void nextPos(int x, int y, int& next_x, int& next_y, Direction dir);
 
 BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir);
 
+// 供生成食物时使用
 bool canSetItem(BaseBlock* const block);
 
+// 用于连接方块与物品/蛇身
 void bond(BaseBlock* ptr_B, SnakeBody* ptr_S);
 void bond(BaseBlock* ptr_B, BaseItem*  ptr_I);
 

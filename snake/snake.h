@@ -24,15 +24,11 @@ class Map;
 enum class Direction;
 
 
-Snake* loadSnake(Map* ptrMap, std::ifstream& ifs);
-
-
 class Snake {
-    friend Snake* loadSnake(Map* ptrMap, std::ifstream& ifs);
-
     public:
         Snake() = default;
         Snake(Map* map, int start_x, int start_y, int init_len, int init_heart);
+        Snake(Map* map, SnakeBody* head, int init_heart, Direction init_dir);
 
         virtual ~Snake();
 
@@ -50,7 +46,7 @@ class Snake {
 
         void changeDir(Direction new_dir);
         // 如果成功前进, 返回 true, 否则返回 false
-        bool moveForward();
+        virtual bool moveForward();
 
         bool revive();
 
