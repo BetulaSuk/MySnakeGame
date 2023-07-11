@@ -47,6 +47,8 @@ class Snake {
         void changeDir(Direction new_dir);
         // 如果成功前进, 返回 true, 否则返回 false
         virtual bool moveForward();
+        // 用于前进时检测, 为 Entity 类的功能而设置
+        virtual bool canOverlap() {return false;}
 
         bool revive();
 

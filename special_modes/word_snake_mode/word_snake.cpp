@@ -4,12 +4,49 @@
 
 #include "word_snake.h"
 
-
+#include <fstream>
+#include <sstream>
 
 int checkWord(std::string snakeStr) {
+    if (snakeStr.length() == 0) {return -1;}
+
     int ret = 0;
     // 需要提前初始化好 Path::rootPath
-    
+    std::ifstream word_list;
+    std::stringstream sstr;
+
+    char first_ch = snakeStr[0];
+    std::string wl_path;
+
+    sstr << "/data/word_lists/" << first_ch << ".wl";
+    sstr >> wl_path;
+    wl_path = Path::fullPath(wl_path);
+
+    word_list.open(wl_path);
+    if ( ! word_list.is_open()) {return -1;}
+
+    int line_num = 0;
+    std::string aline;
+
+    word_list >> line_num;
+    std::getline(word_list, aline); // 光标换行
+
+    bool match = false;
+    for (int i = 0; i < line_num; i++) {
+        std::getline(word_list, aline);
+
+        for (int j = 1; j < snakeStr.length(); j++) {
+            if (snakeStr[j] != aline[j]) {match = false;}
+        }
+
+        if (match) {
+            word_list.close(); 
+            return aline.length();
+        }
+    }
+
+    word_list.close();
+    return 0;
 }
 
 bool WordSnake::moveForward() {
@@ -46,9 +83,9 @@ bool WordSnake::moveForward() {
     ItemType typeItem = ItemType::EMPTY;
     if (itemAhead) {typeItem = itemAhead->type();}
 
-    /* 以下为与 Snake 不同的部分 */
+    /* 以下为与 Snake::moveForward() 不同的部分 */
 
-
+    
 
 }
 

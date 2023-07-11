@@ -12,6 +12,16 @@
 
 #include <string>
 
+
+struct Color {
+    int red;
+    int green;
+    int blue;
+};
+
+Color setColor(int red, int green, int blue);
+
+
 enum class ItemType {
     EMPTY     = -1,
     BASEITEM  = 0,
@@ -42,6 +52,9 @@ class BaseItem {
         // 修改渲染用的字符串
         void setString(std::string s) {displayString = s;}
 
+        Color getColor() const {return colr;}
+        void setColor(Color c) {colr = c;}
+
         /* Block 相关操作 */
 
         BaseBlock* get_block() {return ptrBlock;}
@@ -57,6 +70,8 @@ class BaseItem {
         const static ItemType TYPE = ItemType::BASEITEM;
 
         std::string displayString = " ";
+
+        Color colr;
 };
 
 
