@@ -14,8 +14,8 @@
 
 using namespace std;
 
-int test_x = 10;
-int test_y = 10;
+int test_x = 20;
+int test_y = 30;
 
 string test_map = "/data/maps/normal_1.map";
 
@@ -62,6 +62,10 @@ int main() {
     cout << ">>> map initailized!" << endl;
 
     Snake* s = map->get_snake();
+    if ( ! s) {
+        cout << ">>> failed to load snake!!" << endl;
+        return 0;
+    }
     cout << ">>> snake initailized!" << endl;
 
     char control;

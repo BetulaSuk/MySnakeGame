@@ -10,65 +10,6 @@
 #include <fstream>
 #include <sstream>
 
-Snake* loadSnake(Map* ptrMap, std::ifstream& ifs) {
-    Snake* ptrSnake = nullptr;
-    try {
-
-    char ch;
-    ifs >> ch;
-    if (ch != 's') {return nullptr;}
-
-    // 读取初始信息
-    int start_x, start_y, init_len, init_dir, init_heart;
-    ifs >> start_x >> start_y >> init_len >> init_dir >>init_heart;
-    // 生成蛇的方向, 与蛇的初始方向相反
-    Direction dir = static_cast<Direction>((init_dir + 2) % 4);
-
-    // 读取蛇身渲染信息
-    std::string displayStr, 
-                tempS = " ";
-    // 第一次相当于光标换行
-    std::getline(ifs, displayStr);
-    std::getline(ifs, displayStr);
-    if (displayStr.length() != init_len) {return nullptr;}
-
-    ptrSnake = new Snake();
-
-    // 初始化蛇头
-    BaseBlock* ptr_B = ptrMap->at(start_x, start_y);
-    ptrSnake->ptrHead = new SnakeBody();
-    bond(ptr_B, ptrSnake->ptrHead);
-    ptrSnake->ptrHead->set_snake(ptrSnake);
-    tempS[0] = displayStr[0];
-    ptrSnake->ptrHead->setString(tempS);
-
-    // 依次初始化蛇的剩余部分, 创建蛇身, 链接方块, 提供渲染字符, 连接蛇身
-    int x = start_x,
-        y = start_y;
-    SnakeBody* ptr_S = ptrSnake->ptrHead;
-    for (int i = 1; i < init_len; i++) {
-        ptr_S->setNext(new SnakeBody());
-        ptr_S = ptr_S->next();
-
-        nextPos(x, y, x, y, dir);
-        ptr_B = ptrMap->at(x, y);
-        bond(ptr_B, ptr_S);
-
-        ptr_S->set_snake(ptrSnake);
-        tempS[0] = displayStr[i];
-        ptr_S->setString(tempS);
-    }
-
-    // 蛇的其他初始化
-    ptrSnake->ptrMap = ptrMap;
-    ptrSnake->isAlive = true;
-    ptrSnake->length = init_len;
-    ptrSnake->heart = init_heart;
-    ptrSnake->dir = static_cast<Direction>(init_dir);
-
-    } catch (...) {delete ptrSnake; return nullptr;}
-    return ptrSnake;
-}
 
 // 初始化: 蛇身创建, 蛇身绑定方块, 蛇身绑定蛇, 蛇绑定地图
 Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
@@ -101,6 +42,21 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
     ptrMap = map;
     heart = init_heart;
     dir = Direction::UP;
+}
+
+Snake::Snake(Map* map, SnakeBody* head, int init_heart, Direction init_dir) {
+    ptrMap  = map;
+    ptrHead = head;
+    heart   = init_heart;
+    dir     = init_dir;
+
+    int count = 0; SnakeBody* ptr_S = ptrHead;
+    while (ptr_S) {
+        ptr_S->ptrSnake = this;
+        count++;
+        ptr_S = ptr_S->next();
+    }
+    length = count;
 }
 
 Snake::~Snake() {

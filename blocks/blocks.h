@@ -96,8 +96,8 @@ class Portal: public BaseBlock {
 
         virtual ~Portal() = default;
 
-        int get_ex() {return exit_x;}
-        int get_ey() {return exit_y;}
+        int get_ex() const {return exit_x;}
+        int get_ey() const {return exit_y;}
 
         virtual BlockType type() const {return TYPE;}
 
