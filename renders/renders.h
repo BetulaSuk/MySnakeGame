@@ -41,7 +41,7 @@ class GameBoard
 
         bool renderRestartMenu(Snake* snake) const;
 
-        void renderAllBoards(Map& map, Snake* snake);
+        void renderAllBoards(Map& map);
 
         void startGame(Map& map, Snake* snake);
 

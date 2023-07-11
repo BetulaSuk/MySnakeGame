@@ -250,15 +250,11 @@ int GameBoard::chooseMode() {
     menu = newwin(height, width, startY, startX);
     //box(menu, 0, 0);
 
-    
-
-    //mvwprintw(menu, 2, width*0.5 - 13, "Welcome to The Snake Game!");
     mvwprintw(menu, 3, width*0.5 - 20, "Choose the Game Mode and Start Playing!");
-    //mvwprintw(menu, 4, width*0.5 - 22, "Implemented using C++ and libncurses library");
 
 
     //这里可以加入更多选项
-    vector<string> menuItems = {"Mode1", "Mode2", "Mode3", "Mode4"};
+    vector<string> menuItems = {"CLASSIC", "WORD", "PVP", "Mode4"};
     int index = 0;
     int offset = width * 0.25;
     
@@ -308,7 +304,7 @@ int GameBoard::chooseMode() {
     delwin(title);
 
     //根据选项不同返回不同值
-    return key;
+    return index;
 }
 
 
@@ -457,7 +453,7 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
 }
 
 
-void GameBoard::renderAllBoards(Map& map, Snake* snake)
+void GameBoard::renderAllBoards(Map& map)
 {
     for (int i = 0; i < this->mWindows.size(); i++)
     {
@@ -468,6 +464,12 @@ void GameBoard::renderAllBoards(Map& map, Snake* snake)
     renderMap(mWindows[1], map);
     //this->renderGameBoard();
 
+    //PVP
+    Snake* snake = map.get_snake();
+    /*Snake* snake2 = map.get_snake2();
+    if (snake2 != nullptr) {
+        //TODO
+    }*/
     this->renderInstructionBoard(snake);
 
 
@@ -478,8 +480,6 @@ void GameBoard::renderAllBoards(Map& map, Snake* snake)
         box(this->mWindows[i], 0, 0);
         wrefresh(this->mWindows[i]);
     }
-
-    
 }
 
 
@@ -552,7 +552,7 @@ void GameBoard::startGame(Map& map, Snake* snake) {
     int control;
 
         while (true) {
-            this -> renderAllBoards(map, snake);
+            this -> renderAllBoards(map);
 
             control = getch();
 
@@ -573,3 +573,45 @@ void GameBoard::startGame(Map& map, Snake* snake) {
             this_thread::sleep_for(chrono::milliseconds(100));
         }
 }
+
+
+/*void GameBoard::startPvp(Pvp_Map& map) {
+    refresh();
+    int control1;
+    int control2;
+
+        while (true) {
+            this -> renderAllBoards(map);
+
+            control1 = getch();
+            control2 = getch();
+
+            switch (control1) {
+                case 'W': case 'w':
+                    snake1->changeDir(Direction::UP); break;
+                case 'S': case 's':
+                    snake1->changeDir(Direction::DOWN); break;
+                case 'A': case 'a':
+                    snake1->changeDir(Direction::LEFT); break;
+                case 'D': case 'd':
+                    snake1->changeDir(Direction::RIGHT); break;
+            }
+            switch (control2) {
+                case KEY_UP:
+                    snake2->changeDir(Direction::UP); break;
+                case KEY_DOWN:
+                    snake2->changeDir(Direction::DOWN); break;
+                case KEY_LEFT:
+                    snake2->changeDir(Direction::LEFT); break;
+                case KEY_RIGHT:
+                    snake2->changeDir(Direction::RIGHT); break;
+            }
+
+            snake1->moveForward();
+            snake2->moveForward();
+            if (!snake1->checkAlive()) {break;}
+            if (!snake2->checkAlive()) {break;}
+
+            this_thread::sleep_for(chrono::milliseconds(100));
+        }
+}*/
