@@ -101,6 +101,8 @@ class Map {
 
         int getFoodNum() {return foodNum;}
 
+        void moveAllEntity();
+
     private:
         int width = 0;
         int height = 0;

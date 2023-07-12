@@ -6,6 +6,30 @@
 #include <fstream>
 #include <sstream>
 
+char getRandomCh() {
+    int ch_i = Random::randInt(1, 26);
+    return char(ch_i + 96);
+}
+
+
+void setNRandomLetter(Map* map, int n) {
+    // 清空既有食物
+    BaseItem* ptr_I;
+    for (int i = 0; i < map->get_height(); i++) {
+        for (int j = 0; j < map->get_width(); j++) {
+            ptr_I = map->at(i, j)->get_item();
+            if (ptr_I && ptr_I->type() == ItemType::FOOD) 
+                {map->at(i, j)->clear_item();}
+        }
+    }
+
+    std::string displayStr = " ";
+    for (int i = 0; i < n; i++) {
+        displayStr[0] = getRandomCh();
+        map->setRandomItem(ItemType::FOOD, displayStr);
+    }
+}
+
 int checkWord(std::string snakeStr) {
     if (snakeStr.length() == 0) {return -1;}
 
@@ -150,8 +174,10 @@ bool WordSnake::moveForward() {
     }
 
     // 因为 eatFood 中有判定, 所以不担心误判为吃食物
-    tryEatFood(oldTail_x, oldTail_y, displayStr);
+    tryEatFood(oldTail_x, oldTail_y, displayStr, new_food_num);
     tryEatHeart();
+    // 检验是否已经拼成了单词
+    cutWord();
 
     return true;
 }
@@ -193,4 +219,24 @@ Entity* WordSnake::cutWord() {
     ptrMap->get_entity_list()->push_back(ptr_E);
     
     return ptr_E;
+}
+
+bool WordSnake::tryEatFood(int newTail_x, int newTail_y, std::string newTail_s, int n) {
+    // 为了可靠性, 再检测一次头部的是否是食物
+    BaseItem* item_atHead = ptrHead->get_block()->get_item();
+    if ( ! item_atHead || item_atHead->type() != ItemType::FOOD) {return false;}
+
+    SnakeBody* newTail = new SnakeBody();
+    newTail->set_snake(this);
+    bond(ptrMap->at(newTail_x, newTail_y), newTail);
+    newTail->setString(newTail_s);
+
+    getTailPtr()->setNext(newTail);
+    length++;
+    // 删除食物
+    ptrHead->get_block()->clear_item();
+
+    point++;
+
+    setNRandomLetter(ptrMap, n);
 }
