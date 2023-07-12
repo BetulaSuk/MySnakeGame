@@ -337,7 +337,7 @@ bool Entity::moveForward() {
     for (int i = 0; i < length; i++) {
         if ( ! ptr_S) {exit(3);}
 
-         std::cout << "mark in for " << i << std::endl; // debug
+        // std::cout << "mark in for " << i << std::endl; // debug
 
         blocksNow[i]->releaseItem();
 
