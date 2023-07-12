@@ -90,12 +90,13 @@ class Snake {
 class Entity: public Snake {
     public:
         Entity(): Snake() {}
-        Entity(Map* map, SnakeBody* head, int init_heart, Direction init_dir): 
-            Snake(map, head, init_heart, init_dir) {}
+        Entity(Map* map, SnakeBody* head, Direction init_dir);
+
+        void changeDir(Direction new_dir) {dir = new_dir;}
 
         // 保持形状不变整体移动
         bool moveForward();
-        
+
         bool canOverlap() const {return overlap;}
         void setOverlap(bool ol) {overlap = ol;}
     

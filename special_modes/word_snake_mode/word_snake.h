@@ -14,7 +14,8 @@
 
 // 返回值: -1 错误; 0 无单词; >0 单词的长度
 int checkWord(std::string snakeStr);
-
+// 判定两个字符是否是一个字母
+bool isEqualChar(char ch_1, char ch_2);
 
 class WordSnake: public Snake {
     public:
@@ -29,8 +30,8 @@ class WordSnake: public Snake {
 
         std::string getString() const;
 
-        // 如果组成了单词, 剪掉, 并返回其
-        SnakeBody* cutWord();
+        // 如果组成了单词, 剪掉, 并返回Entity指针
+        Entity* cutWord();
 };
 
 
