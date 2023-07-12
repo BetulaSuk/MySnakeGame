@@ -583,6 +583,8 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
     SnakeBody* ptr_S;
 
     int width = map.get_width(), height = map.get_height();
+    int startY = mGameBoardHeight*0.5 - height*0.5;
+    int startX = mGameBoardWidth*0.5 - width*0.5;
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
@@ -594,7 +596,7 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
                 //渲染蛇的身体
 
                 wattron(win, COLOR_PAIR(5));
-                mvwprintw(win, i, j, ptr_S->toString().c_str());
+                mvwprintw(win, i + startY, j + startX, ptr_S->toString().c_str());
                 wattroff(win, COLOR_PAIR(5));
 
             }
@@ -602,12 +604,12 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             else if (ptr_I != nullptr) {
                 if (ptr_I -> type() == ItemType::FOOD) {
                     wattron(win, COLOR_PAIR(3));
-                    mvwprintw(win, i, j, ptr_I->toString().c_str());
+                    mvwprintw(win, i + startY, j + startX, ptr_I->toString().c_str());
                     wattroff(win, COLOR_PAIR(3));
                 }
                 else if (ptr_I -> type() == ItemType::HEART) {
                     wattron(win, COLOR_PAIR(4));
-                    mvwprintw(win, i, j, ptr_I->toString().c_str());
+                    mvwprintw(win, i + startY, j + startX, ptr_I->toString().c_str());
                     wattroff(win, COLOR_PAIR(4));
                 }
 
@@ -616,33 +618,30 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
                 //渲染地图方块
                 if (ptr_B->type() == BlockType::WALL) {
                     wattron(win, COLOR_PAIR(2));
-                    mvwprintw(win, i, j, ptr_B->toString().c_str());
+                    mvwprintw(win, i + startY, j + startX, ptr_B->toString().c_str());
                     wattroff(win, COLOR_PAIR(2));
                 }
                 else if (ptr_B->type() == BlockType::PORTAL) {
                     wattron(win, COLOR_PAIR(6));
-                    mvwprintw(win, i, j, ptr_B->toString().c_str());
+                    mvwprintw(win, i + startY, j + startX, ptr_B->toString().c_str());
                     wattroff(win, COLOR_PAIR(6));
                 }
                 else if (ptr_B->type() == BlockType::BARRIER) {
                     wattron(win, COLOR_PAIR(7));
-                    mvwprintw(win, i, j, ptr_B->toString().c_str());
+                    mvwprintw(win, i + startY, j + startX, ptr_B->toString().c_str());
                     wattroff(win, COLOR_PAIR(7));
                 }
-                else mvwprintw(win, i, j, ptr_B->toString().c_str());
+                else mvwprintw(win, i + startY, j + startX, ptr_B->toString().c_str());
                 /*暂时不需要渲染传送门出口
                 if (ptr_B -> type() == BlockType::PORTAL) {
                     Portal* entrance = reinterpret_cast<Portal*>(ptr_B);
                     int exit_x = entrance->get_ex();
                     int exit_y = entrance->get_ey();
                     //map.at(exit_x, exit_y) -> setString("O");
-                }*/
-                
-                
+                }*/ 
             }
         }
     }
-
     box(win, 0, 0);
     wrefresh(win);
 }
