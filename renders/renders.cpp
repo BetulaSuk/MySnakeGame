@@ -643,8 +643,6 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
         }
     }
 
-    mvwprintw(mWindows[1], 1, 1, "%d", map.get_snake()->get_len());
-
     box(win, 0, 0);
     wrefresh(win);
 }
@@ -652,14 +650,13 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
 
 
 void GameBoard::startGame(Map& map, Snake* snake) {
-    //refresh();
-    
     curs_set(0);
     int control;
 
         while (true) {
             renderMap(mWindows[1], map);
             renderInstructionBoard(snake);
+
 
             control = getch();
 
@@ -673,6 +670,7 @@ void GameBoard::startGame(Map& map, Snake* snake) {
                 case 'D': case 'd': case KEY_RIGHT:
                     snake->changeDir(Direction::RIGHT); break;
             }
+
 
             snake->moveForward();
             if (!snake->checkAlive()) {break;}

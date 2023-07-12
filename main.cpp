@@ -24,8 +24,6 @@ int main() {
             //初始化地图，同时得到Snake，并生成第一个食物
             //剩余食物会在蛇吃到食物时候自动生成    
             //渲染最上面保持恒定的两个窗口
-            
-
             //Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
             std::string partPath = "/data/maps/normal_1.map";
             Map* ptrMap = loadMap(Path::fullPath(partPath));
@@ -53,14 +51,14 @@ int main() {
         else if (mode == 1)
         {
 
-            Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
+            Map* map = new Map(game.getGameBoardHeight(), game.getGameBoardWidth());
 
-            WordSnake* snake = new WordSnake(&map, 10, 10, 2, 3);
+            WordSnake* snake = new WordSnake(map, 10, 10, 2, 3);
 
             //主循环
-            setNRandomLetter(&map, 5);
-            snake->setNewFoodNum(5);
-            game.startWord(map, snake);
+            setNRandomLetter(map, 26);
+            snake->setNewFoodNum(26);
+            game.startWord(*map, snake);
 
             choice = game.renderRestartMenu(snake);
             if (choice == false) break;

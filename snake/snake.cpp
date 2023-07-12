@@ -163,7 +163,8 @@ bool Snake::moveForward() {
         ptrB_1->releaseSnakeBody();
 
         ptrSbody = ptrSbody->ptrNext;
-        if ( ! ptrSbody) {break;}
+        //在这里修改了！nullptr的奇妙问题
+        if (i == length -1) {break;}
         ptrB_2 = ptrB_1;
         ptrB_1 = ptrSbody->get_block();
     }
