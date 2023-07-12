@@ -21,8 +21,6 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
     ptrHead->ptrSnake = this;
     ptrHead->setString("@");
 
-    //ptrHead->setColor(new Color(100, 800, 100));
-
     int x = start_x,
         y = start_y;
 
@@ -39,7 +37,6 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
 
         ptr->ptrSnake = this;
         ptr->setString("@");
-        //ptr->setColor(new Color(100, 800, 100));
     }
 
     length = init_len;
@@ -48,6 +45,7 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
     heart = init_heart;
     dir = Direction::UP;
 }
+
 
 Snake::Snake(Map* map, SnakeBody* head, int init_heart, Direction init_dir) {
     ptrMap  = map;
@@ -63,6 +61,7 @@ Snake::Snake(Map* map, SnakeBody* head, int init_heart, Direction init_dir) {
     }
 }
 
+
 Snake::~Snake() {
     SnakeBody* ptrSbody_1 = ptrHead;
     SnakeBody* ptrSbody_2 = ptrHead;
@@ -73,6 +72,7 @@ Snake::~Snake() {
         ptrSbody_1 = ptrSbody_2;
     }
 }
+
 
 /* 行动 */
 
@@ -90,6 +90,7 @@ void Snake::changeDir(Direction new_dir) {
             } else {dir = new_dir; break;}
     }
 }
+
 
 bool Snake::moveForward() {
     // 检查蛇是否死亡
@@ -115,7 +116,6 @@ bool Snake::moveForward() {
                 return false;
             }
             break;
-        // TODO 添加更多方块类型时此处可能要增加判定
         default:
             break;
     }
@@ -149,7 +149,6 @@ bool Snake::moveForward() {
         ptrB_1->releaseSnakeBody();
 
         ptrSbody = ptrSbody->ptrNext;
-        //在这里修改了！nullptr的奇妙问题
         if (i == length -1) {break;}
         ptrB_2 = ptrB_1;
         ptrB_1 = ptrSbody->get_block();
@@ -161,16 +160,6 @@ bool Snake::moveForward() {
 
     return true;
 }
-
-bool Snake::revive() {
-    if (heart <= 0 || isAlive == true) {return false;}
-    else {
-        heart--;
-        isAlive = true;
-    }
-}
-
-/* 判定 */
 
 
 
@@ -184,6 +173,8 @@ SnakeBody* Snake::getTailPtr() {
     }
     return tailPtr;
 }
+
+
 
 bool Snake::tryEatFood(int newTail_x, int newTail_y) {
     // 为了可靠性, 再检测一次头部的是否是食物
@@ -207,11 +198,15 @@ bool Snake::tryEatFood(int newTail_x, int newTail_y) {
     return true;
 }
 
+
+
 bool Snake::tryEatFood(int newTail_x, int newTail_y, std::string newTail_s) {
     bool ret = tryEatFood(newTail_x, newTail_y);
     if (ret) {getTailPtr()->setString(newTail_s);}
     return ret;
 }
+
+
 
 bool Snake::tryEatHeart() {
     // 先检测是否有心可吃
@@ -226,6 +221,7 @@ bool Snake::tryEatHeart() {
 }
 
 
+
 Entity::Entity(Map* map, SnakeBody* head, Direction init_dir, int init_len) {
     ptrMap  = map;
     dir     = init_dir;
@@ -238,25 +234,14 @@ Entity::Entity(Map* map, SnakeBody* head, Direction init_dir, int init_len) {
     BaseBlock* ptr_B = nullptr;
     BaseItem* temp_I = nullptr;
 
-    // std::cout << "\nmark bf for" << std::endl; // debug
-
     for (int i = 0; i < init_len; i++) {
-
-        // std::cout << "\nmark in for " << i << std::endl; // debug
-        // std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug
 
         ptr_S->set_snake(this);
         ptr_B = ptr_S->get_block();
-        // ptr_B->releaseSnakeBody();
-        // ptr_S->set_block(nullptr);
-        // temp_I = ptr_S;
-        // bond(ptr_B, temp_I);
 
         ptr_S = ptr_S->next();
         count++;
     }
-
-    // std::cout << "\nmark af for" << std::endl; // debug
 
     length = count;
 }

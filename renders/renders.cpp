@@ -2,8 +2,9 @@
 
 GameBoard::GameBoard()
 {
-    // Separate the screen to three windows
+    // Separate the screen to four windows
     this->mWindows.resize(4);
+    //初始化
     initscr();
     // 将所有键盘输入导入程序, 包括终止和Fn
     raw();
@@ -16,6 +17,7 @@ GameBoard::GameBoard()
     // No cursor show
     curs_set(0);
 
+    //所有即将使用的COLOR_PAIR
     start_color();
     init_color(MYCOLOR_F, 800, 800, 0);
     init_color(MYCOLOR_H, 1000, 400, 200);
@@ -44,10 +46,8 @@ GameBoard::GameBoard()
 
     // Initialize the leader board to be all zeros
     this->mLeaderBoard.assign(this->mNumLeaders, 0);
-
-
-
 }
+
 
 GameBoard::~GameBoard()
 {
@@ -59,7 +59,7 @@ GameBoard::~GameBoard()
 }
 
 
-
+//欢迎界面
 bool GameBoard::createWelcomeBoard() {
 
     erase();
@@ -84,8 +84,6 @@ bool GameBoard::createWelcomeBoard() {
     mvwprintw(menu, 3, width*0.5 - 8, "Author: TZY, WHY");
     mvwprintw(menu, 4, width*0.5 - 22, "Implemented using C++ and libncurses library");
 
-    //start_color();
-    //init_pair(1, COLOR_CYAN, COLOR_BLACK);
     wattron(title, COLOR_PAIR(1));
 
     string s1 = "  ____              _         ____                      ";
@@ -100,7 +98,6 @@ bool GameBoard::createWelcomeBoard() {
     mvwprintw(title, 4, width*0.5 - 28, "%s", s4.c_str());
     mvwprintw(title, 5, width*0.5 - 28, "%s", s5.c_str());
     wattroff(title, COLOR_PAIR(1));
-    //wrefresh(title);
 
 
     //这里可以加入更多选项
@@ -159,15 +156,11 @@ bool GameBoard::createWelcomeBoard() {
         this -> createHelp();
         return this -> createWelcomeBoard();
     }
-    /*
-    if (index == 3) {
-        this -> createSetting();
-        return this -> createWelcomeBoard();
-    }
-    */
     if (index == 1 || index == 3) return false;
 }
 
+
+//帮助界面
 bool GameBoard::createHelp() {
 
     int width = this->mScreenWidth * 0.5;
@@ -184,51 +177,37 @@ bool GameBoard::createHelp() {
     mvwprintw(menu, 4, width*0.5 - 26, "2. Eating food to get score and increase Difficulty");
     mvwprintw(menu, 5, width*0.5 - 27, "3. Heart will be generated, eat it to get more hearts");
     mvwprintw(menu, 6, width*0.5 - 21, "4. Go through walls at the cost of hearts");
-
-    /*start_color();
-    short MYCOLOR_F = 10, MYCOLOR_H = 11, MYCOLOR_S = 12, MYCOLOR_P = 13, MYCOLOR_B = 14;
-    init_color(MYCOLOR_F, 800, 800, 0);
-    init_color(MYCOLOR_H, 1000, 400, 200);
-    init_color(MYCOLOR_S, 100, 800, 100);
-    init_color(MYCOLOR_P, 100, 800, 800);
-    init_color(MYCOLOR_B, 800, 200, 200);
-
-    init_pair(3, MYCOLOR_F, COLOR_BLACK);
-    init_pair(4, MYCOLOR_H, COLOR_BLACK);
-    init_pair(5, MYCOLOR_S, COLOR_BLACK);
-    init_pair(6, MYCOLOR_P, COLOR_BLACK);
-    init_pair(7, MYCOLOR_B, COLOR_BLACK);*/
+    mvwprintw(menu, 7, width*0.5 - 20, "5. Rules of using SandBox Mode => README");
 
 
-    mvwprintw(menu, 8, width*0.5 - 26, "SnakeBody     Food     Heart     Portal     Barrier");
+    mvwprintw(menu, 9, width*0.5 - 26, "SnakeBody     Food     Heart     Portal     Barrier");
 
 
     wattron(menu, COLOR_PAIR(5));
-    mvwprintw(menu, 9, width*0.5 - 22, "@");
+    mvwprintw(menu, 10, width*0.5 - 22, "@");
     wattroff(menu, COLOR_PAIR(5));
 
     wattron(menu, COLOR_PAIR(3));
-    mvwprintw(menu, 9, width*0.5 - 10, "#");
+    mvwprintw(menu, 10, width*0.5 - 10, "#");
     wattroff(menu, COLOR_PAIR(3));
 
     wattron(menu, COLOR_PAIR(4));
-    mvwprintw(menu, 9, width*0.5, "+");
+    mvwprintw(menu, 10, width*0.5, "+");
     wattroff(menu, COLOR_PAIR(4));
 
     wattron(menu, COLOR_PAIR(6));
-    mvwprintw(menu, 9, width*0.5 + 10, "P");
+    mvwprintw(menu, 10, width*0.5 + 10, "P");
     wattroff(menu, COLOR_PAIR(6));
     
     wattron(menu, COLOR_PAIR(7));
-    mvwprintw(menu, 9, width*0.5 + 22, "=");
+    mvwprintw(menu, 10, width*0.5 + 22, "=");
     wattroff(menu, COLOR_PAIR(7));
 
     vector<string> menuItems = {"Back"};
     
     //下面实现选项切换
     wattron(menu, A_STANDOUT);
-    mvwprintw(menu, 11, width*0.5 - 2, menuItems[0].c_str());
-    //wattroff(menu, A_STANDOUT);
+    mvwprintw(menu, 12, width*0.5 - 2, menuItems[0].c_str());
 
     wrefresh(menu);
 
@@ -242,42 +221,6 @@ bool GameBoard::createHelp() {
     delwin(menu);
     return true;
 }
-
-
-//Create Setting board
-/*
-bool GameBoard:: createSetting() {
-    int width = this->mScreenWidth * 0.5;
-    int height = this->mScreenHeight * 0.5;
-    int startX = this->mScreenWidth * 0.25;
-    int startY = this->mScreenHeight * 0.25;
-
-    WINDOW* menu;
-    menu = newwin(height, width, startY, startX);
-    box(menu, 0, 0);
-
-    mvwprintw(menu, 1, 1, "Modify Game Settings");
-
-    std::vector<std::string> menuItems = {"Save"};
-    
-    //下面实现选项切换
-    wattron(menu, A_STANDOUT);
-    mvwprintw(menu, 9, 1, menuItems[0].c_str());
-    //wattroff(menu, A_STANDOUT);
-
-    wrefresh(menu);
-
-    int key;
-    while (true)
-    {
-        key = getch();
-        if (key == ' ' || key == 10) break;
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-    delwin(menu);
-    return true;
-}
-*/
 
 
 //选择游戏模式
@@ -371,13 +314,7 @@ int GameBoard::chooseMode() {
 }
 
 
-
-
-
-
-
-
-
+//信息栏
 void GameBoard::createInformationBoard()
 {
     int startY = 0;
@@ -391,7 +328,7 @@ void GameBoard::renderInformationBoard()
     werase(mWindows[0]);
     mvwprintw(this->mWindows[0], 1, 1, "Welcome to The Snake Game!");
     mvwprintw(this->mWindows[0], 2, 1, "Author: TZY, WHY");
-    mvwprintw(this->mWindows[0], 3, 1, "Website:");
+    mvwprintw(this->mWindows[0], 3, 1, "Website: https://github.com/BetulaSuk/MySnakeGame");
     mvwprintw(this->mWindows[0], 4, 1, "Implemented using C++ and libncurses library.");
 
     box(mWindows[0], 0, 0);
@@ -399,12 +336,12 @@ void GameBoard::renderInformationBoard()
 }
 
 
-
+//LOGO界面
 void GameBoard::createLogo() {
     int startY = 0;
     int startX = this -> mScreenWidth - 65;
+
     this->mWindows[3] = newwin(this->mInformationHeight, 65, startY, startX);
-    //box(mWindows[3], 0, 0);
 }
 
 
@@ -416,8 +353,6 @@ void GameBoard::renderLogo() {
     string s5 = " |____/|_| |_|\\__,_|_|\\_\\___|\\____|\\__,_|_| |_| |_|\\___|";
     
     int width = this->mScreenWidth;
-    //start_color();
-    //init_pair(1, COLOR_CYAN, COLOR_BLACK);
     wattron(this->mWindows[3], COLOR_PAIR(1));
     
     mvwprintw(this->mWindows[3], 1, 3, "%s", s1.c_str());
@@ -428,11 +363,11 @@ void GameBoard::renderLogo() {
 
     wattroff(this->mWindows[3], COLOR_PAIR(1));
 
-    //box(mWindows[3], 0, 0);
-
     wrefresh(mWindows[3]);
 }
 
+
+//游戏主界面
 void GameBoard::createGameBoard()
 {
     int startY = this->mInformationHeight;
@@ -440,13 +375,8 @@ void GameBoard::createGameBoard()
     this->mWindows[1] = newwin(this->mScreenHeight - this->mInformationHeight, this->mScreenWidth - this->mInstructionWidth, startY, startX);
 }
 
-/*
-void GameBoard::renderGameBoard() const
-{
-    wrefresh(this->mWindows[1]);
-}
-*/
 
+//计分栏
 void GameBoard::createInstructionBoard()
 {
     int startY = this->mInformationHeight;
@@ -482,6 +412,7 @@ void GameBoard::renderInstructionBoard(Snake* snake) const
 }
 
 
+//结束界面
 bool GameBoard::renderRestartMenu(Snake* snake) const
 {
     WINDOW * menu;
@@ -501,8 +432,7 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
     std::string s4 = " | |_| | (_| | | | | | |  __/ | |_| |\\ V /  __/ |";
     std::string s5 = "  \\____|\\__,_|_| |_| |_|\\___|  \\___/  \\_/ \\___|_|";
 
-    //start_color();
-    //init_pair(8, COLOR_RED, COLOR_BLACK);
+
     wattron(menu, COLOR_PAIR(8));
 
     mvwprintw(menu, 1, width*0.5 - 25, "%s", s1.c_str());
@@ -527,6 +457,7 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
 
     wrefresh(menu);
 
+    //选项切换
     int key;
     while (true)
     {
@@ -579,7 +510,7 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
 }
 
 
-
+//渲染地图：依次检测Snake、Item、Block，按照此优先级渲染
 void GameBoard::renderMap(WINDOW* win, Map* map) {
     werase(win);
 
@@ -639,13 +570,6 @@ void GameBoard::renderMap(WINDOW* win, Map* map) {
                     wattroff(win, COLOR_PAIR(7));
                 }
                 else mvwprintw(win, i + startY, j + startX, ptr_B->toString().c_str());
-                /*暂时不需要渲染传送门出口
-                if (ptr_B -> type() == BlockType::PORTAL) {
-                    Portal* entrance = reinterpret_cast<Portal*>(ptr_B);
-                    int exit_x = entrance->get_ex();
-                    int exit_y = entrance->get_ey();
-                    //map.at(exit_x, exit_y) -> setString("O");
-                }*/ 
             }
         }
     }
@@ -656,6 +580,7 @@ void GameBoard::renderMap(WINDOW* win, Map* map) {
 
 
 
+//经典模式主循环
 void GameBoard::startGame(Map* map, Snake* snake) {
     curs_set(0);
     int control;
@@ -663,7 +588,6 @@ void GameBoard::startGame(Map* map, Snake* snake) {
         while (true) {
             renderMap(mWindows[1], map);
             renderInstructionBoard(snake);
-
 
             control = getch();
 
@@ -695,9 +619,9 @@ void GameBoard::startGame(Map* map, Snake* snake) {
 }
 
 
+//文字蛇模式主循环
 void GameBoard::startWord(Map* map, WordSnake* snake) {
-    MYDE::win = mWindows[1];
-    
+
     curs_set(0);
     int control;
     int x, y;
@@ -705,38 +629,32 @@ void GameBoard::startWord(Map* map, WordSnake* snake) {
 
     vector<Entity*> * en_list = map->get_entity_list();
 
-        while (true) {
-            renderMap(mWindows[1], map);
-            renderInstructionBoard(snake);
+    while (true) {
+        renderMap(mWindows[1], map);
+        renderInstructionBoard(snake);
 
-            control = getch();
+        control = getch();
 
-            switch (control) {
-                case 'W': case 'w': case KEY_UP:
-                    snake->changeDir(Direction::UP); break;
-                case 'S': case 's': case KEY_DOWN:
-                    snake->changeDir(Direction::DOWN); break;
-                case 'A': case 'a': case KEY_LEFT:
-                    snake->changeDir(Direction::LEFT); break;
-                case 'D': case 'd': case KEY_RIGHT:
-                    snake->changeDir(Direction::RIGHT); break;
-            }
-
-            snake->moveForward();
-            if (!snake->checkAlive()) {break;}
-
-            for (auto it = en_list->begin(); it != en_list->end(); it++) {
-                (*it)->moveForward();
-                // mvwprintw(mWindows[0], 5, 5, "%d", (*it)->get_len());
-                //wrefresh(mWindows[0]);
-            }
-
-            if (control == ' ' || control == 10) break;
-
-            this_thread::sleep_for(chrono::milliseconds(base_delay));
-
-            /*if (en_list->size() != 0) {
-                mvwprintw(mWindows[0], 5, 7, "size!"); wrefresh(mWindows[0]); // debug
-            }*/
+        switch (control) {
+            case 'W': case 'w': case KEY_UP:
+                snake->changeDir(Direction::UP); break;
+            case 'S': case 's': case KEY_DOWN:
+                snake->changeDir(Direction::DOWN); break;
+            case 'A': case 'a': case KEY_LEFT:
+                snake->changeDir(Direction::LEFT); break;
+            case 'D': case 'd': case KEY_RIGHT:
+                   snake->changeDir(Direction::RIGHT); break;
         }
+
+        snake->moveForward();
+        if (!snake->checkAlive()) {break;}
+
+        for (auto it = en_list->begin(); it != en_list->end(); it++) {
+            (*it)->moveForward();
+        }
+
+        if (control == ' ' || control == 10) break;
+
+        this_thread::sleep_for(chrono::milliseconds(base_delay));
+    }
 }

@@ -23,6 +23,8 @@ enum class BlockType;
 class Map;
 enum class Direction;
 
+
+//不同模式下不同的蛇
 enum class SnakeType {
     CLASSIC    = 0,
     WORD_SNAKE = 1,
@@ -31,6 +33,7 @@ enum class SnakeType {
 };
 
 
+//Snake类
 class Snake {
     public:
         Snake() = default;
@@ -59,7 +62,6 @@ class Snake {
         // 用于前进时检测, 为 Entity 类的功能而设置
         virtual bool canOverlap() const {return false;}
 
-        bool revive();
 
         /* 判定 */
 
@@ -91,6 +93,7 @@ class Snake {
     private:
         const static SnakeType TYPE = SnakeType::CLASSIC;
 };
+
 
 /**
  * class: Entity

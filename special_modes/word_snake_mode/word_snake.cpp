@@ -5,14 +5,13 @@
 #include "word_snake.h"
 #include <fstream>
 #include <sstream>
-#include <iostream>
+
 
 char getRandomCh() {
     int ch_i = Random::randInt(1, 26);
     return char(ch_i + 96);
 }
 
-WINDOW* MYDE::win;
 
 void setNRandomLetter(Map* map, int n) {
     // 清空既有食物
@@ -27,11 +26,11 @@ void setNRandomLetter(Map* map, int n) {
 
     std::string displayStr = " ";
     for (int i = 0; i < n; i++) {
-        //displayStr[0] = getRandomCh();
-        displayStr[0] = char(i + 97);
+        displayStr[0] = getRandomCh();
         map->setRandomItem(ItemType::FOOD, displayStr);
     }
 }
+
 
 std::string getLetterStr(std::string raw) {
     int chi_1;
@@ -42,6 +41,7 @@ std::string getLetterStr(std::string raw) {
     }
     return raw;
 }
+
 
 int checkWord(std::string snakeStr) {
     if (snakeStr.length() == 0) {return -1;}
@@ -106,9 +106,6 @@ bool isEqualChar(char ch_1, char ch_2) {
 }
 
 
-//WINDOW* MYDE::win;
-
-
 bool WordSnake::moveForward() {
     // 检查蛇是否死亡
     if (isAlive == false) {return false;}
@@ -133,7 +130,6 @@ bool WordSnake::moveForward() {
                 return false;
             }
             break;
-        // TODO 添加更多方块类型时此处可能要增加判定
         default:
             break;
     }
@@ -188,6 +184,7 @@ bool WordSnake::moveForward() {
     return true;
 }
 
+
 std::string WordSnake::getString() const {
     std::string snakeStr;
     SnakeBody* ptr_S = ptrHead;
@@ -205,6 +202,7 @@ std::string WordSnake::getString() const {
 
     return ret;
 }
+
 
 Entity* WordSnake::cutWord() {
     int word_len = checkWord(getString());
@@ -227,8 +225,6 @@ Entity* WordSnake::cutWord() {
 
     Entity* ptr_E = new Entity(ptrMap, en_head, en_dir, word_len);
 
-    // std::cout << "mark AF CONSTR" << std::endl; // debug
-
     ptrMap->get_entity_list()->push_back(ptr_E);
 
         std::vector<Entity*> *en_list = ptrMap->get_entity_list();
@@ -239,17 +235,11 @@ Entity* WordSnake::cutWord() {
                 for (int i = 0; i < (*it)->get_len(); i++) {
                     x = ptr_S->get_x();
                     y = ptr_S->get_y();
-
-                    mvwprintw(MYDE::win, y, x, ptr_S->toString().c_str());
-                    // mvwprintw(mWindows[0], 4 + i, 4, ptr_S->toString().c_str());
-
-                    wrefresh(MYDE::win);
                 }
             }
-            wrefresh(MYDE::win);
-
     return ptr_E;
 }
+
 
 bool WordSnake::tryEatFood(int newTail_x, int newTail_y, std::string newTail_s, int n) {
     // 为了可靠性, 再检测一次头部的是否是食物

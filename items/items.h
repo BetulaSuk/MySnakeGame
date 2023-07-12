@@ -12,22 +12,9 @@
 
 #include <string>
 
-/*
-class Color {
-    public:
-        Color(int red, int green, int blue) {
-            this->red = red;
-            this->green = green;
-            this->blue = blue;
-        }
 
-        int red;
-        int green;
-        int blue;
-};
-*/
-
-
+//Items种类：Food、Heart、Snakebody（为WordSnake准备）
+//真正的蛇身位于snake.cpp!
 enum class ItemType {
     EMPTY     = -1,
     BASEITEM  = 0,
@@ -41,6 +28,8 @@ enum class BlockType;
 class SnakeBody;
 class Snake;
 
+
+//BaseItem类，作为Item的基本，作为Food、Heart、SnakeBody等的父类
 class BaseItem {
     public:
         BaseItem(): ptrBlock(nullptr) {}
@@ -57,9 +46,6 @@ class BaseItem {
         // 修改渲染用的字符串
         void setString(std::string s) {displayString = s;}
 
-        //Color* getColor() const {return colr;}
-        //void setColor(Color* ptrC) {colr = ptrC;}
-
         /* Block 相关操作 */
 
         BaseBlock*& get_block() {return ptrBlock;}
@@ -72,11 +58,10 @@ class BaseItem {
         const static ItemType TYPE = ItemType::BASEITEM;
 
         std::string displayString = " ";
-
-        //Color* colr;
 };
 
 
+//子类：Food
 class Food: public BaseItem {
     public:
         Food(): BaseItem() {}
@@ -90,6 +75,7 @@ class Food: public BaseItem {
 };
 
 
+//子类：Heart
 class Heart: public BaseItem {
     public:
         Heart(): BaseItem() {}
@@ -103,6 +89,8 @@ class Heart: public BaseItem {
 };
 
 
+//子类：SnakeBody（为WordSnake准备）
+//真正的蛇身位于snake.cpp!
 class SnakeBody: public BaseItem {
     friend class Snake;
 
