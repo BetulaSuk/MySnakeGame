@@ -133,8 +133,8 @@ class SnakeBody: public BaseItem {
     private:
         const static ItemType TYPE = ItemType::SNAKEBODY;
 
-        SnakeBody* ptrNext;
-        Snake* ptrSnake;
+        SnakeBody* ptrNext = nullptr;
+        Snake* ptrSnake = nullptr;
 };
 
 
