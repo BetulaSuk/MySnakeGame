@@ -313,14 +313,15 @@ bool Entity::moveForward() {
         if ( ! ptr_I) {continue;}
         itType = ptr_I->type();
         displayStr = ptr_I->toString();
-        blocksAhead[i]->clear_item();
 
         // 撞到东西要删了之后重新生成
         switch (itType) {
             case ItemType::FOOD:
+                blocksAhead[i]->clear_item();
                 ptrMap->setRandomItem(ItemType::FOOD, displayStr);
                 break;
             case ItemType::HEART:
+                blocksAhead[i]->clear_item();
                 ptrMap->setRandomItem(ItemType::HEART, displayStr);
                 break;
         }
