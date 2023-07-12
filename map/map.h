@@ -85,10 +85,10 @@ class Map {
         int get_width() const {return width;}
         int get_height() const {return height;}
 
-        BaseBlock* at(int x, int y) {return data[x][y];}
+        BaseBlock*& at(int x, int y) {return data[x][y];}
         const std::vector<std::vector<BaseBlock*>> * const get_data() const {return &data;}
 
-        Snake* get_snake() {return ptrSnake;}
+        Snake*& get_snake() {return ptrSnake;}
         void set_snake(Snake* s) {ptrSnake = s;}
         std::vector<Entity*> * get_entity_list() {return &entityList;}
 

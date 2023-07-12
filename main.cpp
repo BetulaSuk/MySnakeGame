@@ -53,7 +53,7 @@ int main() {
 
             Map* map = new Map(game.getGameBoardHeight(), game.getGameBoardWidth());
 
-            WordSnake* snake = new WordSnake(map, 10, 10, 2, 3);
+            WordSnake* snake = new WordSnake(map, 10, 10, 2, 1);
 
             //主循环
             setNRandomLetter(map, 26);

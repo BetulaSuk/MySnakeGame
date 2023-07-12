@@ -43,7 +43,6 @@ class Snake;
 class BaseItem {
     public:
         BaseItem(): ptrBlock(nullptr) {}
-        BaseItem(BaseBlock* block);
 
         virtual ~BaseItem() = default;
         
@@ -62,10 +61,7 @@ class BaseItem {
 
         /* Block 相关操作 */
 
-        BaseBlock* get_block() {return ptrBlock;}
-        /* 若需将 item 绑定到指定 block, 应使用 BaseBlock::set_item(...)
-         * SnakeBody 则需使用 BaseBlock::attachSnakeBody(...) */
-        void set_block(BaseBlock* block);
+        BaseBlock*& get_block() {return ptrBlock;}
 
     protected:
         
@@ -83,11 +79,10 @@ class BaseItem {
 class Food: public BaseItem {
     public:
         Food(): BaseItem() {}
-        Food(BaseBlock* block): BaseItem(block) {}
 
-        virtual ~Food() = default;
+        ~Food() = default;
 
-        virtual ItemType type() const {return TYPE;}
+        ItemType type() const {return TYPE;}
 
     private:
         const static ItemType TYPE = ItemType::FOOD;
@@ -97,11 +92,10 @@ class Food: public BaseItem {
 class Heart: public BaseItem {
     public:
         Heart(): BaseItem() {}
-        Heart(BaseBlock* block): BaseItem(block) {}
 
-        virtual ~Heart() = default;
+        ~Heart() = default;
 
-        virtual ItemType type() const {return TYPE;}
+        ItemType type() const {return TYPE;}
 
     private:
         const static ItemType TYPE = ItemType::HEART;
@@ -114,19 +108,17 @@ class SnakeBody: public BaseItem {
     public:
         SnakeBody(): BaseItem() {}
 
-        virtual ~SnakeBody() = default;
+        ~SnakeBody() = default;
 
-        virtual ItemType type() {return TYPE;}
+        ItemType type() {return TYPE;}
 
-        virtual void set_block(BaseBlock* block);
-
-        virtual void set_snake(Snake* ptr_S);
+        void set_snake(Snake* ptr_S);
 
         void escapeBlock();
 
         /* Snake 相关操作 */
 
-        SnakeBody* next() {return ptrNext;}
+        SnakeBody*& next() {return ptrNext;}
         void setNext(SnakeBody* next) {ptrNext = next;}
         Snake* getSnake() {return ptrSnake;}
 

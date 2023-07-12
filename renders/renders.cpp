@@ -646,6 +646,7 @@ void GameBoard::renderMap(WINDOW* win, Map* map) {
             }
         }
     }
+
     box(win, 0, 0);
     wrefresh(win);
 }
@@ -692,10 +693,12 @@ void GameBoard::startGame(Map* map, Snake* snake) {
 
 
 void GameBoard::startWord(Map* map, WordSnake* snake) {
-    //MYDE::win = mWindows[1];
+    MYDE::win = mWindows[1];
     
     curs_set(0);
     int control;
+    int x, y;
+    SnakeBody* ptr_S = nullptr;
 
     vector<Entity*> * en_list = map->get_entity_list();
 
@@ -718,10 +721,10 @@ void GameBoard::startWord(Map* map, WordSnake* snake) {
 
             snake->moveForward();
             if (!snake->checkAlive()) {break;}
-            
+
             for (auto it = en_list->begin(); it != en_list->end(); it++) {
-                //(*it)->moveForward();
-                //mvwprintw(mWindows[0], 5, 5, "%d", (*it)->get_len());
+                (*it)->moveForward();
+                // mvwprintw(mWindows[0], 5, 5, "%d", (*it)->get_len());
                 //wrefresh(mWindows[0]);
             }
 

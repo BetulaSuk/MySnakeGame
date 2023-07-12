@@ -1,6 +1,7 @@
 #include <iostream>
 #include <curses.h>
 #include <string>
+#include <vector>
 #include <thread>
 #include <chrono>
 #include <sstream>
@@ -44,41 +45,55 @@ void renderMap(Map& map) {
     }
 }
 
+
 int main() {
-    string rootPath;
-    stringstream sstr;
-    sstr << filesystem::current_path();
-    sstr >> rootPath;
-    rootPath.pop_back();
-    rootPath.erase(0, 1);
-    string mapPath = rootPath + test_map;
+    Path::setRootPath();
+
+    int wordLen = checkWord("catllshell");
+
+    cout << wordLen << endl;
+
+    return 0;
+}
+
+int mainc() {
+    Path::setRootPath();
+    string mapPath = Path::fullPath(test_map);
 
     cout << ">>> to initialize map: " << endl;
-    Map* map = loadMap(mapPath);
+    Map* map = new Map(test_x, test_y);
     if ( ! map) {
         cout << ">>> failed to load map!!" << endl;
         return 0;
     }
     cout << ">>> map initailized!" << endl;
 
-    Snake* s = map->get_snake();
+    Snake* s = new WordSnake(map, 10, 15, 2, 3);
     if ( ! s) {
         cout << ">>> failed to load snake!!" << endl;
         return 0;
     }
     cout << ">>> snake initailized!" << endl;
 
+    vector<Entity*> * en_list = map->get_entity_list();
+    Entity* ptr_E;
     char control;
     while (true) {
         cin >> control;
 
         switch (control) {
-            case '\n':
-                break;
             case 'm':
                 if (s->moveForward()) {
                     cout << ">>> move finished!" << endl;
                 } else {cout << ">>> move failed!" << endl;}
+
+                for (int i = 0; i < en_list->size(); i++) {
+                    ptr_E = en_list->at(i);
+                    ptr_E->moveForward();
+                }
+
+
+
                 break;
             case 'r':
                 renderMap(*map);
@@ -93,6 +108,8 @@ int main() {
                 s->changeDir(Direction::RIGHT); break;
             case 'c':
                 cout << ">>> snake alive: " << s->checkAlive() << endl;
+            case 'h':
+                cout << ">>> snake heart: " << s->get_heart() << endl;
         }
         if (control == 'q') {break;}
     }

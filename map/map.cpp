@@ -59,14 +59,14 @@ bool canSetItem(BaseBlock* const block) {
 
 void bond(BaseBlock* ptr_B, SnakeBody* ptr_S) {
     if (ptr_B && ptr_S) {
-        ptr_B->attachSnakeBody(ptr_S);
-        ptr_S->set_block(ptr_B);
+        ptr_B->getSnakeBody() = ptr_S;
+        ptr_S->get_block() = ptr_B;
     } else {exit(2);}
 }
 void bond(BaseBlock* ptr_B, BaseItem*  ptr_I) {
     if (ptr_B && ptr_I && ptr_I->type() != ItemType::SNAKEBODY) {
-        ptr_B->set_item(ptr_I);
-        ptr_I->set_block(ptr_B);
+        ptr_B->get_item() = ptr_I;
+        ptr_I->get_block() = ptr_B;
     } else {exit(2);}
 }
 

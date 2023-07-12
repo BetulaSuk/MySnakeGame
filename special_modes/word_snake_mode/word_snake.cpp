@@ -12,6 +12,7 @@ char getRandomCh() {
     return char(ch_i + 96);
 }
 
+WINDOW* MYDE::win;
 
 void setNRandomLetter(Map* map, int n) {
     // 清空既有食物
@@ -115,15 +116,9 @@ bool WordSnake::moveForward() {
     BaseBlock* blockAhead = nextBlock(ptrMap, ptrHead->get_block(), dir);
     BlockType  typeBlock  = BlockType::EMPTY;
 
-    //mvwprintw(MYDE::win, 5, 2, ">>> 1");
-    //wrefresh(MYDE::win);
-
     // 检查是否超出地图边界
     if ( ! blockAhead) {return false;}
     typeBlock = blockAhead->type();
-
-    //mvwprintw(MYDE::win, 6, 2, ">>> 2");
-    //wrefresh(MYDE::win);
 
     // 检查前方方块是否可踏足
     switch (typeBlock) {
@@ -143,9 +138,6 @@ bool WordSnake::moveForward() {
             break;
     }
 
-    //mvwprintw(MYDE::win, 7, 2, ">>> 3");
-    //wrefresh(MYDE::win);
-
     // 检查前方方块是否有蛇身
     SnakeBody* ptrSAhead = blockAhead->getSnakeBody();
     if (ptrSAhead) {
@@ -153,9 +145,6 @@ bool WordSnake::moveForward() {
         heart = 0;
         return false;
     }
-
-    //mvwprintw(MYDE::win, 8, 2, ">>> 4");
-    //wrefresh(MYDE::win);
 
     // 获取前方方块上的物品类型
     BaseItem* itemAhead = blockAhead->get_item();
@@ -165,24 +154,6 @@ bool WordSnake::moveForward() {
         typeItem = itemAhead->type();
         displayStr = itemAhead->toString();    
     }
-
-    //mvwprintw(MYDE::win, 9, 2, ">>> 5");
-    //wrefresh(MYDE::win);
-
-    // 撞Entity的判定
-    if (typeItem == ItemType::SNAKEBODY) {
-        SnakeBody* temp_S = reinterpret_cast<SnakeBody*>(itemAhead);
-        if ( ! temp_S->getSnake()->canOverlap()) {
-            heart--;
-            if (heart <= 0) {
-                isAlive = false;
-                return false;
-            }
-        }
-    }
-
-    //mvwprintw(MYDE::win, 10, 2, ">>> 6");
-    //wrefresh(MYDE::win);
 
     // 提前获取此时的尾部坐标, 为可能吃食物的情况做准备
     int oldTail_x, oldTail_y;
@@ -195,48 +166,24 @@ bool WordSnake::moveForward() {
     BaseBlock* ptrB_1 = ptrHead->get_block();
     BaseBlock* ptrB_2 = nextBlock(ptrMap, ptrB_1, dir);
 
-    //mvwprintw(MYDE::win, 11, 2, ">>> 7");
-    //wrefresh(MYDE::win);
-
     for (int i = 0; i < length; i++) {
-
-        //mvwprintw(MYDE::win, 14, 2, ">>> %d", i);
-        //wrefresh(MYDE::win);
 
         ptrB_1->releaseSnakeBody();
 
-        //mvwprintw(MYDE::win, 16, 2, ">>> b bond"); wrefresh(MYDE::win);
-
         bond(ptrB_2, ptrSbody);
-
-        //mvwprintw(MYDE::win, 17, 2, ">>> af bond"); wrefresh(MYDE::win);
-
         ptrSbody = ptrSbody->next();
-
-        //mvwprintw(MYDE::win, 18, 2, ">>> af next"); wrefresh(MYDE::win);
-
         if (i == length -1) {
-            //mvwprintw(MYDE::win, 15, 2, ">>> break!"); wrefresh(MYDE::win);
             break;
         }
         ptrB_2 = ptrB_1;
         ptrB_1 = ptrSbody->get_block();
     }
 
-    //mvwprintw(MYDE::win, 12, 2, ">>> 8");
-    //wrefresh(MYDE::win);
-
     // 因为 eatFood 中有判定, 所以不担心误判为吃食物
     tryEatFood(oldTail_x, oldTail_y, displayStr, new_food_num);
     tryEatHeart();
     // 检验是否已经拼成了单词
-
-    //mvwprintw(MYDE::win, 13, 2, ">>> 9");
-    //wrefresh(MYDE::win);
-
     cutWord();
-
-    // std::cout << "mark af cut" << std::endl; // debug
 
     return true;
 }
@@ -283,6 +230,23 @@ Entity* WordSnake::cutWord() {
     // std::cout << "mark AF CONSTR" << std::endl; // debug
 
     ptrMap->get_entity_list()->push_back(ptr_E);
+
+        std::vector<Entity*> *en_list = ptrMap->get_entity_list();
+        SnakeBody* ptr_S; int x, y;
+        ptr_S = nullptr;
+            for (auto it = en_list->begin(); it != en_list->end(); it++) {
+                ptr_S = (*it)->get_head();
+                for (int i = 0; i < (*it)->get_len(); i++) {
+                    x = ptr_S->get_x();
+                    y = ptr_S->get_y();
+
+                    mvwprintw(MYDE::win, y, x, ptr_S->toString().c_str());
+                    // mvwprintw(mWindows[0], 4 + i, 4, ptr_S->toString().c_str());
+
+                    wrefresh(MYDE::win);
+                }
+            }
+            wrefresh(MYDE::win);
 
     return ptr_E;
 }

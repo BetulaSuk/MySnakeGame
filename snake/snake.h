@@ -48,7 +48,7 @@ class Snake {
         Direction get_dir() const {return dir;}
         int get_point() const {return point;}
 
-        SnakeBody* get_head() {return ptrHead;}
+        SnakeBody*& get_head() {return ptrHead;}
         Map* get_map() {return ptrMap;}
 
         /* 行动 */

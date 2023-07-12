@@ -52,16 +52,13 @@ class BaseBlock {
 
         /* item 相关操作 */
 
-        // 此格已有物品, 不改变, 返回 false; 否则赋值并返回 true
-        bool set_item(BaseItem* item);
         // 若有物品, 删除该物品, 不仅仅是指针设空 ! 
         void clear_item();
-        bool releaseItem() {ptrItem = nullptr;}
-        BaseItem* get_item();
+        BaseItem*& get_item();
 
         /* SnakeBody 相关操作 */
 
-        SnakeBody* getSnakeBody() {return ptrSnakeBody;}
+        SnakeBody*& getSnakeBody() {return ptrSnakeBody;}
         
         void attachSnakeBody(SnakeBody* ptrSbody);
         // 取消 block 对 SnakeBody 的<单向>连接 ! 
@@ -90,7 +87,7 @@ class Wall: public BaseBlock {
         
         ~Wall() = default;
 
-        virtual BlockType type() const {return TYPE;}
+        BlockType type() const {return TYPE;}
 
     private:
         const static BlockType TYPE = BlockType::WALL;
@@ -104,7 +101,7 @@ class Barrier: public BaseBlock {
 
         ~Barrier() = default;
 
-        virtual BlockType type() const {return TYPE;}
+        BlockType type() const {return TYPE;}
 
     private:
         const static BlockType TYPE = BlockType::BARRIER;
@@ -121,7 +118,7 @@ class Portal: public BaseBlock {
         int get_ex() const {return exit_x;}
         int get_ey() const {return exit_y;}
 
-        virtual BlockType type() const {return TYPE;}
+        BlockType type() const {return TYPE;}
 
     private:
         const static BlockType TYPE = BlockType::PORTAL;

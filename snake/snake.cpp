@@ -133,18 +133,6 @@ bool Snake::moveForward() {
     ItemType typeItem = ItemType::EMPTY;
     if (itemAhead) {typeItem = itemAhead->type();}
 
-    // 撞Entity的判定
-    if (typeItem == ItemType::SNAKEBODY) {
-        SnakeBody* temp_S = reinterpret_cast<SnakeBody*>(itemAhead);
-        if ( ! temp_S->getSnake()->canOverlap()) {
-            heart--;
-            if (heart <= 0) {
-                isAlive = false;
-                return false;
-            }
-        }
-    }
-
     // 提前获取此时的尾部坐标, 为可能吃食物的情况做准备
     int oldTail_x, oldTail_y;
     SnakeBody* ptrTail = getTailPtr();
@@ -243,6 +231,7 @@ Entity::Entity(Map* map, SnakeBody* head, Direction init_dir, int init_len) {
     dir     = init_dir;
     ptrHead = head;
     isAlive = true;
+    overlap = false;
 
     int count = 0; 
     SnakeBody* ptr_S = ptrHead;
@@ -258,10 +247,10 @@ Entity::Entity(Map* map, SnakeBody* head, Direction init_dir, int init_len) {
 
         ptr_S->set_snake(this);
         ptr_B = ptr_S->get_block();
-        ptr_B->releaseSnakeBody();
-        ptr_S->set_block(nullptr);
-        temp_I = ptr_S;
-        bond(ptr_B, temp_I);
+        // ptr_B->releaseSnakeBody();
+        // ptr_S->set_block(nullptr);
+        // temp_I = ptr_S;
+        // bond(ptr_B, temp_I);
 
         ptr_S = ptr_S->next();
         count++;
@@ -280,12 +269,15 @@ bool Entity::moveForward() {
     std::vector<BaseBlock*> blocksNow(length);
     std::vector<BaseBlock*> blocksAhead(length);
     SnakeBody* ptr_S = ptrHead;
+    BaseBlock* null_B = nullptr;
+    SnakeBody* null_S = nullptr;
     for (int i = 0; i < length; i++) {
         if ( ! ptr_S) {exit(3);}
 
         blocksNow[i] = ptr_S->get_block();
-        ptr_S->set_block(nullptr);
+        ptr_S->get_block()->get_item() = nullptr;
         blocksAhead[i] = nextBlock(ptrMap, ptr_S->get_block(), dir);
+        ptr_S->get_block() = nullptr;
         ptr_S = ptr_S->next();
     }
     ptr_S = nullptr;
@@ -343,8 +335,8 @@ bool Entity::moveForward() {
         // std::cout << "mark in for " << i << std::endl; // debug
         // std::cout << "mark af set" << std::endl; // debug
 
-        temp_I = ptr_S;
-        bond(blocksAhead[i], temp_I);
+        // temp_I = ptr_S;
+        bond(blocksAhead[i], ptr_S);
 
         // std::cout << "mark af bond" << std::endl; // debug
         // std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug

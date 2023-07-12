@@ -12,10 +12,6 @@ BaseBlock::~BaseBlock() {
     }
 }
 
-bool BaseBlock::set_item(BaseItem* item) {
-    ptrItem = item;
-}
-
 void BaseBlock::clear_item() {
     if (ptrItem) {
         delete ptrItem;
@@ -23,7 +19,7 @@ void BaseBlock::clear_item() {
     ptrItem = nullptr;
 }
 
-BaseItem* BaseBlock::get_item() {
+BaseItem*& BaseBlock::get_item() {
     return ptrItem;
 }
 

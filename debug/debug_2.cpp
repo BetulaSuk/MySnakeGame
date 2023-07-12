@@ -20,7 +20,7 @@ int main() {
     initscr();
     raw();
     keypad(stdscr, true);
-    // nodelay(stdscr, true);
+    nodelay(stdscr, true);
     noecho();
     curs_set(0);
 
