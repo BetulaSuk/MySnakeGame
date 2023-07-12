@@ -276,7 +276,6 @@ Entity* WordSnake::cutWord() {
     new_tail->setNext(nullptr);
     ptrMap->get_entity_list()->push_back(ptr_E);
 
-
     return ptr_E;
 }
 
