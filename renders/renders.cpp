@@ -612,7 +612,11 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
                     mvwprintw(win, i + startY, j + startX, ptr_I->toString().c_str());
                     wattroff(win, COLOR_PAIR(4));
                 }
-
+                else if (ptr_I -> type() == ItemType::SNAKEBODY) {
+                    wattron(win, COLOR_PAIR(4));
+                    mvwprintw(win, i + startY, j + startX, ptr_I->toString().c_str());
+                    wattroff(win, COLOR_PAIR(4));
+                }
             }
             else {
                 //渲染地图方块
@@ -692,6 +696,8 @@ void GameBoard::startWord(Map& map, WordSnake* snake) {
     
     curs_set(0);
     int control;
+    int mark;
+    vector<Entity*> * en_list = map.get_entity_list();
 
         while (true) {
             renderMap(mWindows[1], map);
@@ -712,9 +718,20 @@ void GameBoard::startWord(Map& map, WordSnake* snake) {
 
             snake->moveForward();
             if (!snake->checkAlive()) {break;}
+            
+            for (auto it = en_list->begin(); it != en_list->end(); it++) {
+                mark = (int)(*it)->moveForward();
+                mvwprintw(mWindows[0], 5, 1, "%d", mark);
+                mvwprintw(mWindows[0], 5, 5, "%d", (*it)->get_len());
+                wrefresh(mWindows[0]);
+            }
 
             if (control == ' ' || control == 10) break;
 
             this_thread::sleep_for(chrono::milliseconds(base_delay));
+
+            if (en_list->size() != 0) {
+                mvwprintw(mWindows[0], 5, 7, "size!"); wrefresh(mWindows[0]); // debug
+            }
         }
 }

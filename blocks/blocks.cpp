@@ -13,11 +13,7 @@ BaseBlock::~BaseBlock() {
 }
 
 bool BaseBlock::set_item(BaseItem* item) {
-    if ( ! ptrItem) {
-        ptrItem = item;
-        return true;
-    }
-    else return false;
+    ptrItem = item;
 }
 
 void BaseBlock::clear_item() {

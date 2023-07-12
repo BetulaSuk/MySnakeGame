@@ -235,6 +235,9 @@ bool WordSnake::moveForward() {
     //wrefresh(MYDE::win);
 
     cutWord();
+
+    // std::cout << "mark af cut" << std::endl; // debug
+
     return true;
 }
 
@@ -271,9 +274,13 @@ Entity* WordSnake::cutWord() {
     SnakeBody* en_head = new_tail->next();
 
     Direction en_dir = static_cast<Direction>((static_cast<int>(dir) + 2) % 4);
-    Entity* ptr_E = new Entity(ptrMap, en_head, en_dir);
+
+    Entity* ptr_E = new Entity(ptrMap, en_head, en_dir, word_len);
+
+    // std::cout << "mark AF CONSTR" << std::endl; // debug
 
     new_tail->setNext(nullptr);
+    length = new_len;
     ptrMap->get_entity_list()->push_back(ptr_E);
 
     return ptr_E;

@@ -56,6 +56,7 @@ class BaseBlock {
         bool set_item(BaseItem* item);
         // 若有物品, 删除该物品, 不仅仅是指针设空 ! 
         void clear_item();
+        bool releaseItem() {ptrItem = nullptr;}
         BaseItem* get_item();
 
         /* SnakeBody 相关操作 */

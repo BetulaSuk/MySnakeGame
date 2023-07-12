@@ -70,7 +70,6 @@ Snake::~Snake() {
     for (int i = 0; i < length; i++) {
         ptrSbody_2 = ptrSbody_2->ptrNext;
         // 空指针保护
-        if ( ! ptrSbody_1) {return;}
         delete ptrSbody_1;
         ptrSbody_1 = ptrSbody_2;
     }
@@ -240,23 +239,36 @@ bool Snake::tryEatHeart() {
 }
 
 
-Entity::Entity(Map* map, SnakeBody* head, Direction init_dir) {
+Entity::Entity(Map* map, SnakeBody* head, Direction init_dir, int init_len) {
     ptrMap  = map;
     dir     = init_dir;
     ptrHead = head;
+    isAlive = true;
 
     int count = 0; 
     SnakeBody* ptr_S = ptrHead;
     BaseBlock* ptr_B;
     BaseItem* temp_I;
-    while (ptr_S) {
+
+    // std::cout << "\nmark bf for" << std::endl; // debug
+
+    for (int i = 0; i < init_len; i++) {
+
+        // std::cout << "\nmark in for " << i << std::endl; // debug
+
         ptr_S->set_snake(this);
         ptr_B = ptr_S->get_block();
         ptr_B->releaseSnakeBody();
+        ptr_S->set_block(nullptr);
         temp_I = ptr_S;
         bond(ptr_B, temp_I);
+
+        ptr_S = ptr_S->next();
         count++;
     }
+
+    // std::cout << "\nmark af for" << std::endl; // debug
+
     length = count;
 }
 
@@ -272,12 +284,18 @@ bool Entity::moveForward() {
         blocksAhead[i] = nextBlock(ptrMap, ptr_S->get_block(), dir);
         ptr_S = ptr_S->next();
     }
+    ptr_S = nullptr;
+
+    // std::cout << "mark af b_list" << std::endl; // debug
 
     BlockType blType = BlockType::EMPTY;
-    BaseItem* ptr_I;
+    BaseItem* ptr_I = nullptr;
     ItemType itType = ItemType::EMPTY;
     std::string displayStr;
     for (int i = 0; i < length; i++) {
+
+        // std::cout << "mark in for " << i << std::endl; // debug
+
         // 检测该方块是否在范围内
         if ( ! blocksAhead[i]) {isAlive = false; return false;}
         // 获取方块类型
@@ -291,11 +309,11 @@ bool Entity::moveForward() {
 
         ptr_I = blocksAhead[i]->get_item();
         if ( ! ptr_I) {continue;}
+        itType = ptr_I->type();
         displayStr = ptr_I->toString();
         blocksAhead[i]->clear_item();
 
         // 撞到东西要删了之后重新生成
-        itType = ptr_I->type();
         switch (itType) {
             case ItemType::FOOD:
                 ptrMap->setRandomItem(ItemType::FOOD, displayStr);
@@ -308,17 +326,27 @@ bool Entity::moveForward() {
         if (ptr_I) {i--; continue;}
     }
 
+    // std::cout << "mark bf mv" << std::endl; // debug
+
     // 移动
-    BaseBlock* ptr_B;
-    BaseItem* temp_I;
+    BaseItem* temp_I = nullptr;
     ptr_S = ptrHead;
     for (int i = 0; i < length; i++) {
         if ( ! ptr_S) {exit(3);}
-        ptr_S->get_block()->releaseSnakeBody();
+
+         std::cout << "mark in for " << i << std::endl; // debug
+
+        ptr_S->get_block()->releaseItem();
+
+         std::cout << "mark af set" << std::endl; // debug
+        
         temp_I = ptr_S;
         bond(blocksAhead[i], temp_I);
+          std::cout << "mark af bond" << std::endl; // debug
         ptr_S = ptr_S->next();
     }
+
+     std::cout << "mark bf ret" << std::endl; // debug
 
     return true;
 }

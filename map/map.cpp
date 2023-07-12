@@ -158,7 +158,7 @@ bool carryCommand(Map* map, std::string com) {
      * - s: 创建蛇身, 位置, 渲染字符, 下一节的位置
      * - c: 声明蛇, 蛇头的位置, 初始生命, 初始方向
      * - w: 声明文字蛇, 蛇头位置, 初始生命, 初始方向
-     * - e: 声明实体, 链表头位置, 初始方向
+     * - e: 声明实体, 链表头位置, 初始方向, 初始长度
     */
 
     char comType;
@@ -173,12 +173,14 @@ bool carryCommand(Map* map, std::string com) {
         if (bType == 0) {
             displayStr = map->data[x][y]->toString();
             delete map->data[x][y];
+            map->data[x][y] = nullptr;
             map->data[x][y] = new BaseBlock(x, y);
             map->data[x][y]->setString(displayStr);
         }
         else if (bType == 1) {
             displayStr = map->data[x][y]->toString();
             delete map->data[x][y];
+            map->data[x][y] = nullptr;
             map->data[x][y] = new Wall(x, y);
             map->data[x][y]->setString(displayStr);
         }
@@ -187,12 +189,14 @@ bool carryCommand(Map* map, std::string com) {
             sstr >> e_x >> e_y;
             displayStr = map->data[x][y]->toString();
             delete map->data[x][y];
+            map->data[x][y] = nullptr;
             map->data[x][y] = new Portal(x, y, e_x, e_y);
             map->data[x][y]->setString(displayStr);
         }
         else if (bType == 2) {
             displayStr = map->data[x][y]->toString();
             delete map->data[x][y];
+            map->data[x][y] = nullptr;
             map->data[x][y] = new Barrier(x, y);
             map->data[x][y]->setString(displayStr);
         }
@@ -267,15 +271,15 @@ bool carryCommand(Map* map, std::string com) {
         map->ptrSnake = new WordSnake(map, head, init_heart, init_dir);
     }
     else if (comType == 'e') {
-        int dir_int;
-        sstr >> x >> y >> dir_int;
+        int dir_int, init_len;
+        sstr >> x >> y >> dir_int >> init_len;
         Direction init_dir = static_cast<Direction>(dir_int);
             
         if ( ! map->inRange(x, y)) {return false;}
         SnakeBody* head = reinterpret_cast<SnakeBody*>(map->data[x][y]->get_item());
         if ( ! head) {return false;}
 
-        map->ptrSnake = new Entity(map, head, init_dir);
+        map->ptrSnake = new Entity(map, head, init_dir, init_len);
     }
 
     return true;

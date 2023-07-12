@@ -102,7 +102,7 @@ class Snake {
 class Entity: public Snake {
     public:
         Entity(): Snake() {}
-        Entity(Map* map, SnakeBody* head, Direction init_dir);
+        Entity(Map* map, SnakeBody* head, Direction init_dir, int init_len);
 
         ~Entity() {};
 
