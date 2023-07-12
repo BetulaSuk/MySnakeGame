@@ -659,7 +659,6 @@ void GameBoard::startGame(Map& map, Snake* snake) {
 
         while (true) {
             renderMap(mWindows[1], map);
-
             renderInstructionBoard(snake);
 
             control = getch();
@@ -676,7 +675,6 @@ void GameBoard::startGame(Map& map, Snake* snake) {
             }
 
             snake->moveForward();
-            
             if (!snake->checkAlive()) {break;}
 
             //调整难度
@@ -693,6 +691,7 @@ void GameBoard::startGame(Map& map, Snake* snake) {
 
 
 void GameBoard::startWord(Map& map, WordSnake* snake) {
+    //MYDE::win = mWindows[1];
     
     curs_set(0);
     int control;
@@ -716,7 +715,6 @@ void GameBoard::startWord(Map& map, WordSnake* snake) {
 
             snake->moveForward();
             if (!snake->checkAlive()) {break;}
-
 
             if (control == ' ' || control == 10) break;
 

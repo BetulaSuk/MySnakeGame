@@ -36,8 +36,6 @@ void BaseBlock::attachSnakeBody(SnakeBody* ptrSbody) {
 }
 
 void BaseBlock::releaseSnakeBody() {
-    if (ptrSnakeBody) {
-        ptrSnakeBody = nullptr;
-    }
+    ptrSnakeBody = nullptr;
 }
 
