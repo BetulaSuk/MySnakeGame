@@ -340,6 +340,10 @@ bool Entity::moveForward() {
 
         // std::cout << "mark in for " << i << std::endl; // debug
 
+        blocksNow[i]->releaseItem();
+
+        // std::cout << "mark af set" << std::endl; // debug
+
         temp_I = ptr_S;
         bond(blocksAhead[i], temp_I);
 
