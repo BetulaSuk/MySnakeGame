@@ -108,6 +108,10 @@ bool Snake::moveForward() {
             return false;
         case BlockType::BARRIER:
             heart--;
+            if (heart <= 0) {
+                isAlive = false;
+                return false;
+            }
             break;
         // TODO 添加更多方块类型时此处可能要增加判定
         default:
@@ -127,11 +131,15 @@ bool Snake::moveForward() {
     ItemType typeItem = ItemType::EMPTY;
     if (itemAhead) {typeItem = itemAhead->type();}
 
+    // 撞Entity的判定
     if (typeItem == ItemType::SNAKEBODY) {
         SnakeBody* temp_S = reinterpret_cast<SnakeBody*>(itemAhead);
         if ( ! temp_S->getSnake()->canOverlap()) {
             heart--;
-            return false;
+            if (heart <= 0) {
+                isAlive = false;
+                return false;
+            }
         }
     }
 
