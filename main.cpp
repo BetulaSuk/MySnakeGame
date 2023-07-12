@@ -34,7 +34,7 @@ int main() {
             map.setRandomItem(ItemType::FOOD, "#");
 
             //游戏主循环入口
-            game.startGame(ptrMap, snake);
+            game.startGame(&map, snake);
 
             //结束界面，选择是否重新开始
             choice = game.renderRestartMenu(snake);
