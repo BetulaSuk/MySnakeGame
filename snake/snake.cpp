@@ -17,7 +17,8 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
     bond(map->at(start_x, start_y), ptrHead);
     ptrHead->ptrSnake = this;
     ptrHead->setString("@");
-    ptrHead->setColor(new Color(1000, 1000, 1000));
+
+    ptrHead->setColor(new Color(100, 800, 100));
 
     if (not map->inRange(start_x, start_y)) {exit(1);}
 
@@ -37,7 +38,7 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
 
         ptr->ptrSnake = this;
         ptr->setString("@");
-        ptr->setColor(new Color(1000, 1000, 1000));
+        ptr->setColor(new Color(100, 800, 100));
     }
 
     length = init_len;

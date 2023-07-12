@@ -270,14 +270,16 @@ Map::Map(int input_height, int input_width) {
             }
             else {data[i][j] = new BaseBlock(i, j);}
 
-            data[i][j]->setColor(new Color(1000, 1000, 1000));
+            data[i][j]->setColor(new Color(0, 0, 800));
         }
     }
+    /*
     //临时生成一组传送门
     data[5][5] = new Portal(5, 5, 15, 30);
     data[5][5] -> setString("P");
     data[15][15] = new Portal(15, 15, 5, 30);
     data[15][15] -> setString("P");
+    */
 }
 
 void Map::init_snake() {
