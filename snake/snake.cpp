@@ -283,7 +283,9 @@ bool Entity::moveForward() {
         blType = blocksAhead[i]->type();
 
         switch (blType) {
-            case BlockType::WALL: isAlive = false; return false;
+            case BlockType::WALL: 
+            case BlockType::BARRIER:
+                isAlive = false; return false;
         }
 
         ptr_I = blocksAhead[i]->get_item();
