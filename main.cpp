@@ -34,7 +34,7 @@ int main() {
             map.setRandomItem(ItemType::FOOD, "#");
 
             //游戏主循环入口
-            game.startGame(map, snake);
+            game.startGame(ptrMap, snake);
 
             //结束界面，选择是否重新开始
             choice = game.renderRestartMenu(snake);
@@ -59,7 +59,7 @@ int main() {
             setNRandomLetter(map, 26);
             snake->setNewFoodNum(26);
 
-            game.startWord(*map, snake);
+            game.startWord(map, snake);
 
             choice = game.renderRestartMenu(snake);
             if (choice == false) break;
@@ -72,7 +72,7 @@ int main() {
             Snake* snake = ptrMap->get_snake();
 
             //游戏主循环入口
-            game.startGame(*ptrMap, snake);
+            game.startGame(ptrMap, snake);
 
             //结束界面，选择是否重新开始
             choice = game.renderRestartMenu(snake);

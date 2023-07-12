@@ -246,14 +246,15 @@ Entity::Entity(Map* map, SnakeBody* head, Direction init_dir, int init_len) {
 
     int count = 0; 
     SnakeBody* ptr_S = ptrHead;
-    BaseBlock* ptr_B;
-    BaseItem* temp_I;
+    BaseBlock* ptr_B = nullptr;
+    BaseItem* temp_I = nullptr;
 
     // std::cout << "\nmark bf for" << std::endl; // debug
 
     for (int i = 0; i < init_len; i++) {
 
         // std::cout << "\nmark in for " << i << std::endl; // debug
+        // std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug
 
         ptr_S->set_snake(this);
         ptr_B = ptr_S->get_block();
@@ -281,6 +282,7 @@ bool Entity::moveForward() {
     SnakeBody* ptr_S = ptrHead;
     for (int i = 0; i < length; i++) {
         if ( ! ptr_S) {exit(3);}
+
         blocksNow[i] = ptr_S->get_block();
         ptr_S->set_block(nullptr);
         blocksAhead[i] = nextBlock(ptrMap, ptr_S->get_block(), dir);
@@ -345,10 +347,9 @@ bool Entity::moveForward() {
         bond(blocksAhead[i], temp_I);
 
         // std::cout << "mark af bond" << std::endl; // debug
+        // std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug
 
         ptr_S = ptr_S->next();
-
-        // std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug
     }
 
     return true;

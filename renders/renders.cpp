@@ -580,30 +580,28 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
 
 
 
-void GameBoard::renderMap(WINDOW* win, Map& map) {
+void GameBoard::renderMap(WINDOW* win, Map* map) {
     werase(win);
 
     BaseBlock* ptr_B;
     BaseItem*  ptr_I;
     SnakeBody* ptr_S;
 
-    int width = map.get_width(), height = map.get_height();
+    int width = map->get_width(), height = map->get_height();
     int startY = mGameBoardHeight*0.5 - height*0.5;
     int startX = mGameBoardWidth*0.5 - width*0.5;
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            ptr_B = map.at(i, j);
+            ptr_B = map->at(i, j);
             ptr_I = ptr_B->get_item();
             ptr_S = ptr_B->getSnakeBody();
 
             if (ptr_S != nullptr) {
                 //渲染蛇的身体
-
                 wattron(win, COLOR_PAIR(5));
                 mvwprintw(win, i + startY, j + startX, ptr_S->toString().c_str());
                 wattroff(win, COLOR_PAIR(5));
-
             }
             //BaseItem(FOOD, HEART, SNAKEBODY)
             else if (ptr_I != nullptr) {
@@ -657,7 +655,7 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
 
 
 
-void GameBoard::startGame(Map& map, Snake* snake) {
+void GameBoard::startGame(Map* map, Snake* snake) {
     curs_set(0);
     int control;
 
@@ -696,13 +694,13 @@ void GameBoard::startGame(Map& map, Snake* snake) {
 }
 
 
-void GameBoard::startWord(Map& map, WordSnake* snake) {
+void GameBoard::startWord(Map* map, WordSnake* snake) {
     //MYDE::win = mWindows[1];
     
     curs_set(0);
     int control;
 
-    vector<Entity*> * en_list = map.get_entity_list();
+    vector<Entity*> * en_list = map->get_entity_list();
 
         while (true) {
             renderMap(mWindows[1], map);
@@ -725,8 +723,7 @@ void GameBoard::startWord(Map& map, WordSnake* snake) {
             if (!snake->checkAlive()) {break;}
             
             for (auto it = en_list->begin(); it != en_list->end(); it++) {
-                (*it)->moveForward();
-                //mvwprintw(mWindows[0], 5, 1, "%d", mark);
+                //(*it)->moveForward();
                 //mvwprintw(mWindows[0], 5, 5, "%d", (*it)->get_len());
                 //wrefresh(mWindows[0]);
             }

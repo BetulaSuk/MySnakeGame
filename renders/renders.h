@@ -39,7 +39,7 @@ class GameBoard
         void renderLogo();
 
 
-        void renderMap(WINDOW* win, Map& map);
+        void renderMap(WINDOW* win, Map* map);
 
         void createInstructionBoard();
         void renderInstructionBoard(Snake* snake) const;
@@ -47,8 +47,8 @@ class GameBoard
         bool renderRestartMenu(Snake* snake) const;
 
 
-        void startGame(Map& map, Snake* snake);
-        void startWord(Map& map, WordSnake* snake);
+        void startGame(Map* map, Snake* snake);
+        void startWord(Map* map, WordSnake* snake);
 
 
         int getGameBoardWidth() {return mGameBoardWidth;}

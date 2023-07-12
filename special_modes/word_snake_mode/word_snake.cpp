@@ -275,12 +275,13 @@ Entity* WordSnake::cutWord() {
 
     Direction en_dir = static_cast<Direction>((static_cast<int>(dir) + 2) % 4);
 
+    new_tail->setNext(nullptr);
+    length = new_len;
+
     Entity* ptr_E = new Entity(ptrMap, en_head, en_dir, word_len);
 
     // std::cout << "mark AF CONSTR" << std::endl; // debug
 
-    new_tail->setNext(nullptr);
-    length = new_len;
     ptrMap->get_entity_list()->push_back(ptr_E);
 
     return ptr_E;
