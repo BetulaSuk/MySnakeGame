@@ -313,9 +313,8 @@ Map::Map(int input_height, int input_width) {
                 else if (j == 0) data[i][j] = new Portal(i, j, i, width-2);
                 else if (i == height-1) data[i][j] = new Portal(i, j, 1, j);
                 else if (j == width-1) data[i][j] = new Portal(i, j, i, 1);
-                else data[i][j] = new Wall(i, j);
+                else data[i][j] = new BaseBlock(i, j);
         }
-            else {data[i][j] = new BaseBlock(i, j);}
     }
 }
 
