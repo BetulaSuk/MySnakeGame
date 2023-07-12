@@ -69,7 +69,6 @@ Snake::~Snake() {
 
     for (int i = 0; i < length; i++) {
         ptrSbody_2 = ptrSbody_2->ptrNext;
-        // 空指针保护
         delete ptrSbody_1;
         ptrSbody_1 = ptrSbody_2;
     }
@@ -277,10 +276,13 @@ bool Entity::moveForward() {
     if (isAlive == false) {return false;}
 
     // 获取需要检测的方块列表
+    std::vector<BaseBlock*> blocksNow(length);
     std::vector<BaseBlock*> blocksAhead(length);
     SnakeBody* ptr_S = ptrHead;
     for (int i = 0; i < length; i++) {
         if ( ! ptr_S) {exit(3);}
+        blocksNow[i] = ptr_S->get_block();
+        ptr_S->set_block(nullptr);
         blocksAhead[i] = nextBlock(ptrMap, ptr_S->get_block(), dir);
         ptr_S = ptr_S->next();
     }
@@ -336,17 +338,19 @@ bool Entity::moveForward() {
 
         // std::cout << "mark in for " << i << std::endl; // debug
 
-        ptr_S->get_block()->releaseItem();
+        blocksNow[i]->releaseItem();
 
-        // std::cout << "mark af set" << std::endl; // debug
+         std::cout << "mark af set" << std::endl; // debug
 
         temp_I = ptr_S;
         bond(blocksAhead[i], temp_I);
-        // std::cout << "mark af bond" << std::endl; // debug
-        ptr_S = ptr_S->next();
-    }
 
-    //std::cout << "mark bf ret" << std::endl; // debug
+         std::cout << "mark af bond" << std::endl; // debug
+
+        ptr_S = ptr_S->next();
+
+         std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug
+    }
 
     return true;
 }

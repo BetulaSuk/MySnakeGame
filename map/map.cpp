@@ -349,6 +349,10 @@ void Map::init_snake() {
 Map::~Map() {
     delete ptrSnake;
 
+    for (auto it = entityList.begin(); it != entityList.end(); it++) {
+        delete (*it);
+    }
+
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             if ( ! data[i][j]) {continue;}
@@ -386,7 +390,7 @@ void Map::setRandomItem(ItemType itType, std::string displayString) {
         || tarBlock->get_item() 
         || tarBlock->getSnakeBody());
 
-    BaseItem* newItem;
+    BaseItem* newItem = nullptr;
     switch (itType) {
         case ItemType::FOOD:
             newItem = new Food();
