@@ -13,6 +13,8 @@ int main() {
 
         //选择游戏模式
         int mode = game.chooseMode();
+        erase();
+        refresh();
 
         game.renderInformationBoard();
         game.renderLogo();
@@ -24,17 +26,17 @@ int main() {
             //初始化地图，同时得到Snake，并生成第一个食物
             //剩余食物会在蛇吃到食物时候自动生成    
             //渲染最上面保持恒定的两个窗口
-            //Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
-            std::string partPath = "/data/maps/normal_1.map";
-            Map* ptrMap = loadMap(Path::fullPath(partPath));
+            Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
+            //std::string partPath = "/data/maps/normal_1.map";
+            //Map* ptrMap = loadMap(Path::fullPath(partPath));
 
-            // map.init_snake();
-            Snake* snake = ptrMap->get_snake();
+            map.init_snake();
+            Snake* snake = map.get_snake();
 
-            //ptrMap->setRandomItem(ItemType::FOOD, "#");
+            map.setRandomItem(ItemType::FOOD, "#");
 
             //游戏主循环入口
-            game.startGame(ptrMap, snake);
+            game.startGame(&map, snake);
 
             //结束界面，选择是否重新开始
             choice = game.renderRestartMenu(snake);
