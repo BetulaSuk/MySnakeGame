@@ -58,6 +58,7 @@ int main() {
             //主循环
             setNRandomLetter(map, 26);
             snake->setNewFoodNum(26);
+
             game.startWord(*map, snake);
 
             choice = game.renderRestartMenu(snake);
@@ -65,7 +66,7 @@ int main() {
         }
         //SandBox
         else if (mode == 2) {
-            std::string partPath = "/data/maps/normal_1.map";
+            std::string partPath = "/data/maps/test.map";
             Map* ptrMap = loadMap(Path::fullPath(partPath));
 
             Snake* snake = ptrMap->get_snake();
