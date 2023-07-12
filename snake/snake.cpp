@@ -283,6 +283,11 @@ bool Entity::moveForward() {
                 isAlive = false; return false;
         }
 
+        ptr_S = blocksAhead[i]->getSnakeBody();
+        if (ptr_S) {
+            isAlive = false; return false;
+        }
+
         ptr_I = blocksAhead[i]->get_item();
         if ( ! ptr_I) {continue;}
         itType = ptr_I->type();

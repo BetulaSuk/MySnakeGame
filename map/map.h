@@ -22,19 +22,6 @@ class SnakeBody;
 class Snake;
 class Entity;
 
-<<<<<<< HEAD
-=======
-
-//游戏模式
-//Tetrisnake暂时未实现
-enum class Mode {
-    CLASSIC    = 0,
-    STAGE      = 1,
-    WORD_SNAKE = 2,
-    TETRISNAKE = 3
-};
-
->>>>>>> f326184191d1dd8558ceabc2e10626abdb1ebf10
 
 //蛇的移动方向
 enum class Direction {
