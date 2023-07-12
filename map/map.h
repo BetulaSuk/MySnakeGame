@@ -21,13 +21,6 @@ class SnakeBody;
 class Snake;
 class Entity;
 
-enum class Mode {
-    CLASSIC    = 0,
-    STAGE      = 1,
-    WORD_SNAKE = 2,
-    TETRISNAKE = 3
-};
-
 
 enum class Direction {
     UP    = 0,
