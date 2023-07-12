@@ -155,7 +155,7 @@ bool carryCommand(Map* map, std::string com) {
      * - s: 创建蛇身, 位置, 渲染字符, 下一节的位置
      * - c: 声明蛇, 蛇头的位置, 初始生命, 初始方向
     */
-/*
+
     char comType;
     sstr >> comType;
     int x, y; std::string displayStr;
@@ -258,8 +258,8 @@ Map::Map(int input_height, int input_width) {
             // 边缘是墙
             if (i == 0 || i == height -1 ||
                 j == 0 || j == width -1) {
-                    /*data[i][j] = new Wall(i, j);
-                    data[i][j]->setString("+");*/
+                    data[i][j] = new Wall(i, j);
+                    data[i][j]->setString("+");
 
                     //尝试将周围的变成传送门
                     if (i == 0) data[i][j] = new Portal(i, j, height-2, j);
@@ -270,14 +270,14 @@ Map::Map(int input_height, int input_width) {
             }
             else {data[i][j] = new BaseBlock(i, j);}
 
-            data[i][j]->setColor(initColor(1000, 1000, 1000));
+            data[i][j]->setColor(new Color(1000, 1000, 1000));
         }
     }
     //临时生成一组传送门
-    /*data[5][5] = new Portal(5, 5, 15, 30);
+    data[5][5] = new Portal(5, 5, 15, 30);
     data[5][5] -> setString("P");
     data[15][15] = new Portal(15, 15, 5, 30);
-    data[15][15] -> setString("P");*/
+    data[15][15] -> setString("P");
 }
 
 void Map::init_snake() {

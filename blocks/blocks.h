@@ -46,8 +46,8 @@ class BaseBlock {
         // 修改渲染用的字符串
         void setString(std::string s) {displayString = s;}
 
-        Color getColor() const {return colr;}
-        void setColor(Color c) {colr = c;}
+        Color* getColor() const {return colr;}
+        void setColor(Color* ptrC) {colr = ptrC;}
 
         /* item 相关操作 */
 
@@ -77,7 +77,7 @@ class BaseBlock {
 
         std::string displayString = " ";
 
-        Color colr;
+        Color* colr;
 };
 
 

@@ -81,7 +81,14 @@ class Snake {
 };
 
 
+class Entity: public Snake {
+    public:
+        Entity(): Snake() {}
+        Entity(Map* map, SnakeBody* head, int init_heart, Direction init_dir): 
+            Snake(map, head, init_heart, init_dir) {}
 
+        
+};
 
 
 #endif
