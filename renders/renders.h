@@ -46,7 +46,6 @@ class GameBoard
 
         bool renderRestartMenu(Snake* snake) const;
 
-        //void renderAllBoards(Map& map, Snake* snake);
 
         void startGame(Map& map, Snake* snake);
         void startWord(Map& map, WordSnake* snake);
@@ -69,6 +68,10 @@ class GameBoard
 
         int base_delay = 100;
         int Difficulty = 0;
+
+
+        short MYCOLOR_F = 10, MYCOLOR_H = 11, MYCOLOR_S = 12, MYCOLOR_P = 13, MYCOLOR_B = 14;
+
 };
 
 #endif

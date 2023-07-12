@@ -15,6 +15,22 @@ GameBoard::GameBoard()
     noecho();
     // No cursor show
     curs_set(0);
+
+    start_color();
+    init_color(MYCOLOR_F, 800, 800, 0);
+    init_color(MYCOLOR_H, 1000, 400, 200);
+    init_color(MYCOLOR_S, 100, 800, 100);
+    init_color(MYCOLOR_P, 100, 800, 800);
+    init_color(MYCOLOR_B, 800, 200, 200);
+
+    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    init_pair(3, MYCOLOR_F, COLOR_BLACK);
+    init_pair(4, MYCOLOR_H, COLOR_BLACK);
+    init_pair(5, MYCOLOR_S, COLOR_BLACK);
+    init_pair(6, MYCOLOR_P, COLOR_BLACK);
+    init_pair(7, MYCOLOR_B, COLOR_BLACK);
+    init_pair(8, COLOR_RED, COLOR_BLACK);
+
     // Get screen and board parameters
     getmaxyx(stdscr, this->mScreenHeight, this->mScreenWidth);
     this->mGameBoardWidth = this->mScreenWidth - this->mInstructionWidth;
@@ -27,6 +43,9 @@ GameBoard::GameBoard()
 
     // Initialize the leader board to be all zeros
     this->mLeaderBoard.assign(this->mNumLeaders, 0);
+
+
+
 }
 
 GameBoard::~GameBoard()
@@ -64,8 +83,8 @@ bool GameBoard::createWelcomeBoard() {
     mvwprintw(menu, 3, width*0.5 - 8, "Author: TZY, WHY");
     mvwprintw(menu, 4, width*0.5 - 22, "Implemented using C++ and libncurses library");
 
-    start_color();
-    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    //start_color();
+    //init_pair(1, COLOR_CYAN, COLOR_BLACK);
     wattron(title, COLOR_PAIR(1));
 
     string s1 = "  ____              _         ____                      ";
@@ -163,37 +182,43 @@ bool GameBoard::createHelp() {
     mvwprintw(menu, 5, width*0.5 - 27, "3. Heart will be generated, eat it to get more hearts");
     mvwprintw(menu, 6, width*0.5 - 21, "4. Go through walls at the cost of hearts");
 
-    start_color();
-    short MYCOLOR_F = 10, MYCOLOR_H = 11, MYCOLOR_S = 12, MYCOLOR_P = 13;
+    /*start_color();
+    short MYCOLOR_F = 10, MYCOLOR_H = 11, MYCOLOR_S = 12, MYCOLOR_P = 13, MYCOLOR_B = 14;
     init_color(MYCOLOR_F, 800, 800, 0);
     init_color(MYCOLOR_H, 1000, 400, 200);
     init_color(MYCOLOR_S, 100, 800, 100);
     init_color(MYCOLOR_P, 100, 800, 800);
+    init_color(MYCOLOR_B, 800, 200, 200);
 
     init_pair(3, MYCOLOR_F, COLOR_BLACK);
     init_pair(4, MYCOLOR_H, COLOR_BLACK);
     init_pair(5, MYCOLOR_S, COLOR_BLACK);
     init_pair(6, MYCOLOR_P, COLOR_BLACK);
+    init_pair(7, MYCOLOR_B, COLOR_BLACK);*/
 
-    mvwprintw(menu, 8, width*0.5 - 27, "SnakeBody          Food          Heart          Portal");
+
+    mvwprintw(menu, 8, width*0.5 - 26, "SnakeBody     Food     Heart     Portal     Barrier");
 
 
     wattron(menu, COLOR_PAIR(5));
-    mvwprintw(menu, 9, width*0.5 - 23, "@@");
+    mvwprintw(menu, 9, width*0.5 - 22, "@");
     wattroff(menu, COLOR_PAIR(5));
 
     wattron(menu, COLOR_PAIR(3));
-    mvwprintw(menu, 9, width*0.5 - 7, "#");
+    mvwprintw(menu, 9, width*0.5 - 10, "#");
     wattroff(menu, COLOR_PAIR(3));
 
     wattron(menu, COLOR_PAIR(4));
-    mvwprintw(menu, 9, width*0.5 + 8, "+");
+    mvwprintw(menu, 9, width*0.5, "+");
     wattroff(menu, COLOR_PAIR(4));
 
     wattron(menu, COLOR_PAIR(6));
-    mvwprintw(menu, 9, width*0.5 + 23, "P");
+    mvwprintw(menu, 9, width*0.5 + 10, "P");
     wattroff(menu, COLOR_PAIR(6));
     
+    wattron(menu, COLOR_PAIR(7));
+    mvwprintw(menu, 9, width*0.5 + 22, "=");
+    wattroff(menu, COLOR_PAIR(7));
 
     vector<string> menuItems = {"Back"};
     
@@ -266,8 +291,8 @@ int GameBoard::chooseMode() {
     WINDOW* title;
 
     title = newwin(7, width, mScreenHeight*0.125, startX);
-    start_color();
-    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    //start_color();
+    //init_pair(1, COLOR_CYAN, COLOR_BLACK);
     wattron(title, COLOR_PAIR(1));
 
     string s1 = "  ____              _         ____                      ";
@@ -389,9 +414,9 @@ void GameBoard::renderLogo() {
     string s5 = " |____/|_| |_|\\__,_|_|\\_\\___|\\____|\\__,_|_| |_| |_|\\___|";
     
     int width = this->mScreenWidth;
-    start_color();
-    init_pair(9, COLOR_CYAN, COLOR_BLACK);
-    wattron(this->mWindows[3], COLOR_PAIR(9));
+    //start_color();
+    //init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    wattron(this->mWindows[3], COLOR_PAIR(1));
     
     mvwprintw(this->mWindows[3], 1, 3, "%s", s1.c_str());
     mvwprintw(this->mWindows[3], 2, 3, "%s", s2.c_str());
@@ -470,8 +495,8 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
     std::string s4 = " | |_| | (_| | | | | | |  __/ | |_| |\\ V /  __/ |";
     std::string s5 = "  \\____|\\__,_|_| |_| |_|\\___|  \\___/  \\_/ \\___|_|";
 
-    start_color();
-    init_pair(8, COLOR_RED, COLOR_BLACK);
+    //start_color();
+    //init_pair(8, COLOR_RED, COLOR_BLACK);
     wattron(menu, COLOR_PAIR(8));
 
     mvwprintw(menu, 1, width*0.5 - 25, "%s", s1.c_str());
@@ -547,13 +572,6 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
 
 }
 
-/*
-void GameBoard::renderAllBoards(Map& map, Snake* snake)
-{
-    renderMap(mWindows[1], map);
-    renderInstructionBoard(snake);
-}
-*/
 
 
 void GameBoard::renderMap(WINDOW* win, Map& map) {
@@ -571,27 +589,8 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             ptr_I = ptr_B->get_item();
             ptr_S = ptr_B->getSnakeBody();
 
-
-            
-            //Color* cor = nullptr;
-
-            short MYCOLOR_F = 10, MYCOLOR_H = 11, MYCOLOR_S = 12, MYCOLOR_P = 13;
-            init_color(MYCOLOR_F, 800, 800, 0);
-            init_color(MYCOLOR_H, 1000, 400, 200);
-            init_color(MYCOLOR_S, 100, 800, 100);
-            init_color(MYCOLOR_P, 100, 800, 800);
-
-            init_pair(3, MYCOLOR_F, COLOR_BLACK);
-            init_pair(4, MYCOLOR_H, COLOR_BLACK);
-            init_pair(5, MYCOLOR_S, COLOR_BLACK);
-            init_pair(7, MYCOLOR_P, COLOR_BLACK);
-
-
             if (ptr_S != nullptr) {
                 //渲染蛇的身体
-                
-                //cor = ptr_S->getColor();
-                //if (cor != nullptr) init_color(COLOR_MAGENTA, cor->red, cor->green, cor->blue);
 
                 wattron(win, COLOR_PAIR(5));
                 mvwprintw(win, i, j, ptr_S->toString().c_str());
@@ -600,12 +599,6 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             }
             //BaseItem(FOOD, HEART, SNAKEBODY)
             else if (ptr_I != nullptr) {
-                //cor = ptr_I->getColor();
-                //if (cor != nullptr) init_color(COLOR_WHITE, cor->red, cor->green, cor->blue);
-                
-
-                
-
                 if (ptr_I -> type() == ItemType::FOOD) {
                     wattron(win, COLOR_PAIR(3));
                     mvwprintw(win, i, j, ptr_I->toString().c_str());
@@ -616,23 +609,22 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
                     mvwprintw(win, i, j, ptr_I->toString().c_str());
                     wattroff(win, COLOR_PAIR(4));
                 }
-                wattroff(win, COLOR_PAIR(3));
 
             }
             else {
                 //渲染地图方块
                 wattron(win, COLOR_PAIR(7));
                 mvwprintw(win, i, j, ptr_B->toString().c_str());
+                /*暂时不需要渲染传送门出口
                 if (ptr_B -> type() == BlockType::PORTAL) {
                     Portal* entrance = reinterpret_cast<Portal*>(ptr_B);
                     int exit_x = entrance->get_ex();
                     int exit_y = entrance->get_ey();
                     //map.at(exit_x, exit_y) -> setString("O");
-                }
+                }*/
                 wattroff(win, COLOR_PAIR(7));
                 
             }
-            //if (cor != nullptr) init_color(MYCOLOR, cor->red, cor->green, cor->blue);
         }
     }
     box(win, 0, 0);
