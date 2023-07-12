@@ -25,11 +25,11 @@ b 2 3 5 3 21
 
 # item creation
 i 1 10 5 #
-i 1 2 10 %
+i 1 2 10 (
 i 2 3 10 &
 
 # snake construction
 s 10 17 s -1 -1
 s 10 16 @ 10 17
 s 10 15 @ 10 16
-w 10 15 3 3
+c 10 15 3 3

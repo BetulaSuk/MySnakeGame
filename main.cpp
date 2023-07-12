@@ -1,4 +1,5 @@
 #include "../MySnakeGame/renders/renders.h"
+#include <string>
 
 int main() {
     Random::resetRandomEngine();
@@ -13,6 +14,9 @@ int main() {
         //选择游戏模式
         int mode = game.chooseMode();
 
+        game.renderInformationBoard();
+        game.renderLogo();
+
         //TODO
         //Classic Mode
         if (mode == 0)
@@ -20,18 +24,19 @@ int main() {
             //初始化地图，同时得到Snake，并生成第一个食物
             //剩余食物会在蛇吃到食物时候自动生成    
             //渲染最上面保持恒定的两个窗口
-            game.renderInformationBoard();
-            game.renderLogo();
+            
 
-            Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
+            //Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
+            std::string partPath = "/data/maps/normal_1.map";
+            Map* ptrMap = loadMap(Path::fullPath(partPath));
 
-            map.init_snake();
-            Snake* snake = map.get_snake();
+            // map.init_snake();
+            Snake* snake = ptrMap->get_snake();
 
-            map.setRandomItem(ItemType::FOOD, "#");
+            //ptrMap->setRandomItem(ItemType::FOOD, "#");
 
             //游戏主循环入口
-            game.startGame(map, snake);
+            game.startGame(*ptrMap, snake);
 
             //结束界面，选择是否重新开始
             choice = game.renderRestartMenu(snake);
@@ -47,15 +52,32 @@ int main() {
         //Word Snake Mode
         else if (mode == 1)
         {
-            game.renderInformationBoard();
-            game.renderLogo();
 
             Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
 
             WordSnake* snake = new WordSnake(&map, 10, 10, 2, 3);
 
             //主循环
+            setNRandomLetter(&map, 5);
+            snake->setNewFoodNum(5);
             game.startWord(map, snake);
+
+            choice = game.renderRestartMenu(snake);
+            if (choice == false) break;
+        }
+        //SandBox
+        else if (mode == 2) {
+            std::string partPath = "/data/maps/normal_1.map";
+            Map* ptrMap = loadMap(Path::fullPath(partPath));
+
+            Snake* snake = ptrMap->get_snake();
+
+            //游戏主循环入口
+            game.startGame(*ptrMap, snake);
+
+            //结束界面，选择是否重新开始
+            choice = game.renderRestartMenu(snake);
+            if (choice == false) break;
         }
         /*
         //PVP Mode

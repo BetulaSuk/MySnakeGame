@@ -5,6 +5,7 @@
 #include "word_snake.h"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 char getRandomCh() {
     int ch_i = Random::randInt(1, 26);
@@ -201,23 +202,29 @@ std::string WordSnake::getString() const {
 
 Entity* WordSnake::cutWord() {
     int word_len = checkWord(getString());
+
     if (word_len == 0) {return nullptr;}
 
     int new_len = length - word_len;
     if (new_len <= 0) {exit(3);}
+
 
     SnakeBody* new_tail = ptrHead;
     for (int i = 1; i < new_len; i++) {
         new_tail = new_tail->next();
     }
 
+
     SnakeBody* en_head = new_tail->next();
+
     Direction en_dir = static_cast<Direction>((static_cast<int>(dir) + 2) % 4);
     Entity* ptr_E = new Entity(ptrMap, en_head, en_dir);
 
+
     new_tail->setNext(nullptr);
     ptrMap->get_entity_list()->push_back(ptr_E);
-    
+
+
     return ptr_E;
 }
 

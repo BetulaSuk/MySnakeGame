@@ -24,6 +24,7 @@ GameBoard::GameBoard()
     init_color(MYCOLOR_B, 800, 200, 200);
 
     init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    init_pair(2, COLOR_WHITE, COLOR_BLACK);
     init_pair(3, MYCOLOR_F, COLOR_BLACK);
     init_pair(4, MYCOLOR_H, COLOR_BLACK);
     init_pair(5, MYCOLOR_S, COLOR_BLACK);
@@ -103,7 +104,7 @@ bool GameBoard::createWelcomeBoard() {
 
 
     //这里可以加入更多选项
-    vector<string> menuItems = {"Start", "Quit", "Help", "Settings"};
+    vector<string> menuItems = {"Start", "Quit", "Help", "...."};
     int index = 0;
     int offset = width * 0.25;
     
@@ -158,11 +159,13 @@ bool GameBoard::createWelcomeBoard() {
         this -> createHelp();
         return this -> createWelcomeBoard();
     }
+    /*
     if (index == 3) {
         this -> createSetting();
         return this -> createWelcomeBoard();
     }
-    if (index == 1) return false;
+    */
+    if (index == 1 || index == 3) return false;
 }
 
 bool GameBoard::createHelp() {
@@ -291,8 +294,7 @@ int GameBoard::chooseMode() {
     WINDOW* title;
 
     title = newwin(7, width, mScreenHeight*0.125, startX);
-    //start_color();
-    //init_pair(1, COLOR_CYAN, COLOR_BLACK);
+
     wattron(title, COLOR_PAIR(1));
 
     string s1 = "  ____              _         ____                      ";
@@ -309,23 +311,22 @@ int GameBoard::chooseMode() {
     wattroff(title, COLOR_PAIR(1));
 
     menu = newwin(height, width, startY, startX);
-    //box(menu, 0, 0);
 
     mvwprintw(menu, 3, width*0.5 - 20, "Choose the Game Mode and Start Playing!");
 
 
     //这里可以加入更多选项
-    vector<string> menuItems = {"CLASSIC", "WORD", "PVP", "Mode4"};
+    vector<string> menuItems = {"CLASSIC", "  WORD  ", "SAND BOX", "  ....  "};
     int index = 0;
     int offset = width * 0.25;
     
     //下面实现选项切换
     wattron(menu, A_STANDOUT);
-    mvwprintw(menu, 8, offset*0.5 - 2, menuItems[0].c_str());
+    mvwprintw(menu, 8, offset*0.5 - 4, menuItems[0].c_str());
     wattroff(menu, A_STANDOUT);
-    mvwprintw(menu, 8, offset*1.5 - 2, menuItems[1].c_str());
-    mvwprintw(menu, 8, offset*2.5 - 2, menuItems[2].c_str());
-    mvwprintw(menu, 8, offset*3.5 - 2, menuItems[3].c_str());
+    mvwprintw(menu, 8, offset*1.5 - 4, menuItems[1].c_str());
+    mvwprintw(menu, 8, offset*2.5 - 4, menuItems[2].c_str());
+    mvwprintw(menu, 8, offset*3.5 - 4, menuItems[3].c_str());
 
     wrefresh(menu);
     wrefresh(title);
@@ -339,21 +340,21 @@ int GameBoard::chooseMode() {
             case 'A':
             case 'a':
             case KEY_LEFT:
-                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
+                mvwprintw(menu, 8, offset*(index+0.5) - 4, menuItems[index].c_str());
                 index --;
                 index = (index < 0) ? menuItems.size() - 1 : index;
                 wattron(menu, A_STANDOUT);
-                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
+                mvwprintw(menu, 8, offset*(index+0.5) - 4, menuItems[index].c_str());
                 wattroff(menu, A_STANDOUT);
                 break;
             case 'D':
             case 'd':
             case KEY_RIGHT:
-                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
+                mvwprintw(menu, 8, offset*(index+0.5) - 4, menuItems[index].c_str());
                 index ++;
                 index = (index > menuItems.size() - 1) ? 0 : index;
                 wattron(menu, A_STANDOUT);
-                mvwprintw(menu, 8, offset*(index+0.5) - 2, menuItems[index].c_str());
+                mvwprintw(menu, 8, offset*(index+0.5) - 4, menuItems[index].c_str());
                 wattroff(menu, A_STANDOUT);
                 break;
         }
@@ -613,8 +614,22 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             }
             else {
                 //渲染地图方块
-                wattron(win, COLOR_PAIR(7));
-                mvwprintw(win, i, j, ptr_B->toString().c_str());
+                if (ptr_B->type() == BlockType::WALL) {
+                    wattron(win, COLOR_PAIR(2));
+                    mvwprintw(win, i, j, ptr_B->toString().c_str());
+                    wattroff(win, COLOR_PAIR(2));
+                }
+                else if (ptr_B->type() == BlockType::PORTAL) {
+                    wattron(win, COLOR_PAIR(6));
+                    mvwprintw(win, i, j, ptr_B->toString().c_str());
+                    wattroff(win, COLOR_PAIR(6));
+                }
+                else if (ptr_B->type() == BlockType::BARRIER) {
+                    wattron(win, COLOR_PAIR(7));
+                    mvwprintw(win, i, j, ptr_B->toString().c_str());
+                    wattroff(win, COLOR_PAIR(7));
+                }
+                else mvwprintw(win, i, j, ptr_B->toString().c_str());
                 /*暂时不需要渲染传送门出口
                 if (ptr_B -> type() == BlockType::PORTAL) {
                     Portal* entrance = reinterpret_cast<Portal*>(ptr_B);
@@ -622,7 +637,7 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
                     int exit_y = entrance->get_ey();
                     //map.at(exit_x, exit_y) -> setString("O");
                 }*/
-                wattroff(win, COLOR_PAIR(7));
+                
                 
             }
         }

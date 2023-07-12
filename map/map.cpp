@@ -314,6 +314,7 @@ Map::Map(int input_height, int input_width) {
         }
     }
 
+    /*
     //临时生成一些Barrier
     for (int j = 5; j < 15; ++j) {
         data[5][j] = new Barrier(5, j);
@@ -323,10 +324,7 @@ Map::Map(int input_height, int input_width) {
         data[9][j] = new Barrier(9, j);
         data[9][j]->setString("=");
     }
-    
-
-
-
+    */
     
     /*
     //临时生成一组传送门
