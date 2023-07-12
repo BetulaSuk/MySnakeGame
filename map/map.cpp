@@ -71,7 +71,7 @@ void bond(BaseBlock* ptr_B, BaseItem*  ptr_I) {
 }
 
 
-/*
+
 Map* loadMap(std::string fileDir) {
     Map* ptrMap = nullptr;
     try {
@@ -115,7 +115,7 @@ Map* loadMap(std::string fileDir) {
                 // 由于传送门生成需要更多参数, 先使用基本方块占位, 在命令执行阶段再设置
                 case '2': ptrMap->data[i][j] = new BaseBlock(i, j); break;
                 case '3': ptrMap->data[i][j] = new Barrier(i, j); break;
-                /* TODO 添加新的方块类型 
+                /* TODO 添加新的方块类型 */
                 default: mapFile.close(); throw 1;
             }
 
@@ -142,9 +142,9 @@ Map* loadMap(std::string fileDir) {
     }
 
     return ptrMap;
-}*/
+}
 
-/*
+
 bool carryCommand(Map* map, std::string com) {
     std::stringstream sstr;
     sstr << com;
@@ -159,7 +159,7 @@ bool carryCommand(Map* map, std::string com) {
      * - c: 声明蛇, 蛇头的位置, 初始生命, 初始方向
      * - w: 声明文字蛇, 蛇头位置, 初始生命, 初始方向
      * - e: 声明实体, 链表头位置, 初始方向
-    
+    */
 
     char comType;
     sstr >> comType;
@@ -280,7 +280,7 @@ bool carryCommand(Map* map, std::string com) {
 
     return true;
 }
-*/
+
 
 
 // 初始化: 创建并储存方块, 创建并绑定蛇
@@ -384,6 +384,12 @@ void Map::setRandomItem(ItemType itType, std::string displayString) {
     if (newItem) {
         newItem->setString(displayString);
         bond(tarBlock, newItem);
+    }
+}
+
+void Map::moveAllEntity() {
+    for (auto it = entityList.begin(); it != entityList.end(); it++) {
+        (*it)->moveForward();
     }
 }
 

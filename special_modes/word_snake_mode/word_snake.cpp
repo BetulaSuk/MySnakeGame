@@ -176,6 +176,8 @@ bool WordSnake::moveForward() {
     // 因为 eatFood 中有判定, 所以不担心误判为吃食物
     tryEatFood(oldTail_x, oldTail_y, displayStr, new_food_num);
     tryEatHeart();
+    // 检验是否已经拼成了单词
+    cutWord();
 
     return true;
 }
