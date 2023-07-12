@@ -58,10 +58,9 @@ Snake::Snake(Map* map, SnakeBody* head, int init_heart, Direction init_dir) {
     int count = 0; SnakeBody* ptr_S = ptrHead;
     while (ptr_S) {
         ptr_S->ptrSnake = this;
-        count++;
+        length++;
         ptr_S = ptr_S->next();
     }
-    length = count;
 }
 
 Snake::~Snake() {

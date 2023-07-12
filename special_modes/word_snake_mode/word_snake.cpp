@@ -125,6 +125,7 @@ bool WordSnake::moveForward() {
             break;
     }
 
+
     // 检查前方方块是否有蛇身
     SnakeBody* ptrSAhead = blockAhead->getSnakeBody();
     if (ptrSAhead) {
@@ -142,6 +143,7 @@ bool WordSnake::moveForward() {
         displayStr = itemAhead->toString();    
     }
 
+
     // 撞Entity的判定
     if (typeItem == ItemType::SNAKEBODY) {
         SnakeBody* temp_S = reinterpret_cast<SnakeBody*>(itemAhead);
@@ -154,6 +156,7 @@ bool WordSnake::moveForward() {
         }
     }
 
+
     // 提前获取此时的尾部坐标, 为可能吃食物的情况做准备
     int oldTail_x, oldTail_y;
     SnakeBody* ptrTail = getTailPtr();
@@ -164,6 +167,7 @@ bool WordSnake::moveForward() {
     SnakeBody* ptrSbody = ptrHead;
     BaseBlock* ptrB_1 = ptrHead->get_block();
     BaseBlock* ptrB_2 = nextBlock(ptrMap, ptrB_1, dir);
+
 
     for (int i = 0; i < length; i++) {
         bond(ptrB_2, ptrSbody);
@@ -180,7 +184,6 @@ bool WordSnake::moveForward() {
     tryEatHeart();
     // 检验是否已经拼成了单词
     cutWord();
-
     return true;
 }
 
@@ -204,22 +207,20 @@ std::string WordSnake::getString() const {
 
 Entity* WordSnake::cutWord() {
     int word_len = checkWord(getString());
+    if (word_len <= 2) {return nullptr;}
 
     int new_len = length - word_len;
     if (new_len <= 0) {exit(3);}
-
 
     SnakeBody* new_tail = ptrHead;
     for (int i = 1; i < new_len; i++) {
         new_tail = new_tail->next();
     }
 
-
     SnakeBody* en_head = new_tail->next();
 
     Direction en_dir = static_cast<Direction>((static_cast<int>(dir) + 2) % 4);
     Entity* ptr_E = new Entity(ptrMap, en_head, en_dir);
-
 
     new_tail->setNext(nullptr);
     ptrMap->get_entity_list()->push_back(ptr_E);
