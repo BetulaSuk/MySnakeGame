@@ -47,7 +47,7 @@ int checkWord(std::string snakeStr) {
     wl_path = Path::fullPath(wl_path);
 
     word_list.open(wl_path);
-    if ( ! word_list.is_open()) {return -1;}
+    if ( ! word_list.is_open()) {return 0;}
 
     int line_num = 0;
     std::string aline;
@@ -55,9 +55,10 @@ int checkWord(std::string snakeStr) {
     word_list >> line_num;
     std::getline(word_list, aline); // 光标换行
 
-    bool match = false;
+    bool match = true;
     for (int i = 0; i < line_num; i++) {
         std::getline(word_list, aline);
+        match = true;
 
         for (int j = 1; j < aline.length(); j++) {
             if (i >= snakeStr.length()) {
@@ -187,6 +188,7 @@ std::string WordSnake::getString() const {
     std::string snakeStr;
     SnakeBody* ptr_S = ptrHead;
     for (int i = 0; i < length; i++) {
+        if ( ! ptr_S) {exit(3);}
         snakeStr.append(ptr_S->toString());
         ptr_S = ptr_S->next();
     }
@@ -202,8 +204,6 @@ std::string WordSnake::getString() const {
 
 Entity* WordSnake::cutWord() {
     int word_len = checkWord(getString());
-
-    if (word_len == 0) {return nullptr;}
 
     int new_len = length - word_len;
     if (new_len <= 0) {exit(3);}

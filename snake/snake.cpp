@@ -268,6 +268,7 @@ bool Entity::moveForward() {
     std::vector<BaseBlock*> blocksAhead(length);
     SnakeBody* ptr_S = ptrHead;
     for (int i = 0; i < length; i++) {
+        if ( ! ptr_S) {exit(3);}
         blocksAhead[i] = nextBlock(ptrMap, ptr_S->get_block(), dir);
         ptr_S = ptr_S->next();
     }
@@ -312,6 +313,7 @@ bool Entity::moveForward() {
     BaseItem* temp_I;
     ptr_S = ptrHead;
     for (int i = 0; i < length; i++) {
+        if ( ! ptr_S) {exit(3);}
         ptr_S->get_block()->releaseSnakeBody();
         temp_I = ptr_S;
         bond(blocksAhead[i], temp_I);
