@@ -1,6 +1,8 @@
 #include "../MySnakeGame/renders/renders.h"
 
 int main() {
+    Random::resetRandomEngine();
+    Path::setRootPath();
     GameBoard game;
     while (true) {
         bool choice;
@@ -27,8 +29,8 @@ int main() {
 
             map.init_snake();
             Snake* snake = map.get_snake();
+
             
-            Random::resetRandomEngine();
             map.setRandomItem(ItemType::FOOD, "#");
 
             //游戏主循环入口
