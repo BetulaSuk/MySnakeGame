@@ -182,7 +182,14 @@ std::string WordSnake::getString() const {
         snakeStr.append(ptr_S->toString());
         ptr_S = ptr_S->next();
     }
-    return snakeStr;
+
+    std::string ret = snakeStr;
+    int strlen = snakeStr.length();
+    for (int i = 0; i < strlen; i++) {
+        ret[i] = snakeStr[strlen - 1 - i];
+    }
+
+    return ret;
 }
 
 Entity* WordSnake::cutWord() {
