@@ -31,6 +31,16 @@ void setNRandomLetter(Map* map, int n) {
     }
 }
 
+std::string getLetterStr(std::string raw) {
+    int chi_1;
+    for (int i = 0; i < raw.length(); i++) {
+        chi_1 = int(raw[i]);
+        if ((chi_1 >= 65 && chi_1 <= 90) || (chi_1 >= 97 && chi_1 <= 122)) continue;
+        else {raw.erase(i, 1); i--;}
+    }
+    return raw;
+}
+
 int checkWord(std::string snakeStr) {
     if (snakeStr.length() == 0) {return -1;}
 
@@ -46,26 +56,26 @@ int checkWord(std::string snakeStr) {
     sstr >> wl_path;
     wl_path = Path::fullPath(wl_path);
 
+    std::cout << wl_path << std::endl;
+
     word_list.open(wl_path);
     if ( ! word_list.is_open()) {return 0;}
 
-    int line_num = 0;
     std::string aline;
-
-    word_list >> line_num;
     std::getline(word_list, aline); // 光标换行
 
     bool match = true;
-    for (int i = 0; i < line_num; i++) {
-        std::getline(word_list, aline);
+    while (std::getline(word_list, aline)) {
         match = true;
+        aline = getLetterStr(aline);
 
         for (int j = 1; j < aline.length(); j++) {
-            if (i >= snakeStr.length()) {
+            if (j >= snakeStr.length()) {
                 match = false; 
                 break;
             }
-            if ( ! isEqualChar(snakeStr[i], aline[i])) {
+
+            if ( ! isEqualChar(snakeStr[j], aline[j])) {
                 match = false;
                 break;
             }
@@ -88,7 +98,7 @@ bool isEqualChar(char ch_1, char ch_2) {
     if (((chi_1 >= 65 && chi_1 <= 90) || (chi_1 >= 97 && chi_1 <= 122))
         && ((chi_2 >= 65 && chi_2 <= 90) || (chi_2 >= 97 && chi_2 <= 122)))
         {
-            if (std::abs(chi_1 - chi_2) == 32) {return true;}
+            if (chi_1 == chi_2 || std::abs(chi_1 - chi_2) == 32) {return true;}
         }
 
     return false;
