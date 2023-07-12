@@ -318,13 +318,13 @@ Map::Map(int input_height, int input_width) {
     }
 
     //生成两面Barrier
-    for (int i = 0; i < 20; ++i) {
-        data[5][20+i] = new Barrier(5, 20+i);
-        data[5][20+i] -> setString("=");
+    for (int i = 0; i < width/4; ++i) {
+        data[height/4][width/8+i] = new Barrier(height/4, width/8+i);
+        data[height/4][width/8+i] -> setString("=");
     }
-    for (int i = 0; i < 20; ++i) {
-        data[15][60+i] = new Barrier(15, 60+i);
-        data[15][60+i] -> setString("=");
+    for (int i = 0; i < width/4; ++i) {
+        data[height*3/4][width*5/8+i] = new Barrier(height*3/4, width*5/8+i);
+        data[height*3/4][width*5/8+i] -> setString("=");
     }
 }
 

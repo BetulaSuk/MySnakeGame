@@ -451,7 +451,9 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
     int offset = 4;
     mvwprintw(menu, 8, width*0.5 - 8, "Your Final Score:");
     std::string pointString = std::to_string(snake -> get_point());
+    wattron(menu, COLOR_PAIR(3));
     mvwprintw(menu, 9, width*0.5 - 1, pointString.c_str());
+    wattroff(menu, COLOR_PAIR(3));
     //wattron(): here turns on the highlighting mode of the screen
     wattron(menu, A_STANDOUT);
     mvwprintw(menu, 8 + offset, width*0.5 - 4, menuItems[0].c_str());
