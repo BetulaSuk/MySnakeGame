@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+class Color;
 class BaseItem;
 enum class ItemType;
 class SnakeBody;

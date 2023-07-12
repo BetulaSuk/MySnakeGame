@@ -13,13 +13,18 @@
 #include <string>
 
 
-struct Color {
-    int red;
-    int green;
-    int blue;
-};
+class Color {
+    public:
+        Color(int red, int green, int blue) {
+            this->red = red;
+            this->green = green;
+            this->blue = blue;
+        }
 
-Color initColor(int red, int green, int blue);
+        int red;
+        int green;
+        int blue;
+};
 
 
 enum class ItemType {

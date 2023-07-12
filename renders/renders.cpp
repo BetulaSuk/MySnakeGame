@@ -330,7 +330,7 @@ void GameBoard::renderInformationBoard()
     werase(mWindows[0]);
     mvwprintw(this->mWindows[0], 1, 1, "Welcome to The Snake Game!");
     mvwprintw(this->mWindows[0], 2, 1, "Author: TZY, WHY");
-    mvwprintw(this->mWindows[0], 3, 1, "Website: https://github.com/leimao/");
+    mvwprintw(this->mWindows[0], 3, 1, "Website:");
     mvwprintw(this->mWindows[0], 4, 1, "Implemented using C++ and libncurses library.");
 
     box(mWindows[0], 0, 0);
@@ -343,12 +343,11 @@ void GameBoard::createLogo() {
     int startY = 0;
     int startX = this -> mScreenWidth - 65;
     this->mWindows[3] = newwin(this->mInformationHeight, 65, startY, startX);
+    box(mWindows[3], 0, 0);
 }
 
 
 void GameBoard::renderLogo() {
-    box(mWindows[3], 0, 0);
-
     string s1 = "  ____              _         ____";
     string s2 = " / ___| _ __   __ _| | _____ / ___| __ _ _ __ ___   ___";
     string s3 = " \\___ \\| '_ \\ / _` | |/ / _ \\ |  _ / _` | '_ ` _ \\ / _ \\";

@@ -24,8 +24,10 @@ int main() {
             game.renderLogo();
 
             Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
+
             map.init_snake();
             Snake* snake = map.get_snake();
+            
             Random::resetRandomEngine();
             map.setRandomItem(ItemType::FOOD, "#");
 
