@@ -227,16 +227,8 @@ Entity* WordSnake::cutWord() {
 
     ptrMap->get_entity_list()->push_back(ptr_E);
 
-        std::vector<Entity*> *en_list = ptrMap->get_entity_list();
-        SnakeBody* ptr_S; int x, y;
-        ptr_S = nullptr;
-            for (auto it = en_list->begin(); it != en_list->end(); it++) {
-                ptr_S = (*it)->get_head();
-                for (int i = 0; i < (*it)->get_len(); i++) {
-                    x = ptr_S->get_x();
-                    y = ptr_S->get_y();
-                }
-            }
+    point += word_len;
+    
     return ptr_E;
 }
 
@@ -255,8 +247,6 @@ bool WordSnake::tryEatFood(int newTail_x, int newTail_y, std::string newTail_s, 
     length++;
     // 删除食物
     ptrHead->get_block()->clear_item();
-
-    point++;
 
     setNRandomLetter(ptrMap, n);
 }

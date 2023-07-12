@@ -127,7 +127,7 @@ Map* loadMap(std::string fileDir) {
                 // 由于传送门生成需要更多参数, 先使用基本方块占位, 在命令执行阶段再设置
                 case '2': ptrMap->data[i][j] = new BaseBlock(i, j); break;
                 case '3': ptrMap->data[i][j] = new Barrier(i, j); break;
-                /* TODO 添加新的方块类型 */
+
                 default: mapFile.close(); throw 1;
             }
             ptrMap->data[i][j]->setString(displayStr);
@@ -315,6 +315,16 @@ Map::Map(int input_height, int input_width) {
                 else if (j == width-1) data[i][j] = new Portal(i, j, i, 1);
                 else data[i][j] = new BaseBlock(i, j);
         }
+    }
+
+    //生成两面Barrier
+    for (int i = 0; i < 20; ++i) {
+        data[5][20+i] = new Barrier(5, 20+i);
+        data[5][20+i] -> setString("=");
+    }
+    for (int i = 0; i < 20; ++i) {
+        data[15][60+i] = new Barrier(15, 60+i);
+        data[15][60+i] -> setString("=");
     }
 }
 

@@ -401,11 +401,15 @@ void GameBoard::renderInstructionBoard(Snake* snake) const
 
     mvwprintw(this->mWindows[2], 11, 1, "Points");
     string pointString = to_string(snake -> get_point());
+    wattron(this->mWindows[2], COLOR_PAIR(3));
     mvwprintw(this->mWindows[2], 12, 1, pointString.c_str());
+    wattroff(this->mWindows[2], COLOR_PAIR(3));
 
     mvwprintw(this -> mWindows[2], 14, 1, "Heart");
     string heartStr = to_string(snake -> get_heart());
+    wattron(this->mWindows[2], COLOR_PAIR(4));
     mvwprintw(this -> mWindows[2], 15, 1, heartStr.c_str());
+    wattroff(this->mWindows[2], COLOR_PAIR(4));
 
     box(mWindows[2], 0, 0);
     wrefresh(mWindows[2]);
@@ -632,6 +636,13 @@ void GameBoard::startWord(Map* map, WordSnake* snake) {
     while (true) {
         renderMap(mWindows[1], map);
         renderInstructionBoard(snake);
+
+        //渲染蛇的末尾几位，方便对照
+        mvwprintw(mWindows[2], 17, 1, "--Snake-->");
+        wattron(mWindows[2], COLOR_PAIR(5));
+        mvwprintw(mWindows[2], 18, 1, snake->getString().c_str());
+        wattroff(mWindows[2], COLOR_PAIR(5));
+        wrefresh(mWindows[2]);
 
         control = getch();
 
