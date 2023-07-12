@@ -72,21 +72,43 @@ bool WordSnake::moveForward() {
 
     // 检查前方方块是否有蛇身
     SnakeBody* ptrSAhead = blockAhead->getSnakeBody();
-
     if (ptrSAhead) {
         isAlive = false;
         heart = 0;
         return false;
     }
 
+    // 获取前方方块上的物品类型
     BaseItem* itemAhead = blockAhead->get_item();
     ItemType typeItem = ItemType::EMPTY;
     if (itemAhead) {typeItem = itemAhead->type();}
 
-    /* 以下为与 Snake::moveForward() 不同的部分 */
+    // 提前获取此时的尾部坐标, 为可能吃食物的情况做准备
+    int oldTail_x, oldTail_y;
+    SnakeBody* ptrTail = getTailPtr();
+    oldTail_x = ptrTail->get_x();
+    oldTail_y = ptrTail->get_y();
 
-    
+    // 向前挪动: 从头开始一点点向前伸
+    SnakeBody* ptrSbody = ptrHead;
+    BaseBlock* ptrB_1 = ptrHead->get_block();
+    BaseBlock* ptrB_2 = nextBlock(ptrMap, ptrB_1, dir);
 
+    for (int i = 0; i < length; i++) {
+        bond(ptrB_2, ptrSbody);
+        ptrB_1->releaseSnakeBody();
+
+        ptrSbody = ptrSbody->next();
+        if ( ! ptrSbody) {break;}
+        ptrB_2 = ptrB_1;
+        ptrB_1 = ptrSbody->get_block();
+    }
+
+    // 因为 eatFood 中有判定, 所以不担心误判为吃食物
+    tryEatFood(oldTail_x, oldTail_y);
+    tryEatHeart();
+
+    return true;
 }
 
 std::string WordSnake::getString() const {

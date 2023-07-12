@@ -22,7 +22,8 @@ enum class BlockType {
     EMPTY     = -1,
     BASEBLOCK = 0,
     WALL      = 1,
-    PORTAL    = 2
+    PORTAL    = 2,
+    BARRIER   = 3
 };
 
 
@@ -86,7 +87,7 @@ class Wall: public BaseBlock {
         Wall() = delete;
         Wall(int input_y, int input_x): BaseBlock(input_x, input_y) {}
         
-        virtual ~Wall() = default;
+        ~Wall() = default;
 
         virtual BlockType type() const {return TYPE;}
 
@@ -95,12 +96,26 @@ class Wall: public BaseBlock {
 };
 
 
+class Barrier: public BaseBlock {
+    public:
+        Barrier() = delete;
+        Barrier(int input_x, int input_y): BaseBlock(input_x, input_y) {}
+
+        ~Barrier() = default;
+
+        virtual BlockType type() const {return TYPE;}
+
+    private:
+        const static BlockType TYPE = BlockType::BARRIER;
+};
+
+
 class Portal: public BaseBlock {
     public:
         Portal() = delete;
         Portal(int input_x, int input_y, int e_x, int e_y): BaseBlock(input_x, input_y), exit_x(e_x), exit_y(e_y) {};
 
-        virtual ~Portal() = default;
+        ~Portal() = default;
 
         int get_ex() const {return exit_x;}
         int get_ey() const {return exit_y;}

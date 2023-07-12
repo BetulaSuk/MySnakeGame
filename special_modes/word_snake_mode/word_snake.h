@@ -9,7 +9,6 @@
 #include "../../items/items.h"
 #include "../../snake/snake.h"
 #include "../../map/map.h"
-#include "../entity/entity.h"
 
 #include <string>
 

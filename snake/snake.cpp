@@ -6,6 +6,7 @@
 #include "../map/map.h"
 #include "../snake/snake.h"
 
+#include <vector>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -105,6 +106,9 @@ bool Snake::moveForward() {
             isAlive = false;
             heart = 0;
             return false;
+        case BlockType::BARRIER:
+            heart--;
+            break;
         // TODO 添加更多方块类型时此处可能要增加判定
         default:
             break;
@@ -112,16 +116,24 @@ bool Snake::moveForward() {
 
     // 检查前方方块是否有蛇身
     SnakeBody* ptrSAhead = blockAhead->getSnakeBody();
-
     if (ptrSAhead) {
         isAlive = false;
         heart = 0;
         return false;
     }
 
+    // 获取前方方块上的物品类型
     BaseItem* itemAhead = blockAhead->get_item();
     ItemType typeItem = ItemType::EMPTY;
     if (itemAhead) {typeItem = itemAhead->type();}
+
+    if (typeItem == ItemType::SNAKEBODY) {
+        SnakeBody* temp_S = reinterpret_cast<SnakeBody*>(itemAhead);
+        if ( ! temp_S->getSnake()->canOverlap()) {
+            heart--;
+            return false;
+        }
+    }
 
     // 提前获取此时的尾部坐标, 为可能吃食物的情况做准备
     int oldTail_x, oldTail_y;
@@ -134,13 +146,9 @@ bool Snake::moveForward() {
     BaseBlock* ptrB_1 = ptrHead->get_block();
     BaseBlock* ptrB_2 = nextBlock(ptrMap, ptrB_1, dir);
 
-    // std::cout << ">>> mark!!" << std::endl; // debug
-
     for (int i = 0; i < length; i++) {
         bond(ptrB_2, ptrSbody);
         ptrB_1->releaseSnakeBody();
-
-        // std::cout << ">>> mark: " << i << std::endl; // debug
 
         ptrSbody = ptrSbody->ptrNext;
         if ( ! ptrSbody) {break;}
@@ -214,6 +222,66 @@ bool Snake::tryEatHeart() {
 
     ptrHead->get_block()->clear_item();
     heart++;
+
+    return true;
+}
+
+
+bool Entity::moveForward() {
+    // 检查是否有活性
+    if (isAlive == false) {return false;}
+
+    // 获取需要检测的方块列表
+    std::vector<BaseBlock*> blocksAhead(length);
+    SnakeBody* ptr_S = ptrHead;
+    for (int i = 0; i < length; i++) {
+        blocksAhead[i] = nextBlock(ptrMap, ptr_S->get_block(), dir);
+        ptr_S = ptr_S->next();
+    }
+
+    BlockType blType = BlockType::EMPTY;
+    BaseItem* ptr_I;
+    ItemType itType = ItemType::EMPTY;
+    std::string displayStr;
+    for (int i = 0; i < length; i++) {
+        // 检测该方块是否在范围内
+        if ( ! blocksAhead[i]) {isAlive = false; return false;}
+        // 获取方块类型
+        blType = blocksAhead[i]->type();
+
+        switch (blType) {
+            case BlockType::WALL: isAlive = false; return false;
+        }
+
+        ptr_I = blocksAhead[i]->get_item();
+        if ( ! ptr_I) {continue;}
+        displayStr = ptr_I->toString();
+        blocksAhead[i]->clear_item();
+
+        // 撞到东西要删了之后重新生成
+        itType = ptr_I->type();
+        switch (itType) {
+            case ItemType::FOOD:
+                ptrMap->setRandomItem(ItemType::FOOD, displayStr);
+                break;
+            case ItemType::HEART:
+                ptrMap->setRandomItem(ItemType::HEART, displayStr);
+                break;
+        }
+        // 为了防止重新生成的物品还在这一格这种小概率事件...
+        if (ptr_I) {i--; continue;}
+    }
+
+    // 移动
+    BaseBlock* ptr_B;
+    BaseItem* temp_I;
+    ptr_S = ptrHead;
+    for (int i = 0; i < length; i++) {
+        ptr_S->get_block()->releaseSnakeBody();
+        temp_I = ptr_S;
+        bond(blocksAhead[i], temp_I);
+        ptr_S = ptr_S->next();
+    }
 
     return true;
 }
