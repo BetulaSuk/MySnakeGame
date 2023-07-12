@@ -334,19 +334,19 @@ bool Entity::moveForward() {
     for (int i = 0; i < length; i++) {
         if ( ! ptr_S) {exit(3);}
 
-         std::cout << "mark in for " << i << std::endl; // debug
+        // std::cout << "mark in for " << i << std::endl; // debug
 
         ptr_S->get_block()->releaseItem();
 
-         std::cout << "mark af set" << std::endl; // debug
-        
+        // std::cout << "mark af set" << std::endl; // debug
+
         temp_I = ptr_S;
         bond(blocksAhead[i], temp_I);
-          std::cout << "mark af bond" << std::endl; // debug
+        // std::cout << "mark af bond" << std::endl; // debug
         ptr_S = ptr_S->next();
     }
 
-     std::cout << "mark bf ret" << std::endl; // debug
+    //std::cout << "mark bf ret" << std::endl; // debug
 
     return true;
 }

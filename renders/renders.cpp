@@ -427,6 +427,8 @@ void GameBoard::renderLogo() {
 
     wattroff(this->mWindows[3], COLOR_PAIR(1));
 
+    //box(mWindows[3], 0, 0);
+
     wrefresh(mWindows[3]);
 }
 
@@ -696,7 +698,7 @@ void GameBoard::startWord(Map& map, WordSnake* snake) {
     
     curs_set(0);
     int control;
-    int mark;
+
     vector<Entity*> * en_list = map.get_entity_list();
 
         while (true) {
@@ -720,18 +722,18 @@ void GameBoard::startWord(Map& map, WordSnake* snake) {
             if (!snake->checkAlive()) {break;}
             
             for (auto it = en_list->begin(); it != en_list->end(); it++) {
-                mark = (int)(*it)->moveForward();
-                mvwprintw(mWindows[0], 5, 1, "%d", mark);
-                mvwprintw(mWindows[0], 5, 5, "%d", (*it)->get_len());
-                wrefresh(mWindows[0]);
+                (*it)->moveForward();
+                //mvwprintw(mWindows[0], 5, 1, "%d", mark);
+                //mvwprintw(mWindows[0], 5, 5, "%d", (*it)->get_len());
+                //wrefresh(mWindows[0]);
             }
 
             if (control == ' ' || control == 10) break;
 
             this_thread::sleep_for(chrono::milliseconds(base_delay));
 
-            if (en_list->size() != 0) {
+            /*if (en_list->size() != 0) {
                 mvwprintw(mWindows[0], 5, 7, "size!"); wrefresh(mWindows[0]); // debug
-            }
+            }*/
         }
 }
