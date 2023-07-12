@@ -662,9 +662,7 @@ void GameBoard::startWord(Map* map, WordSnake* snake) {
         snake->moveForward();
         if (!snake->checkAlive()) {break;}
 
-        for (auto it = en_list->begin(); it != en_list->end(); it++) {
-            (*it)->moveForward();
-        }
+        map->moveAllEntity();
 
         if (control == ' ' || control == 10) break;
 

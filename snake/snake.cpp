@@ -278,10 +278,28 @@ bool Entity::moveForward() {
         // 获取方块类型
         blType = blocksAhead[i]->type();
         switch (blType) {
-            case BlockType::WALL: 
+            case BlockType::WALL:
             case BlockType::BARRIER:
-                isAlive = false; return false;
+                isAlive = false;
+                ptr_S = ptrHead;
+                for (int i = 0; i < length; i++) {
+                    bond(blocksNow[i], ptr_S);
+                    ptr_S = ptr_S->next();
+                }
+                return false;
         }
+
+        ptr_S = blocksAhead[i]->getSnakeBody();
+        if (ptr_S) {
+            isAlive = false;
+            ptr_S = ptrHead;
+            for (int i = 0; i < length; i++) {
+                bond(blocksNow[i], ptr_S);
+                ptr_S = ptr_S->next();
+            }
+            return false;
+        }
+        ptr_S = nullptr;
 
         ptr_I = blocksAhead[i]->get_item();
         if ( ! ptr_I) {continue;}
