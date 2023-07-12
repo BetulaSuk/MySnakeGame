@@ -161,128 +161,118 @@ bool carryCommand(Map* map, std::string com) {
     char comType;
     sstr >> comType;
     int x, y; std::string displayStr;
-    switch (comType) {
-        // 注释
-        case '#': return true; 
-        case 'b':
-            int bType;
-            sstr >> bType >> x >> y;
-            switch (bType) {
-                case 0:
-                    displayStr = map->data[x][y]->toString();
-                    delete map->data[x][y];
-                    map->data[x][y] = new BaseBlock(x, y);
-                    map->data[x][y]->setString(displayStr);
-                    break;
-                case 1:
-                    displayStr = map->data[x][y]->toString();
-                    delete map->data[x][y];
-                    map->data[x][y] = new Wall(x, y);
-                    map->data[x][y]->setString(displayStr);
-                    break;
-                case 2:
-                    int e_x, e_y;
-                    sstr >> e_x >> e_y;
-                    displayStr = map->data[x][y]->toString();
-                    delete map->data[x][y];
-                    map->data[x][y] = new Portal(x, y, e_x, e_y);
-                    map->data[x][y]->setString(displayStr);
-                    break;
-                case 3: 
-                    displayStr = map->data[x][y]->toString();
-                    delete map->data[x][y];
-                    map->data[x][y] = new Barrier(x, y);
-                    map->data[x][y]->setString(displayStr);
-                    break;
-            }
-            break;
 
-        case 'i':
-            int iType; BaseItem* ptr_I;
-            sstr >> iType >> x >> y >> displayStr;
-            switch (iType) {
-                case 0:
-                    ptr_I = new BaseItem();
-                    ptr_I->setString(displayStr);
-                    bond(map->data[x][y], ptr_I);
-                    break;
-                case 1:
-                    ptr_I = new Food();
-                    ptr_I->setString(displayStr);
-                    bond(map->data[x][y], ptr_I);
-                    break;
-                case 2:
-                    ptr_I = new Heart();
-                    ptr_I->setString(displayStr);
-                    bond(map->data[x][y], ptr_I);
-                    break;
-                case 3:
-                    int next_x, next_y;
-                    sstr >> next_x >> next_y;
-                    SnakeBody* temp_S = new SnakeBody();
-                    ptr_I = temp_S;
-                    ptr_I->setString(displayStr);
-                    bond(map->data[x][y], ptr_I);
+    // 注释
+    if (comType == '#') {return true;}
+    else if (comType == 'b') {
+        int bType;
+        sstr >> bType >> x >> y;
+        if (bType == 0) {
+            displayStr = map->data[x][y]->toString();
+            delete map->data[x][y];
+            map->data[x][y] = new BaseBlock(x, y);
+            map->data[x][y]->setString(displayStr);
+        }
+        else if (bType == 1) {
+            displayStr = map->data[x][y]->toString();
+            delete map->data[x][y];
+            map->data[x][y] = new Wall(x, y);
+            map->data[x][y]->setString(displayStr);
+        }
+        else if (bType == 2) {
+            int e_x, e_y;
+            sstr >> e_x >> e_y;
+            displayStr = map->data[x][y]->toString();
+            delete map->data[x][y];
+            map->data[x][y] = new Portal(x, y, e_x, e_y);
+            map->data[x][y]->setString(displayStr);
+        }
+        else if (bType == 2) {
+            displayStr = map->data[x][y]->toString();
+            delete map->data[x][y];
+            map->data[x][y] = new Barrier(x, y);
+            map->data[x][y]->setString(displayStr);
+        }
+    }        
+    else if (comType == 'i') {
+        int iType; BaseItem* ptr_I;
+        sstr >> iType >> x >> y >> displayStr;
 
-                    if (next_x < 0 || next_y < 0) {break;} // 尾
-                    else if (map->inRange(next_x, next_y) &&
-                            map->data[next_x][next_y]->getSnakeBody())
-                        {temp_S->setNext(map->data[next_x][next_y]->getSnakeBody());}
-                    else {return false;}
-                    break;
-                // TODO 
-            }
-            break;
+        if (iType == 0) {
+            ptr_I = new BaseItem();
+            ptr_I->setString(displayStr);
+            bond(map->data[x][y], ptr_I);
+        }
+        else if (iType == 1) {
+            ptr_I = new Food();
+            ptr_I->setString(displayStr);
+            bond(map->data[x][y], ptr_I);
+        }
+        else if (iType == 2) {
+            ptr_I = new Heart();
+            ptr_I->setString(displayStr);
+            bond(map->data[x][y], ptr_I);
+        }
+        else if (iType == 3) {
+            int next_x, next_y;
+            sstr >> next_x >> next_y;
+            SnakeBody* temp_S = new SnakeBody();
+            ptr_I = temp_S;
+            ptr_I->setString(displayStr);
+            bond(map->data[x][y], ptr_I);
 
-        case 's':
-            int next_x, next_y; SnakeBody* ptr_S;
-            sstr >> x >> y >> displayStr >> next_x >> next_y;
-            ptr_S = new SnakeBody();
-            ptr_S->setString(displayStr);
-            bond(map->data[x][y], ptr_S);
-
-            if (next_x < 0 || next_y < 0) {break;} // 蛇尾
+            if (next_x < 0 && next_y < 0) {return true;} // 尾
             else if (map->inRange(next_x, next_y) &&
                     map->data[next_x][next_y]->getSnakeBody())
-                 {ptr_S->setNext(map->data[next_x][next_y]->getSnakeBody());}
+                {temp_S->setNext(map->data[next_x][next_y]->getSnakeBody());}
             else {return false;}
-            break;
-        
-        case 'c':
-            int init_heart, dir_int;
-            sstr >> x >> y >> init_heart >> dir_int;
-            Direction init_dir = static_cast<Direction>(dir_int);
+        }
+    }
+    else if (comType == 's') {
+        int next_x, next_y; SnakeBody* ptr_S;
+        sstr >> x >> y >> displayStr >> next_x >> next_y;
+        ptr_S = new SnakeBody();
+        ptr_S->setString(displayStr);
+        bond(map->data[x][y], ptr_S);
+
+        if (next_x < 0 && next_y < 0) {return true;} // 蛇尾
+        else if (map->inRange(next_x, next_y) &&
+                map->data[next_x][next_y]->getSnakeBody())
+             {ptr_S->setNext(map->data[next_x][next_y]->getSnakeBody());}
+        else {return false;}
+    }
+    else if (comType == 'c') {
+        int init_heart, dir_int;
+        sstr >> x >> y >> init_heart >> dir_int;
+        Direction init_dir = static_cast<Direction>(dir_int);
             
-            if ( ! map->inRange(x, y)) {return false;}
-            SnakeBody* head = map->data[x][y]->getSnakeBody();
-            if ( ! head) {return false;}
+        if ( ! map->inRange(x, y)) {return false;}
+        SnakeBody* head = map->data[x][y]->getSnakeBody();
+        if ( ! head) {return false;}
 
-            map->ptrSnake = new Snake(map, head, init_heart, init_dir);
-            break;
-        
-        case 'w':
-            int init_heart, dir_int;
-            sstr >> x >> y >> init_heart >> dir_int;
-            Direction init_dir = static_cast<Direction>(dir_int);
+        map->ptrSnake = new Snake(map, head, init_heart, init_dir);
+    }
+    else if (comType == 'w') {
+        int init_heart, dir_int;
+        sstr >> x >> y >> init_heart >> dir_int;
+        Direction init_dir = static_cast<Direction>(dir_int);
             
-            if ( ! map->inRange(x, y)) {return false;}
-            SnakeBody* head = map->data[x][y]->getSnakeBody();
-            if ( ! head) {return false;}
+        if ( ! map->inRange(x, y)) {return false;}
+        SnakeBody* head = map->data[x][y]->getSnakeBody();
+        if ( ! head) {return false;}
 
-            map->ptrSnake = new WordSnake(map, head, init_heart, init_dir);
-            break;
-
-        case 'e':
-            int dir_int;
-            sstr >> x >> y >> dir_int;
-            Direction init_dir = static_cast<Direction>(dir_int);
+        map->ptrSnake = new WordSnake(map, head, init_heart, init_dir);
+    }
+    else if (comType == 'e') {
+        int dir_int;
+        sstr >> x >> y >> dir_int;
+        Direction init_dir = static_cast<Direction>(dir_int);
             
-            if ( ! map->inRange(x, y)) {return false;}
-            SnakeBody* head = reinterpret_cast<SnakeBody*>(map->data[x][y]->get_item());
-            if ( ! head) {return false;}
+        if ( ! map->inRange(x, y)) {return false;}
+        SnakeBody* head = reinterpret_cast<SnakeBody*>(map->data[x][y]->get_item());
+        if ( ! head) {return false;}
 
-            map->ptrSnake = new WordSnake(map, head, init_heart, init_dir);
-            break;
+        map->ptrSnake = new Entity(map, head, init_dir);
     }
 
     return true;
