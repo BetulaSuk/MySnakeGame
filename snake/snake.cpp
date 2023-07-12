@@ -275,22 +275,18 @@ bool Entity::moveForward() {
         if ( ! ptr_S) {exit(3);}
 
         blocksNow[i] = ptr_S->get_block();
-        ptr_S->get_block()->get_item() = nullptr;
+        blocksNow[i]->getSnakeBody() = nullptr;
         blocksAhead[i] = nextBlock(ptrMap, ptr_S->get_block(), dir);
         ptr_S->get_block() = nullptr;
         ptr_S = ptr_S->next();
     }
     ptr_S = nullptr;
 
-    // std::cout << "mark af b_list" << std::endl; // debug
-
     BlockType blType = BlockType::EMPTY;
     BaseItem* ptr_I = nullptr;
     ItemType itType = ItemType::EMPTY;
     std::string displayStr;
     for (int i = 0; i < length; i++) {
-
-        // std::cout << "mark in for " << i << std::endl; // debug
 
         // 检测该方块是否在范围内
         if ( ! blocksAhead[i]) {isAlive = false; return false;}
@@ -324,22 +320,13 @@ bool Entity::moveForward() {
         if (ptr_I) {i--; continue;}
     }
 
-    // std::cout << "mark bf mv" << std::endl; // debug
-
     // 移动
     BaseItem* temp_I = nullptr;
     ptr_S = ptrHead;
     for (int i = 0; i < length; i++) {
         if ( ! ptr_S) {exit(3);}
 
-        // std::cout << "mark in for " << i << std::endl; // debug
-        // std::cout << "mark af set" << std::endl; // debug
-
-        // temp_I = ptr_S;
         bond(blocksAhead[i], ptr_S);
-
-        // std::cout << "mark af bond" << std::endl; // debug
-        // std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug
 
         ptr_S = ptr_S->next();
     }
