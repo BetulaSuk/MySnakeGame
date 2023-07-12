@@ -245,7 +245,7 @@ bool GameBoard::createHelp() {
 
 
 //Create Setting board
-//(Unfinished)
+/*
 bool GameBoard:: createSetting() {
     int width = this->mScreenWidth * 0.5;
     int height = this->mScreenHeight * 0.5;
@@ -277,6 +277,7 @@ bool GameBoard:: createSetting() {
     delwin(menu);
     return true;
 }
+*/
 
 
 //选择游戏模式
@@ -439,10 +440,12 @@ void GameBoard::createGameBoard()
     this->mWindows[1] = newwin(this->mScreenHeight - this->mInformationHeight, this->mScreenWidth - this->mInstructionWidth, startY, startX);
 }
 
+/*
 void GameBoard::renderGameBoard() const
 {
     wrefresh(this->mWindows[1]);
 }
+*/
 
 void GameBoard::createInstructionBoard()
 {

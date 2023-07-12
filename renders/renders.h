@@ -24,7 +24,7 @@ class GameBoard
         bool createWelcomeBoard();
 
         bool createHelp();
-        bool createSetting();
+        //bool createSetting();
 
         int chooseMode();
 
@@ -32,7 +32,7 @@ class GameBoard
         void renderInformationBoard();
 
         void createGameBoard();
-        void renderGameBoard() const;
+        //void renderGameBoard() const;
 
         //创建Logo
         void createLogo();
