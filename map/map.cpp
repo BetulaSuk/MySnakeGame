@@ -314,6 +314,7 @@ Map::Map(int input_height, int input_width) {
         }
     }
     
+    /*
     //临时生成一组传送门
     data[5][5] = new Portal(5, 5, 15, 30);
     data[5][5] -> setString("P");
@@ -321,7 +322,7 @@ Map::Map(int input_height, int input_width) {
     data[15][15] = new Portal(15, 15, 5, 30);
     data[15][15] -> setString("P");
     //data[15][15]->setColor(new Color(100, 800, 800));
-    
+    */
 }
 
 void Map::init_snake() {

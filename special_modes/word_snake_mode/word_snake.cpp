@@ -69,35 +69,17 @@ bool isEqualChar(char ch_1, char ch_2) {
 }
 
 
-Entity::Entity(Map* map, SnakeBody* head, Direction init_dir) {
-    ptrMap  = map;
-    dir     = init_dir;
-    ptrHead = head;
-
-    int count = 0; 
-    SnakeBody* ptr_S = ptrHead;
-    BaseBlock* ptr_B;
-    BaseItem* temp_I;
-    while (ptr_S) {
-        ptr_S->set_snake(this);
-        ptr_B = ptr_S->get_block();
-        ptr_B->releaseSnakeBody();
-        temp_I = ptr_S;
-        bond(ptr_B, temp_I);
-        count++;
-    }
-    length = count;
-}
 
 bool WordSnake::moveForward() {
     // 检查蛇是否死亡
     if (isAlive == false) {return false;}
 
     BaseBlock* blockAhead = nextBlock(ptrMap, ptrHead->get_block(), dir);
-    BlockType  typeBlock  = blockAhead->type();
+    BlockType  typeBlock  = BlockType::EMPTY;
 
     // 检查是否超出地图边界
     if ( ! blockAhead) {return false;}
+    typeBlock = blockAhead->type();
 
     // 检查前方方块是否可踏足
     switch (typeBlock) {

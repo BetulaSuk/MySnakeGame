@@ -89,6 +89,7 @@ class Map {
         const std::vector<std::vector<BaseBlock*>> * const get_data() const {return &data;}
 
         Snake* get_snake() {return ptrSnake;}
+        void set_snake(Snake* s) {ptrSnake = s;}
         std::vector<Entity*> * get_entity_list() {return &entityList;}
 
         /* 工具函数 */

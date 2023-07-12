@@ -14,14 +14,14 @@
 
 // 初始化: 蛇身创建, 蛇身绑定方块, 蛇身绑定蛇, 蛇绑定地图
 Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
+    if (not map->inRange(start_x, start_y)) {exit(1);}
+
     ptrHead = new SnakeBody();
     bond(map->at(start_x, start_y), ptrHead);
     ptrHead->ptrSnake = this;
     ptrHead->setString("@");
 
     ptrHead->setColor(new Color(100, 800, 100));
-
-    if (not map->inRange(start_x, start_y)) {exit(1);}
 
     int x = start_x,
         y = start_y;
@@ -44,6 +44,7 @@ Snake::Snake(Map* map, int start_x, int start_y, int init_len, int init_heart) {
 
     length = init_len;
     ptrMap = map;
+    map->set_snake(this);
     heart = init_heart;
     dir = Direction::UP;
 }
@@ -69,6 +70,8 @@ Snake::~Snake() {
 
     for (int i = 0; i < length; i++) {
         ptrSbody_2 = ptrSbody_2->ptrNext;
+        // 空指针保护
+        if ( ! ptrSbody_1) {return;}
         delete ptrSbody_1;
         ptrSbody_1 = ptrSbody_2;
     }
@@ -96,10 +99,11 @@ bool Snake::moveForward() {
     if (isAlive == false) {return false;}
 
     BaseBlock* blockAhead = nextBlock(ptrMap, ptrHead->get_block(), dir);
-    BlockType  typeBlock  = blockAhead->type();
+    BlockType  typeBlock  = BlockType::EMPTY;
 
     // 检查是否超出地图边界
     if ( ! blockAhead) {return false;}
+    typeBlock = blockAhead->type();
 
     // 检查前方方块是否可踏足
     switch (typeBlock) {
@@ -235,6 +239,26 @@ bool Snake::tryEatHeart() {
     return true;
 }
 
+
+Entity::Entity(Map* map, SnakeBody* head, Direction init_dir) {
+    ptrMap  = map;
+    dir     = init_dir;
+    ptrHead = head;
+
+    int count = 0; 
+    SnakeBody* ptr_S = ptrHead;
+    BaseBlock* ptr_B;
+    BaseItem* temp_I;
+    while (ptr_S) {
+        ptr_S->set_snake(this);
+        ptr_B = ptr_S->get_block();
+        ptr_B->releaseSnakeBody();
+        temp_I = ptr_S;
+        bond(ptr_B, temp_I);
+        count++;
+    }
+    length = count;
+}
 
 bool Entity::moveForward() {
     // 检查是否有活性

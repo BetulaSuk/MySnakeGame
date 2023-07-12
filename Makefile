@@ -5,7 +5,7 @@ MySnakeGame: $(OBJECTS)
 main.o: main.cpp $(HEADERS)
 	g++ -c main.cpp -o main.o
 
-renders.o: ./renders/renders.cpp $(HEADERS)
+renders.o: ./renders/renders.cpp $(HEADERS) 
 	g++ -c ./renders/renders.cpp -o renders.o
 
 map.o: ./map/map.cpp ./map/map.h ./snake/snake.h ./blocks/blocks.h ./items/items.h
@@ -28,13 +28,13 @@ debug.o: ./debug/debug.cpp $(HEADERS)
 	g++ -c ./debug/debug.cpp -o debug.o
 
 
-OBJECTS = items.o blocks.o snake.o map.o renders.o main.o
-HEADERS = ./renders/renders.h ./snake/snake.h ./map/map.h ./blocks/blocks.h ./items/items.h
+OBJECTS = ./.o/items.o ./.o/blocks.o ./.o/snake.o ./.o/map.o ./.o/renders.o ./.o/main.o ./.o/word_snake.o
+HEADERS = ./renders/renders.h ./snake/snake.h ./map/map.h ./blocks/blocks.h ./items/items.h ./special_modes/word_snake_mode/word_snake.h
 
 
 .PHONY: clean
 
 clean:
-	-rm *.o SnakeGame
+	-rm ./.o/*.o SnakeGame
 
 

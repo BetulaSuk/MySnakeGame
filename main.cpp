@@ -14,13 +14,11 @@ int main() {
         int mode = game.chooseMode();
 
         //TODO
-        switch (mode)
-        {
         //Classic Mode
-        case 0:
+        if (mode == 0)
+        {
             //初始化地图，同时得到Snake，并生成第一个食物
-            //剩余食物会在蛇吃到食物时候自动生成
-            
+            //剩余食物会在蛇吃到食物时候自动生成    
             //渲染最上面保持恒定的两个窗口
             game.renderInformationBoard();
             game.renderLogo();
@@ -30,7 +28,6 @@ int main() {
             map.init_snake();
             Snake* snake = map.get_snake();
 
-            
             map.setRandomItem(ItemType::FOOD, "#");
 
             //游戏主循环入口
@@ -43,17 +40,27 @@ int main() {
             //复活蛇，重新开始
             //TODO：
             //继承heart
-            snake -> revive();
-            clear();
-            refresh();
-            break;
-        /*
+            //snake -> revive();
+            //clear();
+            //refresh();
+        }
         //Word Snake Mode
-        case 1:
+        else if (mode == 1)
+        {
+            game.renderInformationBoard();
+            game.renderLogo();
+
+            Map map(game.getGameBoardHeight(), game.getGameBoardWidth());
+
+            WordSnake* snake = new WordSnake(&map, 10, 10, 2, 3);
+
+            //主循环
+            game.startWord(map, snake);
+        }
+        /*
         //PVP Mode
         case 2:
         case 3:
         */
-        }
     }
 }
