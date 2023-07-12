@@ -6,11 +6,13 @@
 #include "../snake/snake.h"
 #include "../special_modes/word_snake_mode/word_snake.h"
 
-#include <iostream>
+
 #include <fstream>
 #include <sstream>
 #include <filesystem>
 
+
+//获取前进方向下一处的坐标
 void nextPos(int x, int y, int& next_x, int& next_y, Direction dir) {
     next_x = x;
     next_y = y;
@@ -22,6 +24,8 @@ void nextPos(int x, int y, int& next_x, int& next_y, Direction dir) {
     }
 }
 
+
+//获取前进方向下一处的BaseBlock
 BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir) {
     BaseBlock* nextBlock = nullptr;
 
@@ -47,6 +51,7 @@ BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir) {
     return nextBlock;
 }
 
+
 bool canSetItem(BaseBlock* const block) {
     BlockType B_type = block->type();
     switch (B_type) {
@@ -57,12 +62,17 @@ bool canSetItem(BaseBlock* const block) {
     }
 }
 
+
+//绑定SnakeBody和BaseBlock
 void bond(BaseBlock* ptr_B, SnakeBody* ptr_S) {
     if (ptr_B && ptr_S) {
         ptr_B->getSnakeBody() = ptr_S;
         ptr_S->get_block() = ptr_B;
     } else {exit(2);}
 }
+
+
+//绑定BaseItem和BaseBlock
 void bond(BaseBlock* ptr_B, BaseItem*  ptr_I) {
     if (ptr_B && ptr_I && ptr_I->type() != ItemType::SNAKEBODY) {
         ptr_B->get_item() = ptr_I;
@@ -71,7 +81,7 @@ void bond(BaseBlock* ptr_B, BaseItem*  ptr_I) {
 }
 
 
-
+//文件初始化Map
 Map* loadMap(std::string fileDir) {
     Map* ptrMap = nullptr;
     try {
@@ -87,10 +97,12 @@ Map* loadMap(std::string fileDir) {
     // 创建新的空地图, 设置地图大小
     int height, width;
     mapFile >> height >> width;
+
     ptrMap = new Map();
     ptrMap->width  = width;
     ptrMap->height = height;
     ptrMap->data.resize(height);
+
     for (int i = 0; i < height; i++) {
         ptrMap->data[i].resize(width);
     }
@@ -118,7 +130,6 @@ Map* loadMap(std::string fileDir) {
                 /* TODO 添加新的方块类型 */
                 default: mapFile.close(); throw 1;
             }
-
             ptrMap->data[i][j]->setString(displayStr);
         }
     }
@@ -145,6 +156,7 @@ Map* loadMap(std::string fileDir) {
 }
 
 
+//文件翻译
 bool carryCommand(Map* map, std::string com) {
     std::stringstream sstr;
     sstr << com;
@@ -280,7 +292,6 @@ bool carryCommand(Map* map, std::string com) {
 
         map->ptrSnake = new Entity(map, head, init_dir, init_len);
     }
-
     return true;
 }
 
@@ -297,48 +308,17 @@ Map::Map(int input_height, int input_width) {
         data[i].resize(width);
 
         for (int j = 0; j < width; j++) {
-            // 边缘是墙
-            if (i == 0 || i == height -1 ||
-                j == 0 || j == width -1) {
-                    data[i][j] = new Wall(i, j);
-                    data[i][j]->setString("+");
-
-                    //将周围的变成传送门
-                    if (i == 0) data[i][j] = new Portal(i, j, height-2, j);
-                    else if (j == 0) data[i][j] = new Portal(i, j, i, width-2);
-                    else if (i == height-1) data[i][j] = new Portal(i, j, 1, j);
-                    else if (j == width-1) data[i][j] = new Portal(i, j, i, 1);
-                    else data[i][j] = new Wall(i, j);
-            }
-            else {data[i][j] = new BaseBlock(i, j);}
-
-            //注释掉应该也没问题，反正默认黑色
-            //data[i][j]->setColor(new Color(0, 0, 0));
+                //将Map四周变成传送门
+                if (i == 0) data[i][j] = new Portal(i, j, height-2, j);
+                else if (j == 0) data[i][j] = new Portal(i, j, i, width-2);
+                else if (i == height-1) data[i][j] = new Portal(i, j, 1, j);
+                else if (j == width-1) data[i][j] = new Portal(i, j, i, 1);
+                else data[i][j] = new BaseBlock(i, j);
         }
     }
-
-    /*
-    //临时生成一些Barrier
-    for (int j = 5; j < 15; ++j) {
-        data[5][j] = new Barrier(5, j);
-        data[5][j]->setString("=");
-        data[8][j] = new Barrier(8, j);
-        data[8][j]->setString("=");
-        data[9][j] = new Barrier(9, j);
-        data[9][j]->setString("=");
-    }
-    */
-    
-    /*
-    //临时生成一组传送门
-    data[5][5] = new Portal(5, 5, 15, 30);
-    data[5][5] -> setString("P");
-    //data[5][5]->setColor(new Color(100, 800, 800));
-    data[15][15] = new Portal(15, 15, 5, 30);
-    data[15][15] -> setString("P");
-    //data[15][15]->setColor(new Color(100, 800, 800));
-    */
 }
+
+
 
 void Map::init_snake() {
     ptrSnake = new Snake(this, height/2, width/2, 2, 3);
@@ -361,9 +341,6 @@ Map::~Map() {
     }
 }
 
-bool Map::writeMap(std::string fileDir) {
-    /* TODO */
-}
 
 bool Map::onMap(BaseBlock* block) {
     for (int i = 0; i < height; i++) {
@@ -375,6 +352,7 @@ bool Map::onMap(BaseBlock* block) {
     }
     return false;
 }
+
 
 void Map::setRandomItem(ItemType itType, std::string displayString) {
     int rand_x = 0,
@@ -406,6 +384,7 @@ void Map::setRandomItem(ItemType itType, std::string displayString) {
     }
 }
 
+
 void Map::moveAllEntity() {
     for (auto it = entityList.begin(); it != entityList.end(); it++) {
         (*it)->moveForward();
@@ -421,6 +400,7 @@ void Random::resetRandomEngine() {
     std::random_device seed;
     R_engine = new std::default_random_engine(seed());
 }
+
 
 int Random::randInt(int start, int end) {
     std::uniform_int_distribution<int> dis(start, end);
@@ -441,6 +421,7 @@ void Path::setRootPath() {
     rootPath.pop_back();
     rootPath.erase(0, 1);
 }
+
 
 std::string Path::fullPath(std::string partPath) {
     return rootPath + partPath;

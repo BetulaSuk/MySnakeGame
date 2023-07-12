@@ -10,7 +10,6 @@
 #include "../../snake/snake.h"
 #include "../../map/map.h"
 
-#include <curses.h>
 #include <string>
 
 // 先清空既有食物, 再设置 n 个具有随机字母的食物
@@ -52,11 +51,6 @@ class WordSnake: public Snake {
 
         bool tryEatFood(int newTail_x, int newTail_y, std::string newTail_s, int n);
 };
-
-
-namespace MYDE {
-    extern WINDOW * win;
-}
 
 
 #endif

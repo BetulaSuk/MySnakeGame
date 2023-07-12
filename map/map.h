@@ -13,6 +13,7 @@
 #include <string>
 #include <random>
 
+
 class BaseBlock;
 class BaseItem;
 enum class ItemType;
@@ -21,7 +22,21 @@ class SnakeBody;
 class Snake;
 class Entity;
 
+<<<<<<< HEAD
+=======
 
+//游戏模式
+//Tetrisnake暂时未实现
+enum class Mode {
+    CLASSIC    = 0,
+    STAGE      = 1,
+    WORD_SNAKE = 2,
+    TETRISNAKE = 3
+};
+
+>>>>>>> f326184191d1dd8558ceabc2e10626abdb1ebf10
+
+//蛇的移动方向
 enum class Direction {
     UP    = 0,
     RIGHT = 1,
@@ -38,23 +53,31 @@ enum class Direction {
 
 class Map;
 
-void nextPos(int x, int y, int& next_x, int& next_y, Direction dir);
 
+//取得移动方向上下一处的坐标
+void nextPos(int x, int y, int& next_x, int& next_y, Direction dir);
+//取得移动方向上下一处的BaseBlock指针
 BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir);
 
-// 供生成食物时使用
+
+//寻找能够生成食物的Block
 bool canSetItem(BaseBlock* const block);
 
-// 用于连接方块与物品/蛇身
+
+// 用于连接Block与Item、SnakeBody
 void bond(BaseBlock* ptr_B, SnakeBody* ptr_S);
 void bond(BaseBlock* ptr_B, BaseItem*  ptr_I);
 
-// 如果文件与预期不符, 返回空指针
-Map* loadMap(std::string fileDir);
 
+//通过文件初始化MaP
+//如果文件与预期不符, 返回空指针
+Map* loadMap(std::string fileDir);
+//文件读取和翻译
+//有规定，详见README
 bool carryCommand(Map* map, std::string com);
 
 
+//Map类
 class Map {
     friend Map* loadMap(std::string fileDir);
     friend bool carryCommand(Map* map, std::string com);
@@ -70,17 +93,18 @@ class Map {
 
         ~Map();
 
-        void loadMap(std::string fileDir);
-        bool writeMap(std::string fileDir);
 
         /* 获取基本信息 */
 
         int get_width() const {return width;}
         int get_height() const {return height;}
 
+
+        //(x, y)处的BaseBlock指针
         BaseBlock*& at(int x, int y) {return data[x][y];}
         const std::vector<std::vector<BaseBlock*>> * const get_data() const {return &data;}
 
+        /* Snake有关 */
         Snake*& get_snake() {return ptrSnake;}
         void set_snake(Snake* s) {ptrSnake = s;}
         std::vector<Entity*> * get_entity_list() {return &entityList;}
@@ -120,6 +144,7 @@ namespace Random {
 }
 
 
+/* 文件读取相关 */
 namespace Path {
     extern std::string rootPath;
 

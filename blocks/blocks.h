@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-//class Color;
 class BaseItem;
 enum class ItemType;
 class SnakeBody;
@@ -27,6 +26,9 @@ enum class BlockType {
 };
 
 
+//BaseBlock类，作为Map的基本单元，作为Wall、Portal、Barrier的父类
+//BaseBlock其上附着有Item、Snake（双向绑定）
+
 class BaseBlock {
     public:
         BaseBlock() = delete;
@@ -39,16 +41,13 @@ class BaseBlock {
         /* 获取基本信息 */
 
         virtual BlockType type() const {return TYPE;}
-
         int get_x() const {return x;}
         int get_y() const {return y;}
+
         // 获取渲染用的字符串
         std::string toString() const {return displayString;}
         // 修改渲染用的字符串
         void setString(std::string s) {displayString = s;}
-
-        //Color* getColor() const {return colr;}
-        //void setColor(Color* ptrC) {colr = ptrC;}
 
         /* item 相关操作 */
 
@@ -75,11 +74,10 @@ class BaseBlock {
         const static BlockType TYPE = BlockType::BASEBLOCK;
 
         std::string displayString = " ";
-
-        //Color* colr;
 };
 
 
+//子类：Wall
 class Wall: public BaseBlock {
     public:
         Wall() = delete;
@@ -94,6 +92,7 @@ class Wall: public BaseBlock {
 };
 
 
+//子类：Barrier（可穿透的墙）
 class Barrier: public BaseBlock {
     public:
         Barrier() = delete;
@@ -108,6 +107,7 @@ class Barrier: public BaseBlock {
 };
 
 
+//子类：Portal
 class Portal: public BaseBlock {
     public:
         Portal() = delete;
@@ -124,7 +124,6 @@ class Portal: public BaseBlock {
         const static BlockType TYPE = BlockType::PORTAL;
         int exit_x, exit_y;
 };
-
 
 
 #endif
