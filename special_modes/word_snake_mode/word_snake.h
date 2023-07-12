@@ -18,6 +18,8 @@ void setNRandomLetter(Map* map, int n);
 
 // 返回值: -1 错误; 0 无单词; >0 单词的长度
 int checkWord(std::string snakeStr);
+// 删去非字母的部分
+std::string getLetterStr(std::string raw);
 // 判定两个字符是否是一个字母
 bool isEqualChar(char ch_1, char ch_2);
 
