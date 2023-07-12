@@ -80,14 +80,27 @@ class Snake {
         Map* ptrMap = nullptr;
 };
 
-
+/**
+ * class: Entity
+ * 继承蛇, 但移动是整体平移, 且其Snakebody应当在block的ptrItem位置
+ * isAlive 反映其是否有"活性", 即能否移动
+ * length 反映其含有的Snakebody的数量
+ * 新变量 overlap 反映其是否能与蛇重叠
+*/
 class Entity: public Snake {
     public:
         Entity(): Snake() {}
         Entity(Map* map, SnakeBody* head, int init_heart, Direction init_dir): 
             Snake(map, head, init_heart, init_dir) {}
 
+        // 保持形状不变整体移动
+        bool moveForward();
         
+        bool canOverlap() const {return overlap;}
+        void setOverlap(bool ol) {overlap = ol;}
+    
+    private:
+        bool overlap = true;
 };
 
 
