@@ -13,6 +13,8 @@ int main() {
 
         //选择游戏模式
         int mode = game.chooseMode();
+        erase();
+        refresh();
 
         game.renderInformationBoard();
         game.renderLogo();
