@@ -302,7 +302,6 @@ bool Entity::moveForward() {
         if ( ! blocksAhead[i]) {isAlive = false; return false;}
         // 获取方块类型
         blType = blocksAhead[i]->type();
-
         switch (blType) {
             case BlockType::WALL: 
             case BlockType::BARRIER:
@@ -324,6 +323,8 @@ bool Entity::moveForward() {
                 blocksAhead[i]->clear_item();
                 ptrMap->setRandomItem(ItemType::HEART, displayStr);
                 break;
+            case ItemType::SNAKEBODY:
+                continue;
         }
         // 为了防止重新生成的物品还在这一格这种小概率事件...
         if (ptr_I) {i--; continue;}
@@ -339,18 +340,14 @@ bool Entity::moveForward() {
 
         // std::cout << "mark in for " << i << std::endl; // debug
 
-        blocksNow[i]->releaseItem();
-
-         std::cout << "mark af set" << std::endl; // debug
-
         temp_I = ptr_S;
         bond(blocksAhead[i], temp_I);
 
-         std::cout << "mark af bond" << std::endl; // debug
+        // std::cout << "mark af bond" << std::endl; // debug
 
         ptr_S = ptr_S->next();
 
-         std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug
+        // std::cout << "mark ptr_S: " << ptr_S->get_x() << ptr_S->get_y() << std::endl; // debug
     }
 
     return true;
