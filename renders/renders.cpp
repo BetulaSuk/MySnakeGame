@@ -192,15 +192,15 @@ bool GameBoard::createHelp() {
     wattroff(menu, COLOR_PAIR(3));
 
     wattron(menu, COLOR_PAIR(4));
-    mvwprintw(menu, 10, width*0.5, "+");
+    mvwprintw(menu, 10, width*0.5 - 1, "+");
     wattroff(menu, COLOR_PAIR(4));
 
     wattron(menu, COLOR_PAIR(6));
-    mvwprintw(menu, 10, width*0.5 + 10, "P");
+    mvwprintw(menu, 10, width*0.5 + 9, "P");
     wattroff(menu, COLOR_PAIR(6));
     
     wattron(menu, COLOR_PAIR(7));
-    mvwprintw(menu, 10, width*0.5 + 22, "=");
+    mvwprintw(menu, 10, width*0.5 + 21, "=");
     wattroff(menu, COLOR_PAIR(7));
 
     vector<string> menuItems = {"Back"};
