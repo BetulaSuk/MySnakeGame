@@ -26,7 +26,8 @@ void setNRandomLetter(Map* map, int n) {
 
     std::string displayStr = " ";
     for (int i = 0; i < n; i++) {
-        displayStr[0] = getRandomCh();
+        //displayStr[0] = getRandomCh();
+        displayStr[0] = char(i + 97);
         map->setRandomItem(ItemType::FOOD, displayStr);
     }
 }
@@ -56,7 +57,6 @@ int checkWord(std::string snakeStr) {
     sstr >> wl_path;
     wl_path = Path::fullPath(wl_path);
 
-    std::cout << wl_path << std::endl;
 
     word_list.open(wl_path);
     if ( ! word_list.is_open()) {return 0;}
