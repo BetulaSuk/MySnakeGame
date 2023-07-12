@@ -26,7 +26,8 @@ enum class Direction;
 enum class SnakeType {
     CLASSIC    = 0,
     WORD_SNAKE = 1,
-    TETRISNAKE = 2 
+    ENTITY     = 2,
+    TETRISNAKE = 3
 };
 
 
@@ -36,7 +37,7 @@ class Snake {
         Snake(Map* map, int start_x, int start_y, int init_len, int init_heart);
         Snake(Map* map, SnakeBody* head, int init_heart, Direction init_dir);
 
-        virtual ~Snake();
+        ~Snake();
 
         virtual SnakeType type() {return TYPE;}
 
@@ -56,7 +57,7 @@ class Snake {
         // 如果成功前进, 返回 true, 否则返回 false
         virtual bool moveForward();
         // 用于前进时检测, 为 Entity 类的功能而设置
-        virtual bool canOverlap() {return false;}
+        virtual bool canOverlap() const {return false;}
 
         bool revive();
 
@@ -103,7 +104,7 @@ class Entity: public Snake {
         Entity(): Snake() {}
         Entity(Map* map, SnakeBody* head, Direction init_dir);
 
-        ~Entity() = default;
+        ~Entity() {};
 
         SnakeType type() {return TYPE;}
 
@@ -118,7 +119,7 @@ class Entity: public Snake {
     private:
         bool overlap = true;
 
-        const static SnakeType TYPE = SnakeType::WORD_SNAKE;
+        const static SnakeType TYPE = SnakeType::ENTITY;
 };
 
 

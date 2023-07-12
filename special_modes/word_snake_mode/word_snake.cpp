@@ -3,7 +3,6 @@
 */
 
 #include "word_snake.h"
-
 #include <fstream>
 #include <sstream>
 

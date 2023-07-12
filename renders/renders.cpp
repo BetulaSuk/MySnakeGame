@@ -547,13 +547,13 @@ bool GameBoard::renderRestartMenu(Snake* snake) const
 
 }
 
-
+/*
 void GameBoard::renderAllBoards(Map& map, Snake* snake)
 {
     renderMap(mWindows[1], map);
     renderInstructionBoard(snake);
 }
-
+*/
 
 
 void GameBoard::renderMap(WINDOW* win, Map& map) {
@@ -677,5 +677,38 @@ void GameBoard::startGame(Map& map, Snake* snake) {
             if (control == ' ' || control == 10) break;
 
             this_thread::sleep_for(chrono::milliseconds(delay));
+        }
+}
+
+
+void GameBoard::startWord(Map& map, WordSnake* snake) {
+    
+    curs_set(0);
+    int control;
+
+        while (true) {
+            renderMap(mWindows[1], map);
+            renderInstructionBoard(snake);
+
+            control = getch();
+
+            switch (control) {
+                case 'W': case 'w': case KEY_UP:
+                    snake->changeDir(Direction::UP); break;
+                case 'S': case 's': case KEY_DOWN:
+                    snake->changeDir(Direction::DOWN); break;
+                case 'A': case 'a': case KEY_LEFT:
+                    snake->changeDir(Direction::LEFT); break;
+                case 'D': case 'd': case KEY_RIGHT:
+                    snake->changeDir(Direction::RIGHT); break;
+            }
+
+            snake->moveForward();
+            if (!snake->checkAlive()) {break;}
+
+
+            if (control == ' ' || control == 10) break;
+
+            this_thread::sleep_for(chrono::milliseconds(base_delay));
         }
 }

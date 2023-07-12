@@ -5,6 +5,7 @@
 #include "../blocks/blocks.h"
 #include "../map/map.h"
 #include "../snake/snake.h"
+#include "../special_modes/word_snake_mode/word_snake.h"
 
 #include <iostream>
 #include <curses.h>
@@ -45,9 +46,10 @@ class GameBoard
 
         bool renderRestartMenu(Snake* snake) const;
 
-        void renderAllBoards(Map& map, Snake* snake);
+        //void renderAllBoards(Map& map, Snake* snake);
 
         void startGame(Map& map, Snake* snake);
+        void startWord(Map& map, WordSnake* snake);
 
 
         int getGameBoardWidth() {return mGameBoardWidth;}
