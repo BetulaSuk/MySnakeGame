@@ -32,7 +32,6 @@ BaseBlock* nextBlock(Map* map, BaseBlock* block, Direction dir) {
         next_y = 0;
 
     //传送门下的蛇的下一步位置
-    //TODO
     if (block -> type() == BlockType::PORTAL) {
         Portal* entrance = reinterpret_cast<Portal*>(block);
         int exit_x = entrance -> get_ex(), exit_y = entrance -> get_ey();
@@ -270,16 +269,19 @@ Map::Map(int input_height, int input_width) {
             }
             else {data[i][j] = new BaseBlock(i, j);}
 
-            data[i][j]->setColor(new Color(0, 0, 800));
+            //注释掉应该也没问题，反正默认黑色
+            //data[i][j]->setColor(new Color(0, 0, 0));
         }
     }
-    /*
+    
     //临时生成一组传送门
     data[5][5] = new Portal(5, 5, 15, 30);
     data[5][5] -> setString("P");
+    //data[5][5]->setColor(new Color(100, 800, 800));
     data[15][15] = new Portal(15, 15, 5, 30);
     data[15][15] -> setString("P");
-    */
+    //data[15][15]->setColor(new Color(100, 800, 800));
+    
 }
 
 void Map::init_snake() {

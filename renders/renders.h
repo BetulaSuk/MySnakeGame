@@ -64,6 +64,9 @@ class GameBoard
 
         vector<int> mLeaderBoard;
         const int mNumLeaders = 3;
+
+        int base_delay = 100;
+        int Difficulty = 0;
 };
 
 #endif

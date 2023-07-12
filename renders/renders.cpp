@@ -157,15 +157,49 @@ bool GameBoard::createHelp() {
     menu = newwin(height, width, startY, startX);
     box(menu, 0, 0);
 
-    mvwprintw(menu, 1, 1, "This is the Help page");
-    mvwprintw(menu, 2, 1, "Using WASD to control snake");
-    mvwprintw(menu, 3, 1, "Eating food to get score");
+    mvwprintw(menu, 2, width*0.5 - 11, "This is the Help page:");
+    mvwprintw(menu, 3, width*0.5 - 15, "1. Using WASD to control snake");
+    mvwprintw(menu, 4, width*0.5 - 26, "2. Eating food to get score and increase Difficulty");
+    mvwprintw(menu, 5, width*0.5 - 27, "3. Heart will be generated, eat it to get more hearts");
+    mvwprintw(menu, 6, width*0.5 - 21, "4. Go through walls at the cost of hearts");
+
+    start_color();
+    short MYCOLOR_F = 10, MYCOLOR_H = 11, MYCOLOR_S = 12, MYCOLOR_P = 13;
+    init_color(MYCOLOR_F, 800, 800, 0);
+    init_color(MYCOLOR_H, 1000, 400, 200);
+    init_color(MYCOLOR_S, 100, 800, 100);
+    init_color(MYCOLOR_P, 100, 800, 800);
+
+    init_pair(3, MYCOLOR_F, COLOR_BLACK);
+    init_pair(4, MYCOLOR_H, COLOR_BLACK);
+    init_pair(5, MYCOLOR_S, COLOR_BLACK);
+    init_pair(6, MYCOLOR_P, COLOR_BLACK);
+
+    mvwprintw(menu, 8, width*0.5 - 27, "SnakeBody          Food          Heart          Portal");
+
+
+    wattron(menu, COLOR_PAIR(5));
+    mvwprintw(menu, 9, width*0.5 - 23, "@@");
+    wattroff(menu, COLOR_PAIR(5));
+
+    wattron(menu, COLOR_PAIR(3));
+    mvwprintw(menu, 9, width*0.5 - 7, "#");
+    wattroff(menu, COLOR_PAIR(3));
+
+    wattron(menu, COLOR_PAIR(4));
+    mvwprintw(menu, 9, width*0.5 + 8, "+");
+    wattroff(menu, COLOR_PAIR(4));
+
+    wattron(menu, COLOR_PAIR(6));
+    mvwprintw(menu, 9, width*0.5 + 23, "P");
+    wattroff(menu, COLOR_PAIR(6));
+    
 
     vector<string> menuItems = {"Back"};
     
     //下面实现选项切换
     wattron(menu, A_STANDOUT);
-    mvwprintw(menu, 7, 1, menuItems[0].c_str());
+    mvwprintw(menu, 11, width*0.5 - 2, menuItems[0].c_str());
     //wattroff(menu, A_STANDOUT);
 
     wrefresh(menu);
@@ -400,7 +434,9 @@ void GameBoard::renderInstructionBoard(Snake* snake) const
     mvwprintw(this->mWindows[2], 6, 1, "Right: D");
 
     mvwprintw(this->mWindows[2], 8, 1, "Difficulty");
-    mvwprintw(this->mWindows[2], 9, 1, "NOT YET!");
+
+    string dif = to_string(Difficulty);
+    mvwprintw(this->mWindows[2], 9, 1, dif.c_str());
 
     mvwprintw(this->mWindows[2], 11, 1, "Points");
     string pointString = to_string(snake -> get_point());
@@ -536,34 +572,30 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             ptr_S = ptr_B->getSnakeBody();
 
 
-            //改变预设颜色！！
-            //灰色
-            //init_color(COLOR_RED, 900, 850, 750);
-            //init_pair(1, COLOR_BLACK, COLOR_RED);
-            //init_pair(2, COLOR_GREEN, COLOR_RED);
-            //init_pair(3, COLOR_WHITE, COLOR_RED);
-            //init_pair(4, COLOR_MAGENTA, COLOR_RED);
             
-            Color* cor = nullptr;
-            short MYCOLOR_F = 10, MYCOLOR_H = 11;
+            //Color* cor = nullptr;
+
+            short MYCOLOR_F = 10, MYCOLOR_H = 11, MYCOLOR_S = 12, MYCOLOR_P = 13;
             init_color(MYCOLOR_F, 800, 800, 0);
             init_color(MYCOLOR_H, 1000, 400, 200);
+            init_color(MYCOLOR_S, 100, 800, 100);
+            init_color(MYCOLOR_P, 100, 800, 800);
 
-            init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
-            init_pair(2, COLOR_YELLOW, COLOR_BLACK);
             init_pair(3, MYCOLOR_F, COLOR_BLACK);
             init_pair(4, MYCOLOR_H, COLOR_BLACK);
+            init_pair(5, MYCOLOR_S, COLOR_BLACK);
+            init_pair(7, MYCOLOR_P, COLOR_BLACK);
 
 
             if (ptr_S != nullptr) {
                 //渲染蛇的身体
                 
-                cor = ptr_S->getColor();
-                if (cor != nullptr) init_color(COLOR_MAGENTA, cor->red, cor->green, cor->blue);
+                //cor = ptr_S->getColor();
+                //if (cor != nullptr) init_color(COLOR_MAGENTA, cor->red, cor->green, cor->blue);
 
-                wattron(win, COLOR_PAIR(1));
+                wattron(win, COLOR_PAIR(5));
                 mvwprintw(win, i, j, ptr_S->toString().c_str());
-                wattroff(win, COLOR_PAIR(1));
+                wattroff(win, COLOR_PAIR(5));
 
             }
             //BaseItem(FOOD, HEART, SNAKEBODY)
@@ -576,13 +608,10 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
 
                 if (ptr_I -> type() == ItemType::FOOD) {
                     wattron(win, COLOR_PAIR(3));
-                    
                     mvwprintw(win, i, j, ptr_I->toString().c_str());
                     wattroff(win, COLOR_PAIR(3));
                 }
                 else if (ptr_I -> type() == ItemType::HEART) {
-                    
-
                     wattron(win, COLOR_PAIR(4));
                     mvwprintw(win, i, j, ptr_I->toString().c_str());
                     wattroff(win, COLOR_PAIR(4));
@@ -592,11 +621,7 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
             }
             else {
                 //渲染地图方块
-                cor = ptr_B->getColor();
-                if (cor != nullptr) init_color(COLOR_YELLOW, cor->red, cor->green, cor->blue);
-
-
-                wattron(win, COLOR_PAIR(2));
+                wattron(win, COLOR_PAIR(7));
                 mvwprintw(win, i, j, ptr_B->toString().c_str());
                 if (ptr_B -> type() == BlockType::PORTAL) {
                     Portal* entrance = reinterpret_cast<Portal*>(ptr_B);
@@ -604,7 +629,8 @@ void GameBoard::renderMap(WINDOW* win, Map& map) {
                     int exit_y = entrance->get_ey();
                     //map.at(exit_x, exit_y) -> setString("O");
                 }
-                wattroff(win, COLOR_PAIR(2));
+                wattroff(win, COLOR_PAIR(7));
+                
             }
             //if (cor != nullptr) init_color(MYCOLOR, cor->red, cor->green, cor->blue);
         }
@@ -642,8 +668,14 @@ void GameBoard::startGame(Map& map, Snake* snake) {
             snake->moveForward();
             if (!snake->checkAlive()) {break;}
 
+            //调整难度
+            int point = snake->get_point();
+            Difficulty = point/5;
+            int delay = base_delay * pow(0.75, Difficulty);
+
+
             if (control == ' ' || control == 10) break;
 
-            this_thread::sleep_for(chrono::milliseconds(100));
+            this_thread::sleep_for(chrono::milliseconds(delay));
         }
 }
