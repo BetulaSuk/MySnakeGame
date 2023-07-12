@@ -4,6 +4,7 @@
 
 #include "map.h"
 #include "../snake/snake.h"
+#include "../special_modes/word_snake_mode/word_snake.h"
 
 #include <iostream>
 #include <fstream>
@@ -111,6 +112,7 @@ Map* loadMap(std::string fileDir) {
                 case '1': ptrMap->data[i][j] = new Wall(i, j); break;
                 // 由于传送门生成需要更多参数, 先使用基本方块占位, 在命令执行阶段再设置
                 case '2': ptrMap->data[i][j] = new BaseBlock(i, j); break;
+                case '3': ptrMap->data[i][j] = new Barrier(i, j); break;
                 /* TODO 添加新的方块类型 */
                 default: mapFile.close(); throw 1;
             }
@@ -122,13 +124,11 @@ Map* loadMap(std::string fileDir) {
     int tempi = 0;
     mapFile >> ch1;
     if (ch1 == 'f') {
-        mapFile >> tempi;
         std::getline(mapFile, aline); // 光标换行
-        for (int i = 0; i < tempi; i++) {
-            std::getline(mapFile, aline);
 
-            //临时注释！
-            //if ( ! carryCommand(ptrMap, aline)) {mapFile.close(); throw 1;}
+        while (std::getline(mapFile, aline)) {
+            if ( ! carryCommand(ptrMap, aline)) 
+                {mapFile.close(); throw 1;}
         }
     }
 
@@ -151,8 +151,11 @@ bool carryCommand(Map* map, std::string com) {
      * - b: 创建方块, 下一个数字决定方块种类, 接着的两个数字为位置,
      *      再然后是需要传入构造函数的参数
      * - i: 创建物品, 种类, 位置, 渲染用字符! , 其他可能参数
+     *   - 创建蛇身时需额外指明下一个蛇身的位置
      * - s: 创建蛇身, 位置, 渲染字符, 下一节的位置
      * - c: 声明蛇, 蛇头的位置, 初始生命, 初始方向
+     * - w: 声明文字蛇, 蛇头位置, 初始生命, 初始方向
+     * - e: 声明实体, 链表头位置, 初始方向
     */
 
     char comType;
@@ -185,6 +188,12 @@ bool carryCommand(Map* map, std::string com) {
                     map->data[x][y] = new Portal(x, y, e_x, e_y);
                     map->data[x][y]->setString(displayStr);
                     break;
+                case 3: 
+                    displayStr = map->data[x][y]->toString();
+                    delete map->data[x][y];
+                    map->data[x][y] = new Barrier(x, y);
+                    map->data[x][y]->setString(displayStr);
+                    break;
             }
             break;
 
@@ -206,6 +215,20 @@ bool carryCommand(Map* map, std::string com) {
                     ptr_I = new Heart();
                     ptr_I->setString(displayStr);
                     bond(map->data[x][y], ptr_I);
+                    break;
+                case 3:
+                    int next_x, next_y;
+                    sstr >> next_x >> next_y;
+                    SnakeBody* temp_S = new SnakeBody();
+                    ptr_I = temp_S;
+                    ptr_I->setString(displayStr);
+                    bond(map->data[x][y], ptr_I);
+
+                    if (next_x < 0 || next_y < 0) {break;} // 尾
+                    else if (map->inRange(next_x, next_y) &&
+                            map->data[next_x][next_y]->getSnakeBody())
+                        {temp_S->setNext(map->data[next_x][next_y]->getSnakeBody());}
+                    else {return false;}
                     break;
                 // TODO 
             }
@@ -235,6 +258,30 @@ bool carryCommand(Map* map, std::string com) {
             if ( ! head) {return false;}
 
             map->ptrSnake = new Snake(map, head, init_heart, init_dir);
+            break;
+        
+        case 'w':
+            int init_heart, dir_int;
+            sstr >> x >> y >> init_heart >> dir_int;
+            Direction init_dir = static_cast<Direction>(dir_int);
+            
+            if ( ! map->inRange(x, y)) {return false;}
+            SnakeBody* head = map->data[x][y]->getSnakeBody();
+            if ( ! head) {return false;}
+
+            map->ptrSnake = new WordSnake(map, head, init_heart, init_dir);
+            break;
+
+        case 'e':
+            int dir_int;
+            sstr >> x >> y >> dir_int;
+            Direction init_dir = static_cast<Direction>(dir_int);
+            
+            if ( ! map->inRange(x, y)) {return false;}
+            SnakeBody* head = reinterpret_cast<SnakeBody*>(map->data[x][y]->get_item());
+            if ( ! head) {return false;}
+
+            map->ptrSnake = new WordSnake(map, head, init_heart, init_dir);
             break;
     }
 

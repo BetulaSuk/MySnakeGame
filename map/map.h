@@ -19,6 +19,7 @@ enum class ItemType;
 enum class BlockType;
 class SnakeBody;
 class Snake;
+class Entity;
 
 enum class Mode {
     CLASSIC    = 0,
@@ -88,6 +89,7 @@ class Map {
         const std::vector<std::vector<BaseBlock*>> * const get_data() const {return &data;}
 
         Snake* get_snake() {return ptrSnake;}
+        std::vector<Entity*> * get_entity_list() {return &entityList;}
 
         /* 工具函数 */
 
@@ -104,6 +106,7 @@ class Map {
         std::vector<std::vector<BaseBlock*>> data;
 
         Snake* ptrSnake = nullptr;
+        std::vector<Entity*> entityList;
 
         //为生成爱心准备：
         int foodNum = 0;

@@ -23,6 +23,12 @@ enum class BlockType;
 class Map;
 enum class Direction;
 
+enum class SnakeType {
+    CLASSIC    = 0,
+    WORD_SNAKE = 1,
+    TETRISNAKE = 2 
+};
+
 
 class Snake {
     public:
@@ -31,6 +37,8 @@ class Snake {
         Snake(Map* map, SnakeBody* head, int init_heart, Direction init_dir);
 
         virtual ~Snake();
+
+        virtual SnakeType type() {return TYPE;}
 
         /* 获取基本信息 */
 
@@ -78,6 +86,9 @@ class Snake {
 
         SnakeBody* ptrHead = nullptr;
         Map* ptrMap = nullptr;
+
+    private:
+        const static SnakeType TYPE = SnakeType::CLASSIC;
 };
 
 /**
@@ -90,17 +101,24 @@ class Snake {
 class Entity: public Snake {
     public:
         Entity(): Snake() {}
-        Entity(Map* map, SnakeBody* head, int init_heart, Direction init_dir): 
-            Snake(map, head, init_heart, init_dir) {}
+        Entity(Map* map, SnakeBody* head, Direction init_dir);
+
+        ~Entity() = default;
+
+        SnakeType type() {return TYPE;}
+
+        void changeDir(Direction new_dir) {dir = new_dir;}
 
         // 保持形状不变整体移动
         bool moveForward();
-        
+
         bool canOverlap() const {return overlap;}
         void setOverlap(bool ol) {overlap = ol;}
     
     private:
         bool overlap = true;
+
+        const static SnakeType TYPE = SnakeType::WORD_SNAKE;
 };
 
 
