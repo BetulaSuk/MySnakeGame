@@ -311,6 +311,14 @@ Map::Map(int input_height, int input_width) {
                 else data[i][j] = new BaseBlock(i, j);
         }
     }
+    for (int i = 0; i < width/4; ++i) {
+        data[height/4][width/8+i] = new Barrier(height/4, width/8+i);
+        data[height/4][width/8+i]->setString("=");
+
+        data[height*3/4][width*5/8+i] = new Barrier(height*3/4, width*5/8+i);
+        data[height*3/4][width*5/8+i]->setString("=");
+    }
+
 }
 
 
