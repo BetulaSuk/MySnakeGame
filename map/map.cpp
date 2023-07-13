@@ -216,12 +216,7 @@ bool carryCommand(Map* map, std::string com) {
         int iType; BaseItem* ptr_I;
         sstr >> iType >> x >> y >> displayStr;
 
-        if (iType == 0) {
-            ptr_I = new BaseItem();
-            ptr_I->setString(displayStr);
-            bond(map->data[x][y], ptr_I);
-        }
-        else if (iType == 1) {
+        if (iType == 1) {
             ptr_I = new Food();
             ptr_I->setString(displayStr);
             bond(map->data[x][y], ptr_I);
@@ -285,7 +280,7 @@ bool carryCommand(Map* map, std::string com) {
         int dir_int, init_len;
         sstr >> x >> y >> dir_int >> init_len;
         Direction init_dir = static_cast<Direction>(dir_int);
-            
+
         if ( ! map->inRange(x, y)) {return false;}
         SnakeBody* head = reinterpret_cast<SnakeBody*>(map->data[x][y]->get_item());
         if ( ! head) {return false;}
@@ -315,16 +310,6 @@ Map::Map(int input_height, int input_width) {
                 else if (j == width-1) data[i][j] = new Portal(i, j, i, 1);
                 else data[i][j] = new BaseBlock(i, j);
         }
-    }
-
-    //生成两面Barrier
-    for (int i = 0; i < width/4; ++i) {
-        data[height/4][width/8+i] = new Barrier(height/4, width/8+i);
-        data[height/4][width/8+i] -> setString("=");
-    }
-    for (int i = 0; i < width/4; ++i) {
-        data[height*3/4][width*5/8+i] = new Barrier(height*3/4, width*5/8+i);
-        data[height*3/4][width*5/8+i] -> setString("=");
     }
 }
 

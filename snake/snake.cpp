@@ -270,7 +270,6 @@ bool Entity::moveForward() {
     BlockType blType = BlockType::EMPTY;
     BaseItem* ptr_I = nullptr;
     ItemType itType = ItemType::EMPTY;
-    std::string displayStr;
     for (int i = 0; i < length; i++) {
 
         // 检测该方块是否在范围内
@@ -304,23 +303,18 @@ bool Entity::moveForward() {
         ptr_I = blocksAhead[i]->get_item();
         if ( ! ptr_I) {continue;}
         itType = ptr_I->type();
-        displayStr = ptr_I->toString();
 
         // 撞到东西要删了之后重新生成
         switch (itType) {
             case ItemType::FOOD:
                 blocksAhead[i]->clear_item();
-                ptrMap->setRandomItem(ItemType::FOOD, displayStr);
                 break;
             case ItemType::HEART:
                 blocksAhead[i]->clear_item();
-                ptrMap->setRandomItem(ItemType::HEART, displayStr);
                 break;
             case ItemType::SNAKEBODY:
                 continue;
         }
-        // 为了防止重新生成的物品还在这一格这种小概率事件...
-        if (ptr_I) {i--; continue;}
     }
 
     // 移动

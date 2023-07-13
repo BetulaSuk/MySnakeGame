@@ -38,7 +38,7 @@ class BaseItem {
         
         /* 获取基本信息 */
 
-        virtual ItemType type() const {return TYPE;}
+        virtual ItemType type() const = 0;
         int get_x() const;
         int get_y() const;
         // 获取渲染用的字符串
@@ -55,8 +55,6 @@ class BaseItem {
         BaseBlock * ptrBlock = nullptr;
 
     private:
-        const static ItemType TYPE = ItemType::BASEITEM;
-
         std::string displayString = " ";
 };
 
@@ -99,7 +97,7 @@ class SnakeBody: public BaseItem {
 
         ~SnakeBody() = default;
 
-        ItemType type() {return TYPE;}
+        ItemType type() const {return TYPE;}
 
         void set_snake(Snake* ptr_S);
 
