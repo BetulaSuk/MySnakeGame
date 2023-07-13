@@ -177,7 +177,8 @@ bool WordSnake::moveForward() {
 
     // 因为 eatFood 中有判定, 所以不担心误判为吃食物
     tryEatFood(oldTail_x, oldTail_y, displayStr, new_food_num);
-    tryEatHeart();
+    if (tryEatHeart()) setNRandomLetter(ptrMap, 26);
+
     // 检验是否已经拼成了单词
     cutWord();
 
@@ -249,4 +250,24 @@ bool WordSnake::tryEatFood(int newTail_x, int newTail_y, std::string newTail_s, 
     ptrHead->get_block()->clear_item();
 
     setNRandomLetter(ptrMap, n);
+    times++;
+
+    //每生成五次食物就生成一个爱心
+    if (times == 5) {
+        ptrMap->setRandomItem(ItemType::HEART, "+");
+        times = 0;
+    }
+}
+
+
+bool WordSnake::tryEatHeart() {
+    // 先检测是否有心可吃
+    BaseItem* item_atHead = ptrHead->get_block()->get_item();
+
+    if ( ! item_atHead || item_atHead->type() != ItemType::HEART) {return false;}
+
+    ptrHead->get_block()->clear_item();
+    heart++;
+
+    return true;
 }

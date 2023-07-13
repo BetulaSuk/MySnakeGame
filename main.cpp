@@ -57,7 +57,7 @@ int main() {
             Map* map = new Map(game.getGameBoardHeight(), game.getGameBoardWidth());
 
             //指定蛇的初始化位置、length、heart
-            WordSnake* snake = new WordSnake(map, 10, 10, 2, 1);
+            WordSnake* snake = new WordSnake(map, game.getGameBoardHeight()/2, game.getGameBoardWidth()/2, 1, 3);
 
             //随机刷新英文字母（此处简单起见，刷新26个不同字母）
             setNRandomLetter(map, 26);

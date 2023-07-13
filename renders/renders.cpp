@@ -642,7 +642,7 @@ void GameBoard::startWord(Map* map, WordSnake* snake) {
         //渲染蛇的末尾几位，方便对照
         mvwprintw(mWindows[2], 17, 1, "--Snake-->");
         wattron(mWindows[2], COLOR_PAIR(5));
-        mvwprintw(mWindows[2], 18, 1, snake->getString().c_str());
+        mvwprintw(mWindows[2], 18, 1, snake->getString().substr(0, 15).c_str());
         wattroff(mWindows[2], COLOR_PAIR(5));
         wrefresh(mWindows[2]);
 
