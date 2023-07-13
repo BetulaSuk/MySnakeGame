@@ -42,12 +42,20 @@ class WordSnake: public Snake {
         // 如果组成了单词, 剪掉, 并返回Entity指针
         Entity* cutWord();
 
+
+        int getTimes() {return times;}
+
     private:
         const static SnakeType TYPE = SnakeType::WORD_SNAKE;
 
         int new_food_num = 1;
 
+        //生成食物次数
+        int times = 1;
+
         bool tryEatFood(int newTail_x, int newTail_y, std::string newTail_s, int n);
+
+        bool tryEatHeart();
 };
 
 
